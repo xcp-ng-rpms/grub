@@ -35,7 +35,7 @@
 Name:           grub
 Epoch:          1
 Version:        2.02
-Release:        2
+Release:        2%{dist}
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
