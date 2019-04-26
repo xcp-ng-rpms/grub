@@ -35,15 +35,19 @@
 Name:           grub
 Epoch:          1
 Version:        2.02
-Release:        2%{dist}
+Release:        2.1%{?dist}
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
 License:        GPLv3+
 URL:            http://www.gnu.org/software/grub/
 Obsoletes:	grub < 1:0.98
-Patch0: pass-mmap-info.patch
-Source0: https://code.citrite.net/rest/archive/latest/projects/XSU/repos/%{name}/archive?at=%{version}&format=tar.gz&prefix=%{name}-%{version}#/%{name}-%{version}.tar.gz
+
+Source0: https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz
+
+
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz) = e54c99aaff5e5f6f5d3b06028506c57e66d8ef77
+
 
 BuildRequires:  gcc
 BuildRequires:  flex bison binutils python
@@ -80,6 +84,7 @@ provides support for PC BIOS systems.
 
 %ifarch %{efiarchs}
 %package efi
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz) = e54c99aaff5e5f6f5d3b06028506c57e66d8ef77
 Summary:	GRUB for EFI systems.
 Group:		System Environment/Base
 Requires:	%{name}-tools = %{epoch}:%{version}-%{release}
@@ -93,6 +98,7 @@ provides support for EFI systems.
 %endif
 
 %package tools
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz) = e54c99aaff5e5f6f5d3b06028506c57e66d8ef77
 Summary:	Support tools for GRUB.
 Group:		System Environment/Base
 Requires:	gettext os-prober which file system-logos
@@ -135,7 +141,7 @@ make %{?_smp_mflags}
 
 GRUB_MODULES="	all_video boot btrfs cat chain configfile echo efifwsetup \
 		efinet ext2 fat font gfxmenu gfxterm gzio halt hfsplus http iso9660 \
-		jpeg linux lsefimmap lsmmap lvm minicmd normal part_apple part_msdos \
+		jpeg linux loadenv lsefimmap lsmmap lvm minicmd normal part_apple part_msdos \
 		part_gpt password_pbkdf2 png reboot search search_fs_uuid \
 		search_fs_file search_label serial sleep test video xfs \
 		mdraid09 mdraid1x multiboot2 multiboot tftp"
@@ -319,7 +325,8 @@ fi
 %defattr(-,root,root,-)
 %{_libdir}/grub/%{grubefiarch}
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
-%attr(0755,root,root)/boot/efi/EFI/%{efidir}
+%dir /boot/efi/EFI/%{efidir}
+%attr(0755,root,root) /boot/efi/EFI/%{efidir}/*.efi
 %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
 %doc COPYING
 %endif
@@ -365,7 +372,6 @@ fi
 %attr(0644,root,root) %ghost %config(noreplace) %{_sysconfdir}/default/grub
 %{_sysconfdir}/sysconfig/grub
 %dir /boot/%{name}
-%exclude %{_datarootdir}/grub/themes/
 %{_infodir}/%{name}*
 %doc COPYING INSTALL
 %doc NEWS README
