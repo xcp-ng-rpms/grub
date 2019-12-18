@@ -1,0 +1,40 @@
+ns8250: Wait a short while before draining the input buffer
+
+GRUB drains the input buffer immediately after configuring the serial
+port. However, on some machines (xtruk-12-*), spurious characters appear
+at the serial port input a short time (< 10 ms) after configuring the
+serial port.  This causes the boot timeout to be cancelled, preventing
+the machine from booting without user intervention.
+
+The spurious characters are:
+
+  ESC [ 0 n
+
+which corresponds to the ANSI escape sequence "Device status report
+response: OK".  This is normally sent in response to "Device Status
+Report" (ESC [ 5 n) but in this case, it is not clear why the response
+is sent since GRUB does not the send the request. It is plausible that
+some part of the firmware startup process (e.g. the FCoE option ROM)
+sends the request but doesn't read the reponse.
+
+Fix the issue by waiting a short period of time before draining the
+input buffer. This is a nasty hack but it is not clear if there is a
+better solution.
+diff --git a/grub-core/term/ns8250.c b/grub-core/term/ns8250.c
+index 39809d042..c34e6ba13 100644
+--- a/grub-core/term/ns8250.c
++++ b/grub-core/term/ns8250.c
+@@ -127,6 +127,13 @@ do_real_config (struct grub_serial_port *port)
+     }
+ 
+   /* Drain the input buffer.  */
++
++  /*
++   * Wait a few milliseconds before draining the input buffer since on some
++   * machines spurious characters show up a short time after GRUB starts.
++   */
++  grub_millisleep(10);
++
+   endtime = grub_get_time_ms () + 1000;
+   while (grub_inb (port->port + UART_LSR) & UART_DATA_READY)
+     {
