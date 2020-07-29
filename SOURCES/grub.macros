@@ -370,8 +370,10 @@ done								\
 	-p /EFI/%{efi_vendor} -d grub-core ${GRUB_MODULES}	\
 %{4}./grub-mkimage -O %{1} -o %{3}.orig				\\\
 	-p /EFI/BOOT -d grub-core ${GRUB_MODULES}		\
-%{expand:%%{pesign -s -i %%{2}.orig -o %%{2} -a %%{5} -c %%{6} -n %%{7}}}	\
-%{expand:%%{pesign -s -i %%{3}.orig -o %%{3} -a %%{5} -c %%{6} -n %%{7}}}	\
+%{expand:%%{pesign -s -i %%{2}.orig -o %%{2}.one -a %%{5} -c %%{6} -n %%{7}}}	\
+%{expand:%%{pesign -s -i %%{3}.orig -o %%{3}.one -a %%{5} -c %%{6} -n %%{7}}}	\
+%{expand:%%{pesign -s -i %%{2}.one -o %%{2} -a %%{8} -c %%{9} -n %%{10}}}	\
+%{expand:%%{pesign -s -i %%{3}.one -o %%{3} -a %%{8} -c %%{9} -n %%{10}}}	\
 %{nil}
 %else
 %define mkimage()						\
@@ -387,7 +389,7 @@ GRUB_MODULES="	all_video boot blscfg btrfs			\\\
 		cat configfile					\\\
 		echo efi_netfs efifwsetup efinet ext2		\\\
 		fat font gfxmenu gfxterm gzio			\\\
-		halt hfsplus http iso9660 jpeg			\\\
+		halt hfsplus http increment iso9660 jpeg	\\\
 		loadenv loopback linux lvm lsefi lsefimmap	\\\
 		mdraid09 mdraid1x minicmd net			\\\
 		normal part_apple part_msdos part_gpt		\\\
@@ -396,14 +398,14 @@ GRUB_MODULES="	all_video boot blscfg btrfs			\\\
 		search_label serial sleep syslinuxcfg test tftp	\\\
 		video xfs"					\
 GRUB_MODULES+=%{platform_modules}				\
-%{expand:%%{mkimage %{1} %{2} %{3} %{4} %{5} %{6} %{7}}}	\
+%{expand:%%{mkimage %{1} %{2} %{3} %{4} %{5} %{6} %{7} %{8} %{9} %{10}}}	\
 %{nil}
 
 %define do_primary_efi_build()					\
 cd grub-%{1}-%{tarversion}					\
 %{expand:%%do_efi_configure %%{4} %%{5} %%{6}}			\
 %do_efi_build_all						\
-%{expand:%%do_efi_build_images %{grub_target_name} %{2} %{3} ./ %{7} %{8} %{9}} \
+%{expand:%%do_efi_build_images %{grub_target_name} %{2} %{3} ./ %{7} %{8} %{9} %{10} %{11} %{12}} \
 cd ..								\
 %{nil}
 
@@ -412,7 +414,7 @@ cd grub-%{1}-%{tarversion}					\
 %{expand:%%do_efi_configure %%{4} %%{5} %%{6}}			\
 %do_efi_build_modules						\
 %{expand:%%do_efi_link_utils %{grubefiarch}}			\
-%{expand:%%do_efi_build_images %{alt_grub_target_name} %{2} %{3} ../grub-%{grubefiarch}-%{tarversion}/ %{7} %{8} %{9}} \
+%{expand:%%do_efi_build_images %{alt_grub_target_name} %{2} %{3} ../grub-%{grubefiarch}-%{tarversion}/ %{7} %{8} %{9} %{10} %{11} %{12}} \
 cd ..								\
 %{nil}
 

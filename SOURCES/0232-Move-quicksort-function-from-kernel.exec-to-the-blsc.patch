@@ -27,7 +27,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  rename grub-core/{kern/qsort.c => commands/bls_qsort.h} (93%)
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 01c5f9ae351..f99fc994f6b 100644
+index fb0a1e0babb..3346d1be658 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -129,7 +129,6 @@ kernel = {

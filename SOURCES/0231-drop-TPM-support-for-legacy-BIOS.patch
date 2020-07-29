@@ -38,7 +38,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  delete mode 100644 grub-core/kern/i386/pc/tpm.c
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 203584fb00b..01c5f9ae351 100644
+index cf3d549d212..fb0a1e0babb 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -246,7 +246,6 @@ kernel = {

@@ -7,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	82%{?dist}.1
+Release:	87%{?dist}
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -24,8 +24,10 @@ Source6:	gitignore
 Source8:	strtoull_test.c
 Source9:	20-grub.install
 Source12:	99-grub-mkconfig.install
-Source13:	securebootca.cer
-Source14:	secureboot.cer
+Source13:	redhatsecurebootca3.cer
+Source14:	redhatsecureboot301.cer
+Source15:	redhatsecurebootca5.cer
+Source16:	redhatsecureboot502.cer
 
 %include %{SOURCE1}
 
@@ -164,10 +166,10 @@ git commit -m "After making subdirs"
 
 %build
 %if 0%{with_efi_arch}
-%{expand:%do_primary_efi_build %%{grubefiarch} %%{grubefiname} %%{grubeficdname} %%{_target_platform} %%{efi_target_cflags} %%{efi_host_cflags} %{SOURCE13} %{SOURCE14} redhatsecureboot301}
+%{expand:%do_primary_efi_build %%{grubefiarch} %%{grubefiname} %%{grubeficdname} %%{_target_platform} %%{efi_target_cflags} %%{efi_host_cflags} %{SOURCE13} %{SOURCE14} redhatsecureboot301 %{SOURCE15} %{SOURCE16} redhatsecureboot502}
 %endif
 %if 0%{with_alt_efi_arch}
-%{expand:%do_alt_efi_build %%{grubaltefiarch} %%{grubaltefiname} %%{grubalteficdname} %%{_alt_target_platform} %%{alt_efi_target_cflags} %%{alt_efi_host_cflags} %{SOURCE13} %{SOURCE14} redhatsecureboot301}
+%{expand:%do_alt_efi_build %%{grubaltefiarch} %%{grubaltefiname} %%{grubalteficdname} %%{_alt_target_platform} %%{alt_efi_target_cflags} %%{alt_efi_host_cflags} %{SOURCE13} %{SOURCE14} redhatsecureboot301 %{SOURCE15} %{SOURCE16} redhatsecureboot502}
 %endif
 %if 0%{with_legacy_arch}
 %{expand:%do_legacy_build %%{grublegacyarch}}
@@ -498,6 +500,14 @@ fi
 %endif
 
 %changelog
+* Tue Jul 28 2020 Peter Jones <pjones@redhat.com> - 2.02-87
+- Fix several CVEs
+  Resolves: CVE-2020-10713
+  Resolves: CVE-2020-14308
+  Resolves: CVE-2020-14309
+  Resolves: CVE-2020-14310
+  Resolves: CVE-2020-14311
+
 * Mon May 18 2020 Javier Martinez Canillas <javierm@redhat.com> - 2.02-82.el8_2.1
 - Fix a segfault in grub2-editenv when attempting to shrink a variable
   Resolves: rhbz#1836196

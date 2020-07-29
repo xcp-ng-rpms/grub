@@ -1,0 +1,29 @@
+From 9fa474528317c2311e2f2ac0fd626316ef7486d4 Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@redhat.com>
+Date: Fri, 24 Jul 2020 13:57:27 -0400
+Subject: [PATCH 312/314] linux loader: avoid overflow on initrd size
+ calculation
+
+Signed-off-by: Peter Jones <pjones@redhat.com>
+---
+ grub-core/loader/linux.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/grub-core/loader/linux.c b/grub-core/loader/linux.c
+index c2c7cfcd0fd..61a2e144db0 100644
+--- a/grub-core/loader/linux.c
++++ b/grub-core/loader/linux.c
+@@ -152,8 +152,8 @@ grub_initrd_init (int argc, char *argv[],
+   initrd_ctx->nfiles = 0;
+   initrd_ctx->components = 0;
+ 
+-  initrd_ctx->components = grub_zalloc (argc
+-					* sizeof (initrd_ctx->components[0]));
++  initrd_ctx->components = grub_calloc (argc,
++					sizeof (initrd_ctx->components[0]));
+   if (!initrd_ctx->components)
+     return grub_errno;
+ 
+-- 
+2.26.2
+
