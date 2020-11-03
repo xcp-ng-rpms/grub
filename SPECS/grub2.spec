@@ -7,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	87%{?dist}
+Release:	90%{?dist}
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -500,7 +500,31 @@ fi
 %endif
 
 %changelog
-* Tue Jul 28 2020 Peter Jones <pjones@redhat.com> - 2.02-87
+* Mon Aug 31 2020 Javier Martinez Canillas <javierm@redhat.com> - 2.02-90
+- Roll over TFTP block counter to prevent timeouts with data packets
+  Resolves: rhbz#1871034
+
+* Fri Aug 21 2020 Javier Martinez Canillas <javierm@redhat.com> - 2.02-89
+- Fix TFTP timeouts when trying to fetch files larger than 65535 KiB
+  Resolves: rhbz#1871034
+
+* Tue Aug 11 2020 Javier Martinez Canillas <javierm@redhat.com> - 2.02-88
+- Fix a legacy BIOS boot issue when a using config file shared with EFI
+  Resolves: rhbz#1850193
+
+* Mon Jul 27 2020 Peter Jones <pjones@redhat.com> - 2.02-87
+- Couple more late fixes.
+  Resolves: CVE-2020-15705
+
+* Sun Jul 26 2020 Peter Jones <pjones@redhat.com> - 2.02-86
+- Couple more late fixes.
+  Resolves: CVE-2020-10713
+  Resolves: CVE-2020-14308
+  Resolves: CVE-2020-14309
+  Resolves: CVE-2020-14310
+  Resolves: CVE-2020-14311
+
+* Mon Jul 20 2020 Peter Jones <pjones@redhat.com> - 2.02-85
 - Fix several CVEs
   Resolves: CVE-2020-10713
   Resolves: CVE-2020-14308
@@ -508,9 +532,26 @@ fi
   Resolves: CVE-2020-14310
   Resolves: CVE-2020-14311
 
-* Mon May 18 2020 Javier Martinez Canillas <javierm@redhat.com> - 2.02-82.el8_2.1
+* Tue May 19 2020 Javier Martinez Canillas <javierm@redhat.com> - 2.02-84
+- Add fixes for greenboot support
+  Resolves: rhbz#1832336
+
+* Mon May 18 2020 Javier Martinez Canillas <javierm@redhat.com> - 2.02-83
 - Fix a segfault in grub2-editenv when attempting to shrink a variable
-  Resolves: rhbz#1836196
+  Resolves: rhbz#1761496
+
+* Mon Apr 27 2020 Javier Martinez Canillas <javierm@redhat.com> - 2.02-82
+- Drop "Disable multiboot, multiboot2, and linux16 modules on EFI builds"
+  Resolves: rhbz#1779480
+- efi/http: Export {fw,http}_path variables to make them global
+  Resolves: rhbz#1811561
+- efi/http: Enclose literal IPv6 addresses in square brackets
+- efi/net: Allow to specify a port number in addresses
+- efi/ip4_config: Improve check to detect literal IPv6 addresses
+- efi/net: Print a debug message if parsing the address fails
+  Resolves: rhbz#1811560
+- Set image base address before jumping to the PE/COFF entry point
+  Resolves: rhbz#1819624
 
 * Thu Dec 05 2019 Javier Martinez Canillas <javierm@redhat.com> - 2.02-81
 - Another fix for blscfg variable expansion support

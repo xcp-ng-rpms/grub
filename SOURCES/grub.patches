@@ -312,3 +312,6 @@ Patch0311: 0311-efilinux-Fix-integer-overflows-in-grub_cmd_initrd.patch
 Patch0312: 0312-linux-loader-avoid-overflow-on-initrd-size-calculati.patch
 Patch0313: 0313-linuxefi-fail-kernel-validation-without-shim-protoco.patch
 Patch0314: 0314-linux-Fix-integer-overflows-in-initrd-size-handling.patch
+Patch0315: 0315-blscfg-Always-look-for-BLS-snippets-in-the-root-devi.patch
+Patch0316: 0316-blscfg-Don-t-hardcode-an-env-var-as-fallback-for-the.patch
+Patch0317: 0317-tftp-roll-over-block-counter-to-prevent-timeouts-wit.patch

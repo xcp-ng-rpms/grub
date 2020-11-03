@@ -38,7 +38,7 @@ Aborted (core dumped)
 $ wc -c env
 0 grubenv
 
-Resolves: rhbz#1836196
+Resolves: rhbz#1761496
 
 Reported-by: Renaud Métrich <rmetrich@redhat.com>
 Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
