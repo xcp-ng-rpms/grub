@@ -1,8 +1,8 @@
-From c1de65c0e3d630f33160d34e1e85925f01966b0d Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Chris Coulson <chris.coulson@canonical.com>
 Date: Fri, 10 Jul 2020 14:41:45 +0100
-Subject: [PATCH 298/314] script: Avoid a use-after-free when redefining a
- function during execution
+Subject: [PATCH] script: Avoid a use-after-free when redefining a function
+ during execution
 
 Defining a new function with the same name as a previously defined
 function causes the grub_script and associated resources for the
@@ -103,6 +103,3 @@ index 4f0ab8319e3..f80b86b6f15 100644
  	    }
  
  	    state->scripts = $<scripts>3;
--- 
-2.26.2
-

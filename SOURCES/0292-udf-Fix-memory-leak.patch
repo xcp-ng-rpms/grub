@@ -1,7 +1,7 @@
-From 1864839f0e0eeb2b93a5b20e4e36f9b80abc3c23 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
 Date: Tue, 7 Jul 2020 22:02:31 -0400
-Subject: [PATCH 292/314] udf: Fix memory leak
+Subject: [PATCH] udf: Fix memory leak
 
 Fixes: CID 73796
 
@@ -51,6 +51,3 @@ index be41b48f913..6670beb5665 100644
  
  	      if (filename && hook (filename, type, child, hook_data))
  		{
--- 
-2.26.2
-

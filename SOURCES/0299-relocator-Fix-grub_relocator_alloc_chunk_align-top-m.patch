@@ -1,8 +1,8 @@
-From 7de922a99acd0521b99cd0dd81fe62643ce734a5 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Alexey Makhalov <amakhalov@vmware.com>
 Date: Fri, 17 Jul 2020 05:17:26 +0000
-Subject: [PATCH 299/314] relocator: Fix grub_relocator_alloc_chunk_align() top
- memory allocation
+Subject: [PATCH] relocator: Fix grub_relocator_alloc_chunk_align() top memory
+ allocation
 
 Current implementation of grub_relocator_alloc_chunk_align()
 does not allow allocation of the top byte.
@@ -41,6 +41,3 @@ index 5847aac3643..f2c1944c28d 100644
  
  #ifdef GRUB_MACHINE_PCBIOS
    if (min_addr < 0x1000)
--- 
-2.26.2
-

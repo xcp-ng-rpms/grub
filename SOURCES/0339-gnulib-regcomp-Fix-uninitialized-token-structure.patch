@@ -1,0 +1,64 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Darren Kenny <darren.kenny@oracle.com>
+Date: Thu, 22 Oct 2020 13:54:06 +0000
+Subject: [PATCH] gnulib/regcomp: Fix uninitialized token structure
+
+The code is assuming that the value of br_token.constraint was
+initialized to zero when it wasn't.
+
+While some compilers will ensure that, not all do, so it is better to
+fix this explicitly than leave it to chance.
+
+Fixes: CID 73749
+
+Signed-off-by: Darren Kenny <darren.kenny@oracle.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/gnulib/regcomp.c                  |  2 +-
+ conf/Makefile.extra-dist                    |  1 +
+ grub-core/gnulib-fix-uninit-structure.patch | 11 +++++++++++
+ 3 files changed, 13 insertions(+), 1 deletion(-)
+ create mode 100644 grub-core/gnulib-fix-uninit-structure.patch
+
+diff --git a/grub-core/gnulib/regcomp.c b/grub-core/gnulib/regcomp.c
+index 596e0cf3ef7..de9f622088f 100644
+--- a/grub-core/gnulib/regcomp.c
++++ b/grub-core/gnulib/regcomp.c
+@@ -3641,7 +3641,7 @@ build_charclass_op (re_dfa_t *dfa, RE_TRANSLATE_TYPE trans,
+   Idx alloc = 0;
+ #endif /* not RE_ENABLE_I18N */
+   reg_errcode_t ret;
+-  re_token_t br_token;
++  re_token_t br_token = {0};
+   bin_tree_t *tree;
+ 
+   sbcset = (re_bitset_ptr_t) calloc (sizeof (bitset_t), 1);
+diff --git a/conf/Makefile.extra-dist b/conf/Makefile.extra-dist
+index b53fe6dfdcc..883baba56d5 100644
+--- a/conf/Makefile.extra-dist
++++ b/conf/Makefile.extra-dist
+@@ -31,6 +31,7 @@ EXTRA_DIST += grub-core/genemuinit.sh
+ EXTRA_DIST += grub-core/genemuinitheader.sh
+ 
+ EXTRA_DIST += grub-core/gnulib-fix-null-deref.diff
++EXTRA_DIST += grub-core/gnulib-fix-uninit-structure.patch
+ EXTRA_DIST += grub-core/gnulib-fix-unused-value.patch
+ EXTRA_DIST += grub-core/gnulib-fix-width.diff
+ EXTRA_DIST += grub-core/gnulib-no-abort.diff
+diff --git a/grub-core/gnulib-fix-uninit-structure.patch b/grub-core/gnulib-fix-uninit-structure.patch
+new file mode 100644
+index 00000000000..7b4d9f67af4
+--- /dev/null
++++ b/grub-core/gnulib-fix-uninit-structure.patch
+@@ -0,0 +1,11 @@
++--- a/lib/regcomp.c	2020-10-22 13:49:06.770168928 +0000
+++++ b/lib/regcomp.c	2020-10-22 13:50:37.026528298 +0000
++@@ -3662,7 +3662,7 @@
++   Idx alloc = 0;
++ #endif /* not RE_ENABLE_I18N */
++   reg_errcode_t ret;
++-  re_token_t br_token;
+++  re_token_t br_token = {0};
++   bin_tree_t *tree;
++ 
++   sbcset = (re_bitset_ptr_t) calloc (sizeof (bitset_t), 1);

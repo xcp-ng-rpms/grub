@@ -1,7 +1,7 @@
-From 778ddaeac8a8a821f6844ec8b8c404d0e437991f Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 15 Jun 2020 12:26:01 -0400
-Subject: [PATCH 284/314] calloc: Use calloc() at most places
+Subject: [PATCH] calloc: Use calloc() at most places
 
 This modifies most of the places we do some form of:
 
@@ -23,91 +23,91 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
 Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
 Upstream-commit-id: 48eeedf1e4b
 ---
- grub-core/bus/usb/usbhub.c                |  8 ++--
- grub-core/commands/efi/lsefisystab.c      |  3 +-
- grub-core/commands/legacycfg.c            |  6 +--
+ grub-core/bus/usb/usbhub.c                |  8 +++---
+ grub-core/commands/efi/lsefisystab.c      |  3 ++-
+ grub-core/commands/legacycfg.c            |  6 ++---
  grub-core/commands/menuentry.c            |  2 +-
  grub-core/commands/nativedisk.c           |  2 +-
- grub-core/commands/parttool.c             | 12 ++++--
+ grub-core/commands/parttool.c             | 12 ++++++---
  grub-core/commands/regexp.c               |  2 +-
  grub-core/commands/search_wrap.c          |  2 +-
- grub-core/disk/diskfilter.c               |  4 +-
+ grub-core/disk/diskfilter.c               |  4 +--
  grub-core/disk/ieee1275/ofdisk.c          |  2 +-
- grub-core/disk/ldm.c                      | 14 +++----
+ grub-core/disk/ldm.c                      | 14 +++++-----
  grub-core/disk/luks.c                     |  2 +-
- grub-core/disk/lvm.c                      |  8 ++--
+ grub-core/disk/lvm.c                      |  8 +++---
  grub-core/disk/xen/xendisk.c              |  2 +-
  grub-core/efiemu/loadcore.c               |  2 +-
- grub-core/efiemu/mm.c                     |  6 +--
- grub-core/font/font.c                     |  3 +-
- grub-core/fs/affs.c                       |  6 +--
- grub-core/fs/btrfs.c                      |  4 +-
+ grub-core/efiemu/mm.c                     |  6 ++---
+ grub-core/font/font.c                     |  3 +--
+ grub-core/fs/affs.c                       |  6 ++---
+ grub-core/fs/btrfs.c                      |  4 +--
  grub-core/fs/hfs.c                        |  2 +-
- grub-core/fs/hfsplus.c                    | 45 +++++++++++++++--------
+ grub-core/fs/hfsplus.c                    | 45 ++++++++++++++++++++-----------
  grub-core/fs/iso9660.c                    |  2 +-
- grub-core/fs/ntfs.c                       |  4 +-
+ grub-core/fs/ntfs.c                       |  4 +--
  grub-core/fs/sfs.c                        |  2 +-
  grub-core/fs/tar.c                        |  2 +-
- grub-core/fs/udf.c                        |  4 +-
- grub-core/fs/zfs/zfs.c                    |  4 +-
+ grub-core/fs/udf.c                        |  4 +--
+ grub-core/fs/zfs/zfs.c                    |  4 +--
  grub-core/gfxmenu/gui_string_util.c       |  2 +-
- grub-core/gfxmenu/widget-box.c            |  4 +-
+ grub-core/gfxmenu/widget-box.c            |  4 +--
  grub-core/io/gzio.c                       |  2 +-
- grub-core/kern/efi/efi.c                  | 33 ++++++++++++++---
+ grub-core/kern/efi/efi.c                  | 33 ++++++++++++++++++-----
  grub-core/kern/emu/hostdisk.c             |  2 +-
  grub-core/kern/fs.c                       |  2 +-
  grub-core/kern/misc.c                     |  2 +-
  grub-core/kern/parser.c                   |  2 +-
  grub-core/kern/uboot/uboot.c              |  2 +-
- grub-core/lib/libgcrypt/cipher/ac.c       |  8 ++--
- grub-core/lib/libgcrypt/cipher/primegen.c |  4 +-
- grub-core/lib/libgcrypt/cipher/pubkey.c   |  4 +-
+ grub-core/lib/libgcrypt/cipher/ac.c       |  8 +++---
+ grub-core/lib/libgcrypt/cipher/primegen.c |  4 +--
+ grub-core/lib/libgcrypt/cipher/pubkey.c   |  4 +--
  grub-core/lib/priority_queue.c            |  2 +-
- grub-core/lib/reed_solomon.c              |  7 ++--
- grub-core/lib/relocator.c                 | 10 ++---
+ grub-core/lib/reed_solomon.c              |  7 +++--
+ grub-core/lib/relocator.c                 | 10 +++----
  grub-core/loader/arm/linux.c              |  2 +-
- grub-core/loader/efi/chainloader.c        | 11 ++++--
+ grub-core/loader/efi/chainloader.c        | 11 +++++---
  grub-core/loader/i386/bsdXX.c             |  2 +-
- grub-core/loader/i386/xnu.c               |  4 +-
+ grub-core/loader/i386/xnu.c               |  4 +--
  grub-core/loader/macho.c                  |  2 +-
  grub-core/loader/multiboot_elfxx.c        |  2 +-
  grub-core/loader/xnu.c                    |  2 +-
- grub-core/mmap/mmap.c                     |  4 +-
+ grub-core/mmap/mmap.c                     |  4 +--
  grub-core/net/bootp.c                     |  2 +-
- grub-core/net/dns.c                       | 10 ++---
- grub-core/net/net.c                       |  4 +-
- grub-core/normal/charset.c                | 10 ++---
- grub-core/normal/cmdline.c                | 14 +++----
- grub-core/normal/menu_entry.c             | 14 +++----
- grub-core/normal/menu_text.c              |  4 +-
- grub-core/normal/term.c                   |  4 +-
- grub-core/osdep/linux/getroot.c           |  6 +--
+ grub-core/net/dns.c                       | 10 +++----
+ grub-core/net/net.c                       |  4 +--
+ grub-core/normal/charset.c                | 10 +++----
+ grub-core/normal/cmdline.c                | 14 +++++-----
+ grub-core/normal/menu_entry.c             | 14 +++++-----
+ grub-core/normal/menu_text.c              |  4 +--
+ grub-core/normal/term.c                   |  4 +--
+ grub-core/osdep/linux/getroot.c           |  6 ++---
  grub-core/osdep/unix/config.c             |  2 +-
  grub-core/osdep/windows/getroot.c         |  2 +-
- grub-core/osdep/windows/hostdisk.c        |  4 +-
+ grub-core/osdep/windows/hostdisk.c        |  4 +--
  grub-core/osdep/windows/init.c            |  2 +-
- grub-core/osdep/windows/platform.c        |  4 +-
+ grub-core/osdep/windows/platform.c        |  4 +--
  grub-core/osdep/windows/relpath.c         |  2 +-
  grub-core/partmap/gpt.c                   |  2 +-
  grub-core/partmap/msdos.c                 |  2 +-
  grub-core/script/execute.c                |  2 +-
  grub-core/tests/fake_input.c              |  2 +-
- grub-core/tests/video_checksum.c          |  6 +--
+ grub-core/tests/video_checksum.c          |  6 ++---
  grub-core/video/capture.c                 |  2 +-
  grub-core/video/emu/sdl.c                 |  2 +-
  grub-core/video/i386/pc/vga.c             |  2 +-
  grub-core/video/readers/png.c             |  2 +-
  util/getroot.c                            |  2 +-
  util/grub-file.c                          |  2 +-
- util/grub-fstest.c                        |  4 +-
+ util/grub-fstest.c                        |  4 +--
  util/grub-install-common.c                |  2 +-
- util/grub-install.c                       |  4 +-
- util/grub-mkimagexx.c                     |  6 +--
- util/grub-mkrescue.c                      |  4 +-
+ util/grub-install.c                       |  4 +--
+ util/grub-mkimagexx.c                     |  6 ++---
+ util/grub-mkrescue.c                      |  4 +--
  util/grub-mkstandalone.c                  |  2 +-
- util/grub-pe2elf.c                        | 12 +++---
- util/grub-probe.c                         |  4 +-
- include/grub/unicode.h                    |  4 +-
+ util/grub-pe2elf.c                        | 12 ++++-----
+ util/grub-probe.c                         |  4 +--
+ include/grub/unicode.h                    |  4 +--
  85 files changed, 231 insertions(+), 191 deletions(-)
 
 diff --git a/grub-core/bus/usb/usbhub.c b/grub-core/bus/usb/usbhub.c
@@ -1940,6 +1940,3 @@ index a0403e91f9a..4de986a8576 100644
        if (!out->combining_ptr)
  	return;
        grub_memcpy (out->combining_ptr, in->combining_ptr,
--- 
-2.26.2
-

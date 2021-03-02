@@ -1,8 +1,7 @@
-From 2ba58823b68d5fbf8d625ed6d7e18b09bc556860 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Dimitri John Ledkov <xnox@ubuntu.com>
 Date: Wed, 22 Jul 2020 11:31:43 +0100
-Subject: [PATCH 313/314] linuxefi: fail kernel validation without shim
- protocol.
+Subject: [PATCH] linuxefi: fail kernel validation without shim protocol.
 
 If certificates that signed grub are installed into db, grub can be
 booted directly. It will then boot any kernel without signature
@@ -96,6 +95,3 @@ index ade7ab8f573..361e503cb52 100644
      }
  
    params = grub_efi_allocate_pages_max (0x3fffffff,
--- 
-2.26.2
-

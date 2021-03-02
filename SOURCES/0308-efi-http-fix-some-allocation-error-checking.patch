@@ -1,7 +1,7 @@
-From 4436316229bc5b46016d61215b709ec434f4e0d3 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Sun, 19 Jul 2020 17:14:15 -0400
-Subject: [PATCH 308/314] efi+http: fix some allocation error checking.
+Subject: [PATCH] efi+http: fix some allocation error checking.
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
@@ -37,6 +37,3 @@ index fc8cb25ae0a..26647a50fa4 100644
  
    file->size = size;
    file->data = buf;
--- 
-2.26.2
-

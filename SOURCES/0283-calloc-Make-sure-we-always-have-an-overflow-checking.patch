@@ -1,7 +1,7 @@
-From 832189364ee0c85a94f670952c951252e54d3d1c Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 15 Jun 2020 12:15:29 -0400
-Subject: [PATCH 283/314] calloc: Make sure we always have an overflow-checking
+Subject: [PATCH] calloc: Make sure we always have an overflow-checking
  calloc() available
 
 This tries to make sure that everywhere in this source tree, we always have
@@ -13,13 +13,13 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
 Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
 Upstream-commit-id: 79e51ab7a9a
 ---
- grub-core/kern/emu/misc.c          | 12 +++++++++
- grub-core/kern/emu/mm.c            | 10 ++++++++
- grub-core/kern/mm.c                | 40 ++++++++++++++++++++++++++++++
- grub-core/lib/libgcrypt_wrap/mem.c | 11 ++++++--
- grub-core/lib/posix_wrap/stdlib.h  |  8 +++++-
+ grub-core/kern/emu/misc.c          | 12 ++++++++++++
+ grub-core/kern/emu/mm.c            | 10 ++++++++++
+ grub-core/kern/mm.c                | 40 ++++++++++++++++++++++++++++++++++++++
+ grub-core/lib/libgcrypt_wrap/mem.c | 11 +++++++++--
+ grub-core/lib/posix_wrap/stdlib.h  |  8 +++++++-
  include/grub/emu/misc.h            |  1 +
- include/grub/mm.h                  |  6 +++++
+ include/grub/mm.h                  |  6 ++++++
  7 files changed, 85 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/kern/emu/misc.c b/grub-core/kern/emu/misc.c
@@ -238,6 +238,3 @@ index 28e2e53eb32..9c38dd3ca5d 100644
  void *EXPORT_FUNC(grub_debug_malloc) (const char *file, int line,
  				      grub_size_t size);
  void *EXPORT_FUNC(grub_debug_zalloc) (const char *file, int line,
--- 
-2.26.2
-

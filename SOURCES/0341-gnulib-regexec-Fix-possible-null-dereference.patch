@@ -1,0 +1,65 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Darren Kenny <darren.kenny@oracle.com>
+Date: Thu, 5 Nov 2020 10:57:14 +0000
+Subject: [PATCH] gnulib/regexec: Fix possible null-dereference
+
+It appears to be possible that the mctx->state_log field may be NULL,
+and the name of this function, clean_state_log_if_needed(), suggests
+that it should be checking that it is valid to be cleaned before
+assuming that it does.
+
+Fixes: CID 86720
+
+Signed-off-by: Darren Kenny <darren.kenny@oracle.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/gnulib/regexec.c                    |  3 +++
+ conf/Makefile.extra-dist                      |  1 +
+ grub-core/gnulib-fix-regexec-null-deref.patch | 12 ++++++++++++
+ 3 files changed, 16 insertions(+)
+ create mode 100644 grub-core/gnulib-fix-regexec-null-deref.patch
+
+diff --git a/grub-core/gnulib/regexec.c b/grub-core/gnulib/regexec.c
+index 9264f262893..fdacff12ce3 100644
+--- a/grub-core/gnulib/regexec.c
++++ b/grub-core/gnulib/regexec.c
+@@ -1754,6 +1754,9 @@ clean_state_log_if_needed (re_match_context_t *mctx, Idx next_state_log_idx)
+ {
+   Idx top = mctx->state_log_top;
+ 
++  if (mctx->state_log == NULL)
++    return REG_NOERROR;
++
+   if ((next_state_log_idx >= mctx->input.bufs_len
+        && mctx->input.bufs_len < mctx->input.len)
+       || (next_state_log_idx >= mctx->input.valid_len
+diff --git a/conf/Makefile.extra-dist b/conf/Makefile.extra-dist
+index 06606de8d19..edbe7846eb1 100644
+--- a/conf/Makefile.extra-dist
++++ b/conf/Makefile.extra-dist
+@@ -32,6 +32,7 @@ EXTRA_DIST += grub-core/genemuinitheader.sh
+ 
+ EXTRA_DIST += grub-core/gnulib-fix-null-deref.diff
+ EXTRA_DIST += grub-core/gnulib-fix-null-state-deref.patch
++EXTRA_DIST += grub-core/gnulib-fix-regexec-null-deref.patch
+ EXTRA_DIST += grub-core/gnulib-fix-uninit-structure.patch
+ EXTRA_DIST += grub-core/gnulib-fix-unused-value.patch
+ EXTRA_DIST += grub-core/gnulib-fix-width.diff
+diff --git a/grub-core/gnulib-fix-regexec-null-deref.patch b/grub-core/gnulib-fix-regexec-null-deref.patch
+new file mode 100644
+index 00000000000..db6dac9c9e3
+--- /dev/null
++++ b/grub-core/gnulib-fix-regexec-null-deref.patch
+@@ -0,0 +1,12 @@
++--- a/lib/regexec.c	2020-10-21 14:25:35.310195912 +0000
+++++ b/lib/regexec.c	2020-11-05 10:55:09.621542984 +0000
++@@ -1692,6 +1692,9 @@
++ {
++   Idx top = mctx->state_log_top;
++
+++  if (mctx->state_log == NULL)
+++    return REG_NOERROR;
+++
++   if ((next_state_log_idx >= mctx->input.bufs_len
++        && mctx->input.bufs_len < mctx->input.len)
++       || (next_state_log_idx >= mctx->input.valid_len

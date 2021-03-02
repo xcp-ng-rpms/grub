@@ -1,8 +1,7 @@
-From 9f8ce6fac51e229a18ed2fa3321f7fc3d6d822a6 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Sun, 19 Jul 2020 17:27:00 -0400
-Subject: [PATCH 309/314] efi/ip[46]_config.c: fix some potential allocation
- overflows
+Subject: [PATCH] efi/ip[46]_config.c: fix some potential allocation overflows
 
 In theory all of this data comes from the firmware stack and it should
 be safe, but it's better to be paranoid.
@@ -126,6 +125,3 @@ index e0e00c23d21..1c5415d7185 100644
      {
        char *gateway, *destination;
        grub_uint64_t u64_gateway[2];
--- 
-2.26.2
-

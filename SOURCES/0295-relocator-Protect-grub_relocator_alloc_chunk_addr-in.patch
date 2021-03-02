@@ -1,8 +1,8 @@
-From 320fe69ffff39f90169f793402de4d4223a1a64c Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Alexey Makhalov <amakhalov@vmware.com>
 Date: Wed, 15 Jul 2020 06:42:37 +0000
-Subject: [PATCH 295/314] relocator: Protect grub_relocator_alloc_chunk_addr()
- input args against integer underflow/overflow
+Subject: [PATCH] relocator: Protect grub_relocator_alloc_chunk_addr() input
+ args against integer underflow/overflow
 
 Use arithmetic macros from safemath.h to accomplish it. In this commit,
 I didn't want to be too paranoid to check every possible math equation
@@ -145,6 +145,3 @@ index dc7d5409e1e..2bf02489bad 100644
    grub_xnu_heap_size += size;
    grub_dprintf ("xnu", "val=%p\n", *src);
    return GRUB_ERR_NONE;
--- 
-2.26.2
-

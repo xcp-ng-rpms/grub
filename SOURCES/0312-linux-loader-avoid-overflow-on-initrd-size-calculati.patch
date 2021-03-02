@@ -1,8 +1,7 @@
-From 9fa474528317c2311e2f2ac0fd626316ef7486d4 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Fri, 24 Jul 2020 13:57:27 -0400
-Subject: [PATCH 312/314] linux loader: avoid overflow on initrd size
- calculation
+Subject: [PATCH] linux loader: avoid overflow on initrd size calculation
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---
@@ -24,6 +23,3 @@ index c2c7cfcd0fd..61a2e144db0 100644
    if (!initrd_ctx->components)
      return grub_errno;
  
--- 
-2.26.2
-

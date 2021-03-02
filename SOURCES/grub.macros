@@ -367,9 +367,11 @@ done								\
 %ifarch x86_64 aarch64 %{arm}
 %define mkimage()						\
 %{4}./grub-mkimage -O %{1} -o %{2}.orig				\\\
-	-p /EFI/%{efi_vendor} -d grub-core ${GRUB_MODULES}	\
+       -p /EFI/%{efi_vendor} -d grub-core ${GRUB_MODULES}      \\\
+       --sbat %{4}./sbat.csv                                   \
 %{4}./grub-mkimage -O %{1} -o %{3}.orig				\\\
-	-p /EFI/BOOT -d grub-core ${GRUB_MODULES}		\
+       -p /EFI/BOOT -d grub-core ${GRUB_MODULES}               \\\
+       --sbat %{4}./sbat.csv                                   \
 %{expand:%%{pesign -s -i %%{2}.orig -o %%{2}.one -a %%{5} -c %%{6} -n %%{7}}}	\
 %{expand:%%{pesign -s -i %%{3}.orig -o %%{3}.one -a %%{5} -c %%{6} -n %%{7}}}	\
 %{expand:%%{pesign -s -i %%{2}.one -o %%{2} -a %%{8} -c %%{9} -n %%{10}}}	\

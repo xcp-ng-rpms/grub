@@ -1,8 +1,8 @@
-From 42b76ec749c30cb11cad7c070d0b03a7d4f1f7d6 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 15 Jun 2020 10:58:42 -0400
-Subject: [PATCH 282/314] safemath: Add some arithmetic primitives that check
- for overflow
+Subject: [PATCH] safemath: Add some arithmetic primitives that check for
+ overflow
 
 This adds a new header, include/grub/safemath.h, that includes easy to
 use wrappers for __builtin_{add,sub,mul}_overflow() declared like:
@@ -122,6 +122,3 @@ index f3c20edc844..f8bd9116480 100644
  * GNU Make
  * GNU Bison 2.3 or later
  * GNU gettext 0.17 or later
--- 
-2.26.2
-

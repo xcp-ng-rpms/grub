@@ -1,7 +1,7 @@
-From e5ef076d3188c3389769a3bde72382db9b94dc97 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 23 Jul 2020 15:02:48 -0400
-Subject: [PATCH 310/314] Fix up some types for gcc 4.8 compat safemath.h
+Subject: [PATCH] Fix up some types for gcc 4.8 compat safemath.h
 
 The compat macros aren't as forgiving as __builtin_*_overflow().
 
@@ -214,6 +214,3 @@ index 4dfcc31078d..f902b13b44e 100644
  		goto fail;
  
  	      n = grub_realloc (out->combining_ptr, sz);
--- 
-2.26.2
-

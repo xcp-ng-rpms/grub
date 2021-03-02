@@ -1,8 +1,8 @@
-From 05c062003cff8dbbf1b394fa836378e88522e29c Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Mon, 15 Jun 2020 12:28:27 -0400
-Subject: [PATCH 285/314] malloc: Use overflow checking primitives where we do
- complex allocations
+Subject: [PATCH] malloc: Use overflow checking primitives where we do complex
+ allocations
 
 This attempts to fix the places where we do the following where
 arithmetic_expr may include unvalidated data:
@@ -30,29 +30,29 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
 Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
 Upstream-commit-id: 5fb2befbf04
 ---
- grub-core/commands/legacycfg.c | 29 +++++++++++++++----
- grub-core/commands/wildcard.c  | 36 ++++++++++++++++++++----
- grub-core/disk/ldm.c           | 32 +++++++++++++++------
- grub-core/font/font.c          |  7 ++++-
- grub-core/fs/btrfs.c           | 29 +++++++++++++------
- grub-core/fs/ext2.c            | 10 ++++++-
- grub-core/fs/iso9660.c         | 51 ++++++++++++++++++++++++----------
- grub-core/fs/sfs.c             | 27 ++++++++++++++----
- grub-core/fs/squash4.c         | 45 ++++++++++++++++++++++--------
- grub-core/fs/udf.c             | 41 +++++++++++++++++----------
- grub-core/fs/xfs.c             | 11 +++++---
- grub-core/fs/zfs/zfs.c         | 22 ++++++++++-----
- grub-core/fs/zfs/zfscrypt.c    |  7 ++++-
- grub-core/lib/arg.c            | 20 +++++++++++--
- grub-core/loader/i386/bsd.c    |  8 +++++-
- grub-core/net/dns.c            |  9 +++++-
- grub-core/normal/charset.c     | 10 +++++--
- grub-core/normal/cmdline.c     | 14 ++++++++--
- grub-core/normal/menu_entry.c  | 13 +++++++--
- grub-core/script/argv.c        | 16 +++++++++--
- grub-core/script/lexer.c       | 21 ++++++++++++--
- grub-core/video/bitmap.c       | 25 +++++++++++------
- grub-core/video/readers/png.c  | 13 +++++++--
+ grub-core/commands/legacycfg.c | 29 +++++++++++++++++++-----
+ grub-core/commands/wildcard.c  | 36 ++++++++++++++++++++++++-----
+ grub-core/disk/ldm.c           | 32 ++++++++++++++++++--------
+ grub-core/font/font.c          |  7 +++++-
+ grub-core/fs/btrfs.c           | 29 ++++++++++++++++--------
+ grub-core/fs/ext2.c            | 10 ++++++++-
+ grub-core/fs/iso9660.c         | 51 +++++++++++++++++++++++++++++-------------
+ grub-core/fs/sfs.c             | 27 +++++++++++++++++-----
+ grub-core/fs/squash4.c         | 45 ++++++++++++++++++++++++++++---------
+ grub-core/fs/udf.c             | 41 +++++++++++++++++++++------------
+ grub-core/fs/xfs.c             | 11 +++++----
+ grub-core/fs/zfs/zfs.c         | 22 ++++++++++++------
+ grub-core/fs/zfs/zfscrypt.c    |  7 +++++-
+ grub-core/lib/arg.c            | 20 +++++++++++++++--
+ grub-core/loader/i386/bsd.c    |  8 ++++++-
+ grub-core/net/dns.c            |  9 +++++++-
+ grub-core/normal/charset.c     | 10 +++++++--
+ grub-core/normal/cmdline.c     | 14 ++++++++++--
+ grub-core/normal/menu_entry.c  | 13 +++++++++--
+ grub-core/script/argv.c        | 16 +++++++++++--
+ grub-core/script/lexer.c       | 21 ++++++++++++++---
+ grub-core/video/bitmap.c       | 25 +++++++++++++--------
+ grub-core/video/readers/png.c  | 13 +++++++++--
  23 files changed, 383 insertions(+), 113 deletions(-)
 
 diff --git a/grub-core/commands/legacycfg.c b/grub-core/commands/legacycfg.c
@@ -1318,6 +1318,3 @@ index e85df3c1b04..719e647e44f 100644
  
  #ifndef GRUB_CPU_WORDS_BIGENDIAN
    if (data->is_16bit || data->is_gray || data->is_palette)
--- 
-2.26.2
-

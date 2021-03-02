@@ -1,7 +1,7 @@
-From 6df814d4f43a47ffe2b354b9fa683ed4022fa5f1 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
 Date: Tue, 7 Jul 2020 15:12:25 -0400
-Subject: [PATCH 291/314] term: Fix overflow on user inputs
+Subject: [PATCH] term: Fix overflow on user inputs
 
 This requires a very weird input from the serial interface but can cause
 an overflow in input_buf (keys) overwriting the next variable (npending)
@@ -61,6 +61,3 @@ index 537a5c0cb0b..44d0b3b19fb 100644
  
  #if defined(__powerpc__) && defined(GRUB_MACHINE_IEEE1275)
    if (data->npending == 1 && data->input_buf[0] == GRUB_TERM_ESC
--- 
-2.26.2
-

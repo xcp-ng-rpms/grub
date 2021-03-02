@@ -1,8 +1,7 @@
-From 5c219ca7ec3b481573309245e3b7399c2f19a99c Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Sun, 19 Jul 2020 15:48:20 -0400
-Subject: [PATCH 301/314] lvm: fix two more potential data-dependent alloc
- overflows
+Subject: [PATCH] lvm: fix two more potential data-dependent alloc overflows
 
 It appears to be possible to make a (possibly invalid) lvm PV with a
 metadata size field that overflows our type when adding it to the
@@ -14,7 +13,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
 Signed-off-by: Darren Kenny <darren.kenny@oracle.com>
 Upstream-commit-id: 45ec6046ea0
 ---
- grub-core/disk/lvm.c | 48 ++++++++++++++++++++++++++++++++++++--------
+ grub-core/disk/lvm.c | 48 ++++++++++++++++++++++++++++++++++++++++--------
  1 file changed, 40 insertions(+), 8 deletions(-)
 
 diff --git a/grub-core/disk/lvm.c b/grub-core/disk/lvm.c
@@ -108,6 +107,3 @@ index d1df640b311..ca09d469990 100644
  		if (!lv->fullname)
  		  goto lvs_fail;
  
--- 
-2.26.2
-

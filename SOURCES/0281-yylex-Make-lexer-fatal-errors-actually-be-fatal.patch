@@ -1,7 +1,7 @@
-From 0bde74dcdf9de128317a28796e2690f92214db0d Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Wed, 15 Apr 2020 15:45:02 -0400
-Subject: [PATCH 281/314] yylex: Make lexer fatal errors actually be fatal
+Subject: [PATCH] yylex: Make lexer fatal errors actually be fatal
 
 When presented with a command that can't be tokenized to anything
 smaller than YYLMAX characters, the parser calls YY_FATAL_ERROR(errmsg),
@@ -65,6 +65,3 @@ index 7b44c37b76f..b7203c82309 100644
    } while (0)
  
  #define COPY(str, hint)                         \
--- 
-2.26.2
-

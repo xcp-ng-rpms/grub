@@ -1,7 +1,7 @@
-From 0b3c4b90e1b928a2606f0801e6e872dd6cb85c42 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Daniel Kiper <daniel.kiper@oracle.com>
 Date: Tue, 7 Jul 2020 15:36:26 +0200
-Subject: [PATCH 287/314] font: Do not load more than one NAME section
+Subject: [PATCH] font: Do not load more than one NAME section
 
 The GRUB font file can have one NAME section only. Though if somebody
 crafts a broken font file with many NAME sections and loads it then the
@@ -33,6 +33,3 @@ index d63354fb51b..a7b955a1a74 100644
  	  font->name = read_section_as_string (&section);
  	  if (!font->name)
  	    goto fail;
--- 
-2.26.2
-

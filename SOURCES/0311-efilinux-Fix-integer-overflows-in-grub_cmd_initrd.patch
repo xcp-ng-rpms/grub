@@ -1,7 +1,7 @@
-From 0a9a828e88a2e14be684761afe582e7bb286676b Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@debian.org>
 Date: Fri, 24 Jul 2020 17:18:09 +0100
-Subject: [PATCH 311/314] efilinux: Fix integer overflows in grub_cmd_initrd
+Subject: [PATCH] efilinux: Fix integer overflows in grub_cmd_initrd
 
 These could be triggered by an extremely large number of arguments to
 the initrd command on 32-bit architectures, or a crafted filesystem with
@@ -46,6 +46,3 @@ index ea9f5134e67..ade7ab8f573 100644
      }
  
    initrd_mem = grub_efi_allocate_pages_max (0x3fffffff, BYTES_TO_PAGES(size));
--- 
-2.26.2
-

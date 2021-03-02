@@ -7,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	90%{?dist}
+Release:	90%{?dist}.1
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -28,6 +28,7 @@ Source13:	redhatsecurebootca3.cer
 Source14:	redhatsecureboot301.cer
 Source15:	redhatsecurebootca5.cer
 Source16:	redhatsecureboot502.cer
+Source17:	sbat.csv.in
 
 %include %{SOURCE1}
 
@@ -148,6 +149,8 @@ This subpackage provides tools for support of all platforms.
 mkdir grub-%{grubefiarch}-%{tarversion}
 grep -A100000 '# stuff "make" creates' .gitignore > grub-%{grubefiarch}-%{tarversion}/.gitignore
 cp %{SOURCE4} grub-%{grubefiarch}-%{tarversion}/unifont.pcf.gz
+sed -e "s,@@VERSION@@,%{evr},g" %{SOURCE17} \
+	> grub-%{grubefiarch}-%{tarversion}/sbat.csv
 git add grub-%{grubefiarch}-%{tarversion}
 %endif
 %if 0%{with_alt_efi_arch}
@@ -500,6 +503,16 @@ fi
 %endif
 
 %changelog
+* Thu Feb 25 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-90.el8_3.1
+- Fix another batch of CVEs
+  Resolves: CVE-2020-14372
+  Resolves: CVE-2020-25632
+  Resolves: CVE-2020-25647
+  Resolves: CVE-2020-27749
+  Resolves: CVE-2020-27779
+  Resolves: CVE-2021-20225
+  Resolves: CVE-2021-20233
+
 * Mon Aug 31 2020 Javier Martinez Canillas <javierm@redhat.com> - 2.02-90
 - Roll over TFTP block counter to prevent timeouts with data packets
   Resolves: rhbz#1871034

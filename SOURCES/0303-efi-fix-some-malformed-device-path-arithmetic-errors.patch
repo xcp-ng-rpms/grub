@@ -1,8 +1,7 @@
-From 3ca105b5d77e292517091da4777484068848da6d Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Sun, 19 Jul 2020 16:53:27 -0400
-Subject: [PATCH 303/314] efi: fix some malformed device path arithmetic
- errors.
+Subject: [PATCH] efi: fix some malformed device path arithmetic errors.
 
 Several places we take the length of a device path and subtract 4 from
 it, without ever checking that it's >= 4.  There are also cases where
@@ -19,10 +18,10 @@ code check for and return errors in these cases.
 Signed-off-by: Peter Jones <pjones@redhat.com>
 Upstream-commit-id: 23e68a83990
 ---
- grub-core/kern/efi/efi.c           | 67 +++++++++++++++++++++++++-----
- grub-core/loader/efi/chainloader.c | 19 ++++++++-
- grub-core/loader/i386/xnu.c        |  9 ++--
- include/grub/efi/api.h             | 14 ++++---
+ grub-core/kern/efi/efi.c           | 67 ++++++++++++++++++++++++++++++++------
+ grub-core/loader/efi/chainloader.c | 19 +++++++++--
+ grub-core/loader/i386/xnu.c        |  9 ++---
+ include/grub/efi/api.h             | 14 +++++---
  4 files changed, 88 insertions(+), 21 deletions(-)
 
 diff --git a/grub-core/kern/efi/efi.c b/grub-core/kern/efi/efi.c
@@ -247,6 +246,3 @@ index 6c440c61316..a092fddb629 100644
  
  /* Hardware Device Path.  */
  #define GRUB_EFI_HARDWARE_DEVICE_PATH_TYPE		1
--- 
-2.26.2
-

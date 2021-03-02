@@ -1,7 +1,7 @@
-From c37e76df9c58c3f170e838c42527ef8544bf4468 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Sat, 4 Jul 2020 12:25:09 -0400
-Subject: [PATCH 286/314] iso9660: Don't leak memory on realloc() failures
+Subject: [PATCH] iso9660: Don't leak memory on realloc() failures
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
@@ -64,6 +64,3 @@ index f45841e2b47..6fc9302bce3 100644
  	  /* In pos + 1 the length of the `Component Record' is
  	     stored.  */
  	  pos += entry->data[pos + 1] + 2;
--- 
-2.26.2
-

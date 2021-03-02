@@ -1,7 +1,7 @@
-From 9715e08cf30ebd8a24ca27b7c4dda8e949e100df Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Colin Watson <cjwatson@debian.org>
 Date: Sat, 25 Jul 2020 12:15:37 +0100
-Subject: [PATCH 314/314] linux: Fix integer overflows in initrd size handling
+Subject: [PATCH] linux: Fix integer overflows in initrd size handling
 
 These could be triggered by a crafted filesystem with very large files.
 
@@ -10,7 +10,7 @@ Fixes: CVE-2020-15707
 Signed-off-by: Colin Watson <cjwatson@debian.org>
 Reviewed-by: Jan Setje-Eilers <jan.setjeeilers@oracle.com>
 ---
- grub-core/loader/linux.c | 74 +++++++++++++++++++++++++++++-----------
+ grub-core/loader/linux.c | 74 +++++++++++++++++++++++++++++++++++-------------
  1 file changed, 54 insertions(+), 20 deletions(-)
 
 diff --git a/grub-core/loader/linux.c b/grub-core/loader/linux.c
@@ -163,6 +163,3 @@ index 61a2e144db0..0953f6d3266 100644
  	  ptr = make_header (ptr, initrd_ctx->components[i].newc_name,
  			     grub_strlen (initrd_ctx->components[i].newc_name),
  			     0100777,
--- 
-2.26.2
-

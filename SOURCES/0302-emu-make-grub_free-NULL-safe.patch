@@ -1,7 +1,7 @@
-From d38b6703c0668e5d99e6f00aeef5d1b1d7458f9a Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Sun, 19 Jul 2020 16:08:08 -0400
-Subject: [PATCH 302/314] emu: make grub_free(NULL) safe
+Subject: [PATCH] emu: make grub_free(NULL) safe
 
 The grub_free() implementation in kern/mm.c safely handles NULL
 pointers, and code at many places depends on this.  We don't know that
@@ -29,6 +29,3 @@ index 145b01d3719..4d1046a219e 100644
  }
  
  void *
--- 
-2.26.2
-

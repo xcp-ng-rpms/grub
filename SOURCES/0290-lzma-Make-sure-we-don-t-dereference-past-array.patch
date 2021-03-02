@@ -1,7 +1,7 @@
-From 656e3376d52c7244edac9264454c0fadac835749 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
 Date: Thu, 9 Jul 2020 03:05:23 +0000
-Subject: [PATCH 290/314] lzma: Make sure we don't dereference past array
+Subject: [PATCH] lzma: Make sure we don't dereference past array
 
 The two dimensional array p->posSlotEncoder[4][64] is being dereferenced
 using the GetLenToPosState() macro which checks if len is less than 5,
@@ -47,6 +47,3 @@ index f2ec04a8c28..753e56a95e3 100644
  
          if (posSlot >= kStartPosModelIndex)
          {
--- 
-2.26.2
-

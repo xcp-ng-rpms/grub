@@ -1,7 +1,7 @@
-From 93d697a46b43ee13e0343c79777af5ce23c313b7 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Alexey Makhalov <amakhalov@vmware.com>
 Date: Wed, 8 Jul 2020 01:44:38 +0000
-Subject: [PATCH 296/314] relocator: Protect grub_relocator_alloc_chunk_align()
+Subject: [PATCH] relocator: Protect grub_relocator_alloc_chunk_align()
  max_addr against integer underflow
 
 This commit introduces integer underflow mitigation in max_addr calculation
@@ -20,7 +20,7 @@ Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
 Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
 Upstream-commit-id: 10498c8ba17
 ---
- grub-core/lib/i386/relocator.c        | 28 ++++++++++----------------
+ grub-core/lib/i386/relocator.c        | 28 +++++++++++-----------------
  grub-core/lib/mips/relocator.c        |  6 ++----
  grub-core/lib/powerpc/relocator.c     |  6 ++----
  grub-core/lib/x86_64/efi/relocator.c  |  7 +++----
@@ -29,10 +29,10 @@ Upstream-commit-id: 10498c8ba17
  grub-core/loader/i386/pc/linux.c      |  6 ++----
  grub-core/loader/mips/linux.c         |  9 +++------
  grub-core/loader/multiboot.c          |  2 +-
- grub-core/loader/multiboot_elfxx.c    | 10 ++++-----
- grub-core/loader/multiboot_mbi2.c     | 10 ++++-----
+ grub-core/loader/multiboot_elfxx.c    | 10 +++++-----
+ grub-core/loader/multiboot_mbi2.c     | 10 +++++-----
  grub-core/loader/xnu_resume.c         |  2 +-
- include/grub/relocator.h              | 29 +++++++++++++++++++++++++++
+ include/grub/relocator.h              | 29 +++++++++++++++++++++++++++++
  13 files changed, 69 insertions(+), 58 deletions(-)
 
 diff --git a/grub-core/lib/i386/relocator.c b/grub-core/lib/i386/relocator.c
@@ -333,6 +333,3 @@ index 24d8672d22c..1b3bdd92ac6 100644
  #define GRUB_RELOCATOR_PREFERENCE_NONE 0
  #define GRUB_RELOCATOR_PREFERENCE_LOW 1
  #define GRUB_RELOCATOR_PREFERENCE_HIGH 2
--- 
-2.26.2
-
