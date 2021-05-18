@@ -7,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	90%{?dist}.1
+Release:	99%{?dist}
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -354,7 +354,7 @@ fi
 %dir %attr(0700,root,root) %{efi_esp_dir}
 %exclude %{efi_esp_dir}/*
 %license COPYING
-%ghost %config(noreplace) /boot/grub2/grubenv
+%ghost %config(noreplace) %verify(not size mode md5 mtime) /boot/grub2/grubenv
 %doc INSTALL
 %doc NEWS
 %doc README
@@ -503,7 +503,17 @@ fi
 %endif
 
 %changelog
-* Thu Feb 25 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-90.el8_3.1
+* Thu Feb 25 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-99
+- Fix bug of grub2-install not checking for the SBAT option
+  Resolves: CVE-2020-14372
+  Resolves: CVE-2020-25632
+  Resolves: CVE-2020-25647
+  Resolves: CVE-2020-27749
+  Resolves: CVE-2020-27779
+  Resolves: CVE-2021-20225
+  Resolves: CVE-2021-20233
+
+* Thu Feb 25 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-98
 - Fix another batch of CVEs
   Resolves: CVE-2020-14372
   Resolves: CVE-2020-25632
@@ -512,6 +522,50 @@ fi
   Resolves: CVE-2020-27779
   Resolves: CVE-2021-20225
   Resolves: CVE-2021-20233
+
+* Tue Feb 23 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-97
+- Fix keylayouts module listed twice in GRUB_MODULES variable
+  Related: rhbz#1897587
+
+* Tue Feb 23 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-96
+- Fix "Add 'at_keyboard_fallback_set' var to force the set manually"
+  Related: rhbz#1897587
+- Fix a boot failure due patch "ieee1275: claim up to 256MB memory"
+  Resolves: rhbz#1929111
+
+* Tue Jan 26 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-95
+- Add appended signatures support for ppc64le LPAR Secure Boot (daxtens)
+  Resolves: rhbz#1853410
+
+* Wed Jan 20 2021 Renaud Métrich <rmetrich@redhat.com> - 2.02-94
+- Add 'at_keyboard_fallback_set' var to force the set manually
+- Related: rhbz#1897587
+
+* Mon Dec 14 2020 Javier Martinez Canillas <javierm@redhat.com> - 2.02-93
+- add keylayouts and at_keyboard modules to UEFI Grub2 (rmetrich)
+  Related: rhbz#1897587
+- at_keyboard: use set 1 when keyboard is in Translate mode (rmetrich)
+  Resolves: rhbz#1897587
+- add GRUB enhanced debugging features (rmetrich)
+  Resolves: rhbz#1776249
+- ieee1275: Avoiding many unecessary open/close (diegodo)
+  Resolves: rhbz#1862632
+- ieee1275: device mapper and fibre channel discovery support (diegodo)
+  Resolves: rhbz#1873724
+
+* Mon Nov 23 2020 Jan Hlavac <jhlavac@redhat.com> - 2.02-92
+- grub2-install: disable support for EFI platforms
+  Resolves: rhbz#1737444
+- Include a few more modules to EFI build needed for LUKS support (javierm)
+  Related: rhbz#1873725
+
+* Mon Nov 16 2020 Javier Martinez Canillas <javierm@redhat.com> - 2.02-91
+- Fix tps-rpmtest failing due /boot/grub2/grubenv attributes mismatch
+  Resolves: rhbz#1813959
+- Include in EFI build the modules needed for LUKS support
+  Resolves: rhbz#1873725
+- Fix keyboards that report IBM PC AT scan codes
+  Resolves: rhbz#1897587
 
 * Mon Aug 31 2020 Javier Martinez Canillas <javierm@redhat.com> - 2.02-90
 - Roll over TFTP block counter to prevent timeouts with data packets

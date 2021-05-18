@@ -112,7 +112,7 @@
 %ifarch aarch64 %{arm}
 %global platform_modules " "
 %else
-%global platform_modules " backtrace chain usb usbserial_common usbserial_pl2303 usbserial_ftdi usbserial_usbdebug "
+%global platform_modules " backtrace chain usb usbserial_common usbserial_pl2303 usbserial_ftdi usbserial_usbdebug keylayouts at_keyboard "
 %endif
 
 %ifarch aarch64 %{arm}
@@ -344,6 +344,8 @@ PYTHON=python3 ./autogen.sh					\
 	--with-grubdir=%{name}					\\\
 	--program-transform-name=s,grub,%{name},		\\\
 	--disable-grub-mount					\\\
+	--with-debug-timestamps					\\\
+	--enable-boot-time					\\\
 	--disable-werror || ( cat config.log ; exit 1 )		\
 git add .							\
 git commit -m "After efi configure"				\
@@ -367,11 +369,11 @@ done								\
 %ifarch x86_64 aarch64 %{arm}
 %define mkimage()						\
 %{4}./grub-mkimage -O %{1} -o %{2}.orig				\\\
-       -p /EFI/%{efi_vendor} -d grub-core ${GRUB_MODULES}      \\\
-       --sbat %{4}./sbat.csv                                   \
+	-p /EFI/%{efi_vendor} -d grub-core ${GRUB_MODULES}	\\\
+	--sbat %{4}./sbat.csv					\
 %{4}./grub-mkimage -O %{1} -o %{3}.orig				\\\
-       -p /EFI/BOOT -d grub-core ${GRUB_MODULES}               \\\
-       --sbat %{4}./sbat.csv                                   \
+	-p /EFI/BOOT -d grub-core ${GRUB_MODULES}		\\\
+	--sbat %{4}./sbat.csv					\
 %{expand:%%{pesign -s -i %%{2}.orig -o %%{2}.one -a %%{5} -c %%{6} -n %%{7}}}	\
 %{expand:%%{pesign -s -i %%{3}.orig -o %%{3}.one -a %%{5} -c %%{6} -n %%{7}}}	\
 %{expand:%%{pesign -s -i %%{2}.one -o %%{2} -a %%{8} -c %%{9} -n %%{10}}}	\
@@ -388,11 +390,13 @@ done								\
 
 %define do_efi_build_images()					\
 GRUB_MODULES="	all_video boot blscfg btrfs			\\\
-		cat configfile					\\\
+		cat configfile cryptodisk			\\\
 		echo efi_netfs efifwsetup efinet ext2		\\\
-		fat font gfxmenu gfxterm gzio			\\\
+		fat font gcry_rijndael gcry_rsa gcry_serpent	\\\
+		gcry_sha256 gcry_twofish gcry_whirlpool		\\\
+		gfxmenu gfxterm gzio				\\\
 		halt hfsplus http increment iso9660 jpeg	\\\
-		loadenv loopback linux lvm lsefi lsefimmap	\\\
+		loadenv loopback linux lvm lsefi lsefimmap luks	\\\
 		mdraid09 mdraid1x minicmd net			\\\
 		normal part_apple part_msdos part_gpt		\\\
 		password_pbkdf2 png reboot			\\\
@@ -436,6 +440,8 @@ cd grub-%{1}-%{tarversion}					\
 	--with-grubdir=%{name}					\\\
 	--program-transform-name=s,grub,%{name},		\\\
 	--disable-grub-mount					\\\
+	--with-debug-timestamps					\\\
+	--enable-boot-time					\\\
 	--disable-werror || ( cat config.log ; exit 1 )		\
 git add .							\
 git commit -m "After legacy configure"				\
@@ -558,7 +564,7 @@ touch ${RPM_BUILD_ROOT}/boot/%{name}/grub.cfg			\
 %dir %attr(0700,root,root)%{efi_esp_dir}/fonts			\
 %dir %attr(0700,root,root)/boot/loader/entries			\
 %ghost %config(noreplace) %attr(0700,root,root)%{efi_esp_dir}/grub.cfg	\
-%config(noreplace) /boot/grub2/grubenv					\
+%config(noreplace) %verify(not size mode md5 mtime) /boot/grub2/grubenv	\
 %ghost %config(noreplace) %attr(0700,root,root)%{efi_esp_dir}/grubenv	\
 %{expand:%if 0%{?without_efi_modules}				\
 %exclude %{_libdir}/grub/%{6}					\
