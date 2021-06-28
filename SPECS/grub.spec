@@ -26,7 +26,10 @@
 %global grubeficdname gcdx64.efi
 %endif
 
+%global grubefibootname bootx64.efi
+
 %global efidir xenserver
+%global efibootdir boot
 
 %endif
 
@@ -225,6 +228,8 @@ do
 done
 install -m 755 %{grubefiname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efidir}/%{grubefiname}
 install -m 755 %{grubeficdname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efidir}/%{grubeficdname}
+# Add fallback for when all boot entries fail (buggy UEFI implementation, NVRAM error, user error in configuring boot entries, etc... could all cause this)
+install -m 755 %{grubefiname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efibootdir}/%{grubefibootname}
 popd
 %endif
 
