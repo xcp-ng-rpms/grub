@@ -38,7 +38,7 @@
 Name:           grub
 Epoch:          1
 Version:        2.02
-Release:        3.0.0%{?dist}
+Release:        3.0.0.1%{?dist}
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
@@ -388,5 +388,8 @@ fi
 %{_mandir}/man8/*
 
 %changelog
+* Tue Jun 29 2021 Benjamin Reis <benjamin.reis@vates.fr> - 2.02-3.0.0.1
+- Add EFI fallback file (`EFI/boot/bootx64.efi`) for when all boot entries fail
+
 * Mon Sep 23 2019 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.02-3.0.0
 - CA-322681: ns8250: Wait a short while before draining the input buffer
