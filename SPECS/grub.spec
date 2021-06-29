@@ -26,10 +26,10 @@
 %global grubeficdname gcdx64.efi
 %endif
 
-%global grubefibootname bootx64.efi
+%global grubefibootname BOOTX64.EFI
 
 %global efidir xenserver
-%global efibootdir boot
+%global efibootdir BOOT
 
 %endif
 
@@ -331,7 +331,7 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
 %dir /boot/efi/EFI/%{efidir}
 %attr(0755,root,root) /boot/efi/EFI/%{efidir}/*.efi
-%attr(0755,root,root) /boot/efi/EFI/%{efibootdir}/*.efi
+%attr(0755,root,root) /boot/efi/EFI/%{efibootdir}/%{grubefibootname}
 %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
 %doc COPYING
 %endif
@@ -389,7 +389,7 @@ fi
 
 %changelog
 * Tue Jun 29 2021 Benjamin Reis <benjamin.reis@vates.fr> - 2.02-3.0.0.1
-- Add EFI fallback file (`EFI/boot/bootx64.efi`) for when all boot entries fail
+- Add EFI fallback file (`EFI/BOOT/BOOTX64.EFI`) for when all boot entries fail
 
 * Mon Sep 23 2019 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.02-3.0.0
 - CA-322681: ns8250: Wait a short while before draining the input buffer
