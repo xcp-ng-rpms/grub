@@ -230,6 +230,7 @@ install -m 755 %{grubefiname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efidir}/%{grubefina
 install -m 755 %{grubeficdname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efidir}/%{grubeficdname}
 # XCP-ng: Add fallback for when all boot entries fail
 # (buggy UEFI implementation, NVRAM error, user error in configuring boot entries, etc... could all cause this)
+# It's a copy of grubx64.efi so the binary will still look at its cfg file in `EFI/xenserver`
 mkdir -p $RPM_BUILD_ROOT/boot/efi/EFI/%{efibootdir}/
 install -m 755 %{grubefiname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efibootdir}/%{grubefibootname}
 popd
@@ -331,6 +332,7 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
 %dir /boot/efi/EFI/%{efidir}
 %attr(0755,root,root) /boot/efi/EFI/%{efidir}/*.efi
+%dir /boot/efi/EFI/%{efibootdir}
 %attr(0755,root,root) /boot/efi/EFI/%{efibootdir}/%{grubefibootname}
 %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
 %doc COPYING
