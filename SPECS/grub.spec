@@ -26,7 +26,10 @@
 %global grubeficdname gcdx64.efi
 %endif
 
+%global grubefibootname BOOTX64.EFI
+
 %global efidir xenserver
+%global efibootdir BOOT
 
 %endif
 
@@ -35,7 +38,7 @@
 Name:           grub
 Epoch:          1
 Version:        2.02
-Release:        3.0.0%{?dist}
+Release:        3.0.0.1%{?dist}
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
@@ -225,6 +228,11 @@ do
 done
 install -m 755 %{grubefiname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efidir}/%{grubefiname}
 install -m 755 %{grubeficdname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efidir}/%{grubeficdname}
+# XCP-ng: Add fallback for when all boot entries fail
+# (buggy UEFI implementation, NVRAM error, user error in configuring boot entries, etc... could all cause this)
+# It's a copy of grubx64.efi so the binary will still look at its cfg file in `EFI/xenserver`
+mkdir -p $RPM_BUILD_ROOT/boot/efi/EFI/%{efibootdir}/
+install -m 755 %{grubefiname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efibootdir}/%{grubefibootname}
 popd
 %endif
 
@@ -324,6 +332,8 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
 %dir /boot/efi/EFI/%{efidir}
 %attr(0755,root,root) /boot/efi/EFI/%{efidir}/*.efi
+%dir /boot/efi/EFI/%{efibootdir}
+%attr(0755,root,root) /boot/efi/EFI/%{efibootdir}/%{grubefibootname}
 %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
 %doc COPYING
 %endif
@@ -380,5 +390,8 @@ fi
 %{_mandir}/man8/*
 
 %changelog
+* Tue Jun 29 2021 Benjamin Reis <benjamin.reis@vates.fr> - 2.02-3.0.0.1
+- Add EFI fallback file (`EFI/BOOT/BOOTX64.EFI`) for when all boot entries fail
+
 * Mon Sep 23 2019 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.02-3.0.0
 - CA-322681: ns8250: Wait a short while before draining the input buffer
