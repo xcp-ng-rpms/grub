@@ -478,3 +478,4 @@ Patch0477: 0477-kern-misc-Add-function-to-check-printf-format-agains.patch
 Patch0478: 0478-gfxmenu-gui-Check-printf-format-in-the-gui_progress_.patch
 Patch0479: 0479-kern-mm-Fix-grub_debug_calloc-compilation-error.patch
 Patch0480: 0480-efi-net-Fix-malformed-device-path-arithmetic-errors-.patch
+Patch0481: 0481-ieee1275-ofdisk-retry-on-open-failure.patch

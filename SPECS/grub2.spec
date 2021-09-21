@@ -7,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	99%{?dist}
+Release:	99%{?dist}.1
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -503,6 +503,10 @@ fi
 %endif
 
 %changelog
+* Mon May 17 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-99.el8_4.1
+- Fix boot failures in ppc64le caused by storage race condition (diegodo)
+  Resolves: rhbz#1961265
+
 * Thu Feb 25 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-99
 - Fix bug of grub2-install not checking for the SBAT option
   Resolves: CVE-2020-14372
