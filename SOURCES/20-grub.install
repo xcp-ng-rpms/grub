@@ -75,6 +75,14 @@ case "$COMMAND" in
                 command -v restorecon &>/dev/null && \
                     restorecon "/boot/.${KERNEL_IMAGE##*/}-${KERNEL_VERSION}.hmac"
             fi
+            # symvers is symvers-<version>.gz symlink, needs a special treatment
+            i="$KERNEL_DIR/symvers.gz"
+            if [[ -e "$i" ]]; then
+                rm -f "/boot/symvers-${KERNEL_VERSION}.gz"
+                ln -s "$i" "/boot/symvers-${KERNEL_VERSION}.gz"
+                command -v restorecon &>/dev/null && \
+                    restorecon "/boot/symvers-${KERNEL_VERSION}.gz"
+            fi
         fi
 
         if [[ "x${GRUB_ENABLE_BLSCFG}" = "xtrue" ]] || [[ ! -f /sbin/new-kernel-pkg ]]; then
@@ -154,6 +162,8 @@ case "$COMMAND" in
             done
             # hmac is .vmlinuz-<version>.hmac so needs a special treatment
             rm -f "/boot/.vmlinuz-${KERNEL_VERSION}.hmac"
+            # symvers is symvers-<version>.gz symlink, needs a special treatment
+            rm -f "/boot/symvers-${KERNEL_VERSION}.gz"
 
             exit 0
         fi

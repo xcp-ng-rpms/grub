@@ -7,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	99%{?dist}.1
+Release:	106%{?dist}
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -28,9 +28,26 @@ Source13:	redhatsecurebootca3.cer
 Source14:	redhatsecureboot301.cer
 Source15:	redhatsecurebootca5.cer
 Source16:	redhatsecureboot502.cer
-Source17:	sbat.csv.in
+Source17:	redhatsecureboot303.cer
+Source18:	redhatsecureboot601.cer
+Source19:	sbat.csv.in
 
 %include %{SOURCE1}
+
+%if 0%{with_efi_arch}
+%define old_sb_ca	%{SOURCE13}
+%define old_sb_cer	%{SOURCE14}
+%define old_sb_key	redhatsecureboot301
+%define sb_ca		%{SOURCE15}
+%define sb_cer		%{SOURCE16}
+%define sb_key		redhatsecureboot502
+%endif
+
+%ifarch ppc64le
+%define old_sb_cer	%{SOURCE17}
+%define sb_cer		%{SOURCE18}
+%define sb_key		redhatsecureboot602
+%endif
 
 # generate with do-rebase
 %include %{SOURCE2}
@@ -149,7 +166,7 @@ This subpackage provides tools for support of all platforms.
 mkdir grub-%{grubefiarch}-%{tarversion}
 grep -A100000 '# stuff "make" creates' .gitignore > grub-%{grubefiarch}-%{tarversion}/.gitignore
 cp %{SOURCE4} grub-%{grubefiarch}-%{tarversion}/unifont.pcf.gz
-sed -e "s,@@VERSION@@,%{evr},g" %{SOURCE17} \
+sed -e "s,@@VERSION@@,%{evr},g" %{SOURCE19} \
 	> grub-%{grubefiarch}-%{tarversion}/sbat.csv
 git add grub-%{grubefiarch}-%{tarversion}
 %endif
@@ -169,13 +186,16 @@ git commit -m "After making subdirs"
 
 %build
 %if 0%{with_efi_arch}
-%{expand:%do_primary_efi_build %%{grubefiarch} %%{grubefiname} %%{grubeficdname} %%{_target_platform} %%{efi_target_cflags} %%{efi_host_cflags} %{SOURCE13} %{SOURCE14} redhatsecureboot301 %{SOURCE15} %{SOURCE16} redhatsecureboot502}
+%{expand:%do_primary_efi_build %%{grubefiarch} %%{grubefiname} %%{grubeficdname} %%{_target_platform} %%{efi_target_cflags} %%{efi_host_cflags} %{old_sb_ca} %{old_sb_cer} %{old_sb_key} %{sb_ca} %{sb_cer} %{sb_key}}
 %endif
 %if 0%{with_alt_efi_arch}
-%{expand:%do_alt_efi_build %%{grubaltefiarch} %%{grubaltefiname} %%{grubalteficdname} %%{_alt_target_platform} %%{alt_efi_target_cflags} %%{alt_efi_host_cflags} %{SOURCE13} %{SOURCE14} redhatsecureboot301 %{SOURCE15} %{SOURCE16} redhatsecureboot502}
+%{expand:%do_alt_efi_build %%{grubaltefiarch} %%{grubaltefiname} %%{grubalteficdname} %%{_alt_target_platform} %%{alt_efi_target_cflags} %%{alt_efi_host_cflags} %{old_sb_ca} %{old_sb_cer} %{old_sb_key} %{sb_ca} %{sb_cer} %{sb_key}}
 %endif
 %if 0%{with_legacy_arch}
 %{expand:%do_legacy_build %%{grublegacyarch}}
+%endif
+%ifarch ppc64le
+%{expand:%do_ieee1275_build_images %%{grublegacyarch} %{grubelfname} %{old_sb_cer} %{sb_cer} %{sb_key}}
 %endif
 makeinfo --info --no-split -I docs -o docs/grub-dev.info \
 	docs/grub-dev.texi
@@ -503,9 +523,33 @@ fi
 %endif
 
 %changelog
-* Mon May 17 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-99.el8_4.1
+* Thu Aug 19 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-106
+- Fix device discoverability on PowerVM when the prefix is not set (dja)
+  Related: rhbz#1899864
+
+* Thu Jul 22 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-105
+- Discover the device to read the config from as a fallback
+  Related: rhbz#1899864
+
+* Mon Jun 21 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-104
+- 20-grub-install: Create a symvers.gz symbolic link
+  Resolves: rhbz#1919125
+
+* Mon May 17 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-103
 - Fix boot failures in ppc64le caused by storage race condition (diegodo)
-  Resolves: rhbz#1961265
+  Resolves: rhbz#1942152
+
+* Tue May 11 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-102
+- Build and sign powerpc-ieee1275 images
+  Related: rhbz#1899864
+
+* Fri Apr 23 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-101
+- Find and claim more memory for ieee1275 (dja)
+  Related: rhbz#1853410
+
+* Fri Apr 23 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-100
+- Sync with the latest content of the rhel-8.4.0 branch
+  Resolves: rhbz#1952840
 
 * Thu Feb 25 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-99
 - Fix bug of grub2-install not checking for the SBAT option
@@ -529,13 +573,10 @@ fi
 
 * Tue Feb 23 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-97
 - Fix keylayouts module listed twice in GRUB_MODULES variable
-  Related: rhbz#1897587
 
 * Tue Feb 23 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-96
 - Fix "Add 'at_keyboard_fallback_set' var to force the set manually"
-  Related: rhbz#1897587
 - Fix a boot failure due patch "ieee1275: claim up to 256MB memory"
-  Resolves: rhbz#1929111
 
 * Tue Jan 26 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-95
 - Add appended signatures support for ppc64le LPAR Secure Boot (daxtens)

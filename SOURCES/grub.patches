@@ -478,4 +478,11 @@ Patch0477: 0477-kern-misc-Add-function-to-check-printf-format-agains.patch
 Patch0478: 0478-gfxmenu-gui-Check-printf-format-in-the-gui_progress_.patch
 Patch0479: 0479-kern-mm-Fix-grub_debug_calloc-compilation-error.patch
 Patch0480: 0480-efi-net-Fix-malformed-device-path-arithmetic-errors-.patch
-Patch0481: 0481-ieee1275-ofdisk-retry-on-open-failure.patch
+Patch0481: 0481-ieee1275-drop-HEAP_MAX_ADDR-HEAP_MIN_SIZE.patch
+Patch0482: 0482-ieee1275-claim-more-memory.patch
+Patch0483: 0483-ieee1275-request-memory-with-ibm-client-architecture.patch
+Patch0484: 0484-appendedsig-x509-Also-handle-the-Extended-Key-Usage-.patch
+Patch0485: 0485-ieee1275-ofdisk-retry-on-open-failure.patch
+Patch0486: 0486-normal-main-Discover-the-device-to-read-the-config-f.patch
+Patch0487: 0487-powerpc-adjust-setting-of-prefix-for-signed-binary-c.patch
+Patch0488: 0488-powerpc-fix-prefix-signed-grub-special-case-for-Powe.patch

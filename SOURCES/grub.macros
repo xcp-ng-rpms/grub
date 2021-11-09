@@ -71,6 +71,7 @@
 %global with_legacy_arch 0
 %global grubefiarch %{nil}
 %global grublegacyarch %{nil}
+%global grubelfname %{nil}
 
 # sparc is always compiled 64 bit
 %ifarch %{sparc}
@@ -108,12 +109,23 @@
 %{!?with_efi_only:%global without_efi_only 0}
 %{?with_efi_only:%global without_efi_only 1}
 
-### fixme
-%ifarch aarch64 %{arm}
-%global platform_modules " "
-%else
+
+%ifarch %{efi_arch}
+%global efi_modules " efi_netfs efifwsetup efinet lsefi lsefimmap "
+%endif
+
+%ifarch x86_64 %{ix86}
 %global platform_modules " backtrace chain usb usbserial_common usbserial_pl2303 usbserial_ftdi usbserial_usbdebug keylayouts at_keyboard "
 %endif
+
+%ifarch ppc64le
+%global platform_modules " appendedsig "
+%endif
+
+%ifarch aarch64 %{arm}
+%global platform_modules " "
+%endif
+
 
 %ifarch aarch64 %{arm}
 %global legacy_provides -l
@@ -203,6 +215,7 @@
 %global with_legacy_arch 1
 %global grublegacyarch %{legacy_target_cpu_name}-%{platform}
 %global moduledir %{legacy_target_cpu_name}-%{platform}
+%global grubelfname core.elf
 %endif
 
 %global evr %{epoch}:%{version}-%{release}
@@ -366,45 +379,85 @@ for x in grub-mkimage ; do					\\\
 done								\
 %{nil}
 
+%global grub_modules " all_video boot blscfg btrfs		\\\
+		cat configfile cryptodisk echo ext2		\\\
+		fat font gcry_rijndael gcry_rsa gcry_serpent	\\\
+		gcry_sha256 gcry_twofish gcry_whirlpool		\\\
+		gfxmenu gfxterm gzio halt hfsplus http		\\\
+		increment iso9660 jpeg loadenv loopback linux	\\\
+		lvm luks mdraid09 mdraid1x minicmd net		\\\
+		normal part_apple part_msdos part_gpt		\\\
+		password_pbkdf2 png reboot regexp search	\\\
+		search_fs_uuid search_fs_file search_label	\\\
+		serial sleep syslinuxcfg test tftp video xfs"	\
+
 %ifarch x86_64 aarch64 %{arm}
-%define mkimage()						\
+%define efi_mkimage()						\
 %{4}./grub-mkimage -O %{1} -o %{2}.orig				\\\
-	-p /EFI/%{efi_vendor} -d grub-core ${GRUB_MODULES}	\\\
-	--sbat %{4}./sbat.csv					\
+	-p /EFI/%{efi_vendor} -d grub-core			\\\
+	--sbat %{4}./sbat.csv					\\\
+	${GRUB_MODULES}						\
 %{4}./grub-mkimage -O %{1} -o %{3}.orig				\\\
-	-p /EFI/BOOT -d grub-core ${GRUB_MODULES}		\\\
-	--sbat %{4}./sbat.csv					\
+	-p /EFI/BOOT -d grub-core				\\\
+	--sbat %{4}./sbat.csv					\\\
+	${GRUB_MODULES}						\
 %{expand:%%{pesign -s -i %%{2}.orig -o %%{2}.one -a %%{5} -c %%{6} -n %%{7}}}	\
 %{expand:%%{pesign -s -i %%{3}.orig -o %%{3}.one -a %%{5} -c %%{6} -n %%{7}}}	\
 %{expand:%%{pesign -s -i %%{2}.one -o %%{2} -a %%{8} -c %%{9} -n %%{10}}}	\
 %{expand:%%{pesign -s -i %%{3}.one -o %%{3} -a %%{8} -c %%{9} -n %%{10}}}	\
 %{nil}
 %else
-%define mkimage()						\
+%define efi_mkimage()						\
 %{4}./grub-mkimage -O %{1} -o %{2}				\\\
-	-p /EFI/%{efi_vendor} -d grub-core ${GRUB_MODULES}	\
+	-p /EFI/%{efi_vendor} -d grub-core			\\\
+	${GRUB_MODULES}						\
 %{4}./grub-mkimage -O %{1} -o %{3}				\\\
-	-p /EFI/BOOT -d grub-core ${GRUB_MODULES}		\
+	-p /EFI/BOOT -d grub-core				\\\
+	${GRUB_MODULES}						\
+%{nil}
+%endif
+
+%ifarch ppc64le
+%define ieee1275_mkimage()					\
+APPENDED_SIG_SIZE=0						\
+if [ -x /usr/bin/rpm-sign ]; then				\
+	touch empty.unsigned					\
+	rpm-sign --key %{5}					\\\
+		 --lkmsign empty.unsigned			\\\
+		 --output empty.signed				\
+	APPENDED_SIG_SIZE="$(stat -c '%s' empty.signed)"	\
+	rm empty.{un,}signed					\
+fi								\
+# FIXME: using this prefix is fragile, must be done properly	\
+./grub-mkimage -O %{1} -o %{2}.orig				\\\
+	-p '/grub2' -d grub-core				\\\
+	-x %{3} -x %{4}						\\\
+	--appended-signature-size ${APPENDED_SIG_SIZE}		\\\
+	${GRUB_MODULES}						\
+if [ -x /usr/bin/rpm-sign ]; then				\
+	truncate -s -${APPENDED_SIG_SIZE} %{2}.orig		\
+	rpm-sign --key %{5}					\\\
+		 --lkmsign %{2}.orig				\\\
+		 --output %{2}					\
+else								\
+	mv %{2}.orig %{2}					\
+fi								\
 %{nil}
 %endif
 
 %define do_efi_build_images()					\
-GRUB_MODULES="	all_video boot blscfg btrfs			\\\
-		cat configfile cryptodisk			\\\
-		echo efi_netfs efifwsetup efinet ext2		\\\
-		fat font gcry_rijndael gcry_rsa gcry_serpent	\\\
-		gcry_sha256 gcry_twofish gcry_whirlpool		\\\
-		gfxmenu gfxterm gzio				\\\
-		halt hfsplus http increment iso9660 jpeg	\\\
-		loadenv loopback linux lvm lsefi lsefimmap luks	\\\
-		mdraid09 mdraid1x minicmd net			\\\
-		normal part_apple part_msdos part_gpt		\\\
-		password_pbkdf2 png reboot			\\\
-		regexp search search_fs_uuid search_fs_file	\\\
-		search_label serial sleep syslinuxcfg test tftp	\\\
-		video xfs"					\
+GRUB_MODULES+=%{grub_modules}					\
+GRUB_MODULES+=%{efi_modules}					\
 GRUB_MODULES+=%{platform_modules}				\
-%{expand:%%{mkimage %{1} %{2} %{3} %{4} %{5} %{6} %{7} %{8} %{9} %{10}}}	\
+%{expand:%%{efi_mkimage %{1} %{2} %{3} %{4} %{5} %{6} %{7} %{8} %{9} %{10}}}	\
+%{nil}
+
+%define do_ieee1275_build_images()				\
+GRUB_MODULES+=%{grub_modules}					\
+GRUB_MODULES+=%{platform_modules}				\
+cd grub-%{1}-%{tarversion}					\
+%{expand:%%ieee1275_mkimage %%{1} %%{2} %%{3} %%{4} %%{5}}	\
+cd ..								\
 %{nil}
 
 %define do_primary_efi_build()					\
@@ -501,6 +554,9 @@ fi								\
 if [ -f $RPM_BUILD_ROOT%{_infodir}/grub-dev.info ]; then	\
 	rm -f $RPM_BUILD_ROOT%{_infodir}/grub-dev.info		\
 fi								\
+%{expand:%ifarch ppc64le					\
+	install -m 700 %{grubelfname} $RPM_BUILD_ROOT/%{_libdir}/grub/%{1} \
+%endif}								\
 ln -s ../boot/%{name}/grub.cfg					\\\
 	${RPM_BUILD_ROOT}%{_sysconfdir}/grub2.cfg		\
 if [ -f $RPM_BUILD_ROOT/%{_libdir}/grub/%{1}/grub2.chrp ]; then \
@@ -542,12 +598,19 @@ touch ${RPM_BUILD_ROOT}/boot/%{name}/grub.cfg			\
 %config(noreplace) %{_sysconfdir}/%{name}.cfg			\
 %ghost %config(noreplace) /boot/%{name}/grub.cfg		\
 %dir %attr(0700,root,root)/boot/loader/entries			\
+%ifarch ppc64le						\
+%dir %{_libdir}/grub/%{2}/					\
+%{_libdir}/grub/%{2}/%{grubelfname}				\
+%endif								\
 								\
 %{expand:%if 0%{?with_legacy_modules}				\
 %{expand:%%files %{1}-modules}					\
 %defattr(-,root,root)						\
 %dir %{_libdir}/grub/%{2}/					\
 %{_libdir}/grub/%{2}/*						\
+%ifarch ppc64le						\
+%exclude %{_libdir}/grub/%{2}/%{grubelfname}			\
+%endif								\
 %exclude %{_libdir}/grub/%{2}/*.module				\
 %exclude %{_libdir}/grub/%{2}/{boot,boot_hybrid,cdboot,diskboot,lzma_decompress,pxeboot}.image \
 %exclude %{_libdir}/grub/%{2}/*.o				\
