@@ -26,7 +26,10 @@
 %global grubeficdname gcdx64.efi
 %endif
 
+%global grubefibootname BOOTX64.EFI
+
 %global efidir xenserver
+%global efibootdir BOOT
 
 %endif
 
@@ -35,7 +38,7 @@
 Name:           grub
 Epoch:          1
 Version:        2.02
-Release:        3.0.0
+Release:        3.1.0
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
@@ -45,10 +48,11 @@ Obsoletes:      grub < 1:0.98
 
 Source0: https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz
 
-Patch0: wait-before-drain.patch
+Patch0: 0001-tsc-Change-default-tsc-calibration-method-to-pmtimer.patch
+Patch1: wait-before-drain.patch
 
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz) = e54c99aaff5e5f6f5d3b06028506c57e66d8ef77
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/grub.pg/archive?format=tar&at=v3.0.0#/grub.patches.tar) = 47d84fa0111e1e40e2a0725c98f066b95f2ee71c
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/grub.pg/archive?format=tar&at=v3.1.0#/grub.patches.tar) = d168972f8dea5e143ef33798e45b92a5ee010061
 
 
 BuildRequires:  flex bison binutils python
@@ -83,7 +87,7 @@ provides support for PC BIOS systems.
 %ifarch %{efiarchs}
 %package efi
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz) = e54c99aaff5e5f6f5d3b06028506c57e66d8ef77
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/grub.pg/archive?format=tar&at=v3.0.0#/grub.patches.tar) = 47d84fa0111e1e40e2a0725c98f066b95f2ee71c
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/grub.pg/archive?format=tar&at=v3.1.0#/grub.patches.tar) = d168972f8dea5e143ef33798e45b92a5ee010061
 Summary:        GRUB for EFI systems.
 Group:          System Environment/Base
 Requires:       %{name}-tools = %{epoch}:%{version}-%{release}
@@ -98,7 +102,7 @@ provides support for EFI systems.
 
 %package tools
 Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz) = e54c99aaff5e5f6f5d3b06028506c57e66d8ef77
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/grub.pg/archive?format=tar&at=v3.0.0#/grub.patches.tar) = 47d84fa0111e1e40e2a0725c98f066b95f2ee71c
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/grub.pg/archive?format=tar&at=v3.1.0#/grub.patches.tar) = d168972f8dea5e143ef33798e45b92a5ee010061
 Summary:        Support tools for GRUB.
 Group:          System Environment/Base
 Requires:       gettext os-prober which file system-logos
@@ -224,6 +228,11 @@ do
 done
 install -m 755 %{grubefiname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efidir}/%{grubefiname}
 install -m 755 %{grubeficdname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efidir}/%{grubeficdname}
+# XCP-ng: Add fallback for when all boot entries fail
+# (buggy UEFI implementation, NVRAM error, user error in configuring boot entries, etc... could all cause this)
+# It's a copy of grubx64.efi so the binary will still look at its cfg file in `EFI/xenserver`
+mkdir -p $RPM_BUILD_ROOT/boot/efi/EFI/%{efibootdir}/
+install -m 755 %{grubefiname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efibootdir}/%{grubefibootname}
 popd
 %endif
 
@@ -323,6 +332,8 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
 %dir /boot/efi/EFI/%{efidir}
 %attr(0755,root,root) /boot/efi/EFI/%{efidir}/*.efi
+%dir /boot/efi/EFI/%{efibootdir}
+%attr(0755,root,root) /boot/efi/EFI/%{efibootdir}/%{grubefibootname}
 %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
 %doc COPYING
 %endif
@@ -379,5 +390,11 @@ fi
 %{_mandir}/man8/*
 
 %changelog
+* Thu Sep 9 2021 Igor Druzhinin <igor.druzhinin@citrix.com> - 2.02-3.1.0
+- CP-37219: Fix a boot hang due to i8254 clock gating on RKL
+
+* Tue Jun 29 2021 Benjamin Reis <benjamin.reis@vates.fr> - 2.02-3.0.2
+- Add EFI fallback file (`EFI/BOOT/BOOTX64.EFI`) for when all boot entries fail
+
 * Mon Sep 23 2019 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.02-3.0.0
 - CA-322681: ns8250: Wait a short while before draining the input buffer
