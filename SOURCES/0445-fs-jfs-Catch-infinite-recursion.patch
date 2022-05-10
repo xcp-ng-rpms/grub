@@ -19,7 +19,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/fs/jfs.c b/grub-core/fs/jfs.c
-index 6e81f37da6c..20d966abfc0 100644
+index 6e81f37da..20d966abf 100644
 --- a/grub-core/fs/jfs.c
 +++ b/grub-core/fs/jfs.c
 @@ -304,7 +304,16 @@ getblk (struct grub_jfs_treehead *treehead,

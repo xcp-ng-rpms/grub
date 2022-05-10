@@ -16,7 +16,7 @@ Upstream-commit-id: b4915078903
  1 file changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/fs/hfsplus.c b/grub-core/fs/hfsplus.c
-index f1cd72398ec..8b17ebba296 100644
+index f1cd72398..8b17ebba2 100644
 --- a/grub-core/fs/hfsplus.c
 +++ b/grub-core/fs/hfsplus.c
 @@ -31,6 +31,7 @@

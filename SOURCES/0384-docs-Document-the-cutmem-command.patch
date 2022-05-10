@@ -14,7 +14,7 @@ Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 21 insertions(+)
 
 diff --git a/docs/grub.texi b/docs/grub.texi
-index c55452307dc..314bbeb8471 100644
+index c55452307..314bbeb84 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
 @@ -3942,6 +3942,7 @@ you forget a command, you can run the command @command{help}

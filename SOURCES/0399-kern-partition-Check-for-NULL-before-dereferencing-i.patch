@@ -19,7 +19,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/kern/partition.c b/grub-core/kern/partition.c
-index 2c401b866c4..3068c4dcac0 100644
+index 2c401b866..3068c4dca 100644
 --- a/grub-core/kern/partition.c
 +++ b/grub-core/kern/partition.c
 @@ -109,11 +109,14 @@ grub_partition_map_probe (const grub_partition_map_t partmap,

@@ -16,7 +16,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 42 insertions(+), 38 deletions(-)
 
 diff --git a/util/grub-switch-to-blscfg.in b/util/grub-switch-to-blscfg.in
-index d353370cc51..eeea1307706 100644
+index d353370cc..eeea13077 100644
 --- a/util/grub-switch-to-blscfg.in
 +++ b/util/grub-switch-to-blscfg.in
 @@ -220,49 +220,51 @@ EOF

@@ -8,47 +8,48 @@ to set known bootflags in the grubenv: boot_success or menu_show_once.
 
 grub-set-bootflag is different from grub-editenv in 2 ways:
 
-1) It is intended to be executed by regular users through pkexec, so
-running as root if the polkit policy allows this. As such it is written
-to not use any existing grubenv related code for easy auditing.
+1) It is intended to be executed by regular users so must be installed
+as suid root. As such it is written to not use any existing grubenv
+related code for easy auditing.
+
+It can't be executed through pkexec because we want to call it under gdm
+and pkexec does not work under gdm due the gdm user having /sbin/nologin
+as shell.
 
 2) Since it can be executed by regular users it only allows setting
 (assigning a value of 1 to) bootflags which it knows about. Currently
 those are just boot_success and menu_show_once.
 
-This commit also adds a couple of example systemd and polkit files which
-show how this can be used to set boot_success from a user-session:
+This commit also adds a couple of example systemd and files which show
+how this can be used to set boot_success from a user-session:
 
 docs/grub-boot-success.service
 docs/grub-boot-success.timer
-docs/org.gnu.grub.policy
 
 The 2 grub-boot-success.systemd files should be placed in /lib/systemd/user
 and a symlink to grub-boot-success.timer should be added to
 /lib/systemd/user/timers.target.wants.
 
-The org.gnu.grub.policy polkit file should be placed in
-/usr/share/polkit-1/actions.
-
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+[makhomed: grub-boot-success.timer: Only run if not in a container]
+Signed-off-by: Gena Makhomed <makhomed@gmail.com>
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+(cherry-picked from commit 555625062cbb10388bb706620e2d8839644fc015)
 ---
  Makefile.util.def              |   7 ++
- util/grub-set-bootflag.c       | 158 +++++++++++++++++++++++++++++++++++++++++
- .gitignore                     |   2 +
+ util/grub-set-bootflag.c       | 160 +++++++++++++++++++++++++++++++++++++++++
  conf/Makefile.extra-dist       |   3 +
  docs/grub-boot-success.service |   6 ++
- docs/grub-boot-success.timer   |   5 ++
- docs/org.gnu.grub.policy       |  20 ++++++
+ docs/grub-boot-success.timer   |   7 ++
  util/grub-set-bootflag.1       |  20 ++++++
- 8 files changed, 221 insertions(+)
+ 6 files changed, 203 insertions(+)
  create mode 100644 util/grub-set-bootflag.c
  create mode 100644 docs/grub-boot-success.service
  create mode 100644 docs/grub-boot-success.timer
- create mode 100644 docs/org.gnu.grub.policy
  create mode 100644 util/grub-set-bootflag.1
 
 diff --git a/Makefile.util.def b/Makefile.util.def
-index 5a8c390a1da..5da55393291 100644
+index 5a8c390a1..5da553932 100644
 --- a/Makefile.util.def
 +++ b/Makefile.util.def
 @@ -1435,3 +1435,10 @@ program = {
@@ -64,10 +65,10 @@ index 5a8c390a1da..5da55393291 100644
 +};
 diff --git a/util/grub-set-bootflag.c b/util/grub-set-bootflag.c
 new file mode 100644
-index 00000000000..f8dc310909a
+index 000000000..bb198f023
 --- /dev/null
 +++ b/util/grub-set-bootflag.c
-@@ -0,0 +1,158 @@
+@@ -0,0 +1,160 @@
 +/* grub-set-bootflag.c - tool to set boot-flags in the grubenv. */
 +/*
 + *  GRUB  --  GRand Unified Bootloader
@@ -96,6 +97,7 @@ index 00000000000..f8dc310909a
 +#include <config-util.h>     /* For *_DIR_NAME defines */
 +#include <grub/types.h>
 +#include <grub/lib/envblk.h> /* For GRUB_ENVBLK_DEFCFG define */
++#include <errno.h>
 +#include <stdio.h>
 +#include <string.h>
 +#include <unistd.h>
@@ -156,6 +158,7 @@ index 00000000000..f8dc310909a
 +  fclose (f);
 +  if (ret != GRUBENV_SIZE)
 +    {
++      errno = EINVAL;
 +      perror ("Error reading from " GRUBENV);
 +      return 1;     
 +    }
@@ -226,21 +229,8 @@ index 00000000000..f8dc310909a
 +
 +  return 0;
 +}
-diff --git a/.gitignore b/.gitignore
-index 42475592123..6c4cfc53781 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -111,6 +111,8 @@ grub-*.tar.*
- /grub*-rpm-sort.8
- /grub*-script-check
- /grub*-script-check.1
-+/grub*-set-bootflag
-+/grub*-set-bootflag.1
- /grub*-set-default
- /grub*-set-default.8
- /grub*-setsetpassword
 diff --git a/conf/Makefile.extra-dist b/conf/Makefile.extra-dist
-index 39eb94bded6..5946ec24a65 100644
+index 39eb94bde..5946ec24a 100644
 --- a/conf/Makefile.extra-dist
 +++ b/conf/Makefile.extra-dist
 @@ -14,6 +14,9 @@ EXTRA_DIST += util/import_unicode.py
@@ -255,7 +245,7 @@ index 39eb94bded6..5946ec24a65 100644
  
 diff --git a/docs/grub-boot-success.service b/docs/grub-boot-success.service
 new file mode 100644
-index 00000000000..c8c91c34d49
+index 000000000..80e79584c
 --- /dev/null
 +++ b/docs/grub-boot-success.service
 @@ -0,0 +1,6 @@
@@ -264,47 +254,23 @@ index 00000000000..c8c91c34d49
 +
 +[Service]
 +Type=oneshot
-+ExecStart=/usr/bin/pkexec /usr/sbin/grub2-set-bootflag boot_success
++ExecStart=/usr/sbin/grub2-set-bootflag boot_success
 diff --git a/docs/grub-boot-success.timer b/docs/grub-boot-success.timer
 new file mode 100644
-index 00000000000..221b532781b
+index 000000000..406f17200
 --- /dev/null
 +++ b/docs/grub-boot-success.timer
-@@ -0,0 +1,5 @@
+@@ -0,0 +1,7 @@
 +[Unit]
 +Description=Mark boot as successful after the user session has run 2 minutes
++ConditionUser=!@system
++ConditionVirtualization=!container
 +
 +[Timer]
 +OnActiveSec=2min
-diff --git a/docs/org.gnu.grub.policy b/docs/org.gnu.grub.policy
-new file mode 100644
-index 00000000000..18391efc8e7
---- /dev/null
-+++ b/docs/org.gnu.grub.policy
-@@ -0,0 +1,20 @@
-+<?xml version="1.0" encoding="UTF-8"?>
-+<!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN" "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
-+<policyconfig>
-+  <vendor>GNU GRUB</vendor>
-+  <vendor_url>https://www.gnu.org/software/grub/</vendor_url>
-+  <action id="org.gnu.grub.set-bootflag">
-+    <!-- SECURITY:
-+          - A normal active user on the local machine does not need permission
-+            to set bootflags to show the menu / mark current boot successful.
-+     -->
-+    <description>Set GRUB bootflags</description>
-+    <message>Authentication is required to modify the bootloaders bootflags</message>
-+    <defaults>
-+      <allow_any>no</allow_any>
-+      <allow_inactive>no</allow_inactive>
-+      <allow_active>yes</allow_active>
-+    </defaults>
-+    <annotate key="org.freedesktop.policykit.exec.path">/usr/sbin/grub2-set-bootflag</annotate>
-+  </action>
-+</policyconfig>
 diff --git a/util/grub-set-bootflag.1 b/util/grub-set-bootflag.1
 new file mode 100644
-index 00000000000..57801da22a0
+index 000000000..57801da22
 --- /dev/null
 +++ b/util/grub-set-bootflag.1
 @@ -0,0 +1,20 @@

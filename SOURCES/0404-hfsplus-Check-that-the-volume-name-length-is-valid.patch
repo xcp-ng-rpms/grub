@@ -19,7 +19,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 9 insertions(+)
 
 diff --git a/grub-core/fs/hfsplus.c b/grub-core/fs/hfsplus.c
-index e06bcbb9ba3..03a33ea2477 100644
+index e06bcbb9b..03a33ea24 100644
 --- a/grub-core/fs/hfsplus.c
 +++ b/grub-core/fs/hfsplus.c
 @@ -1012,6 +1012,15 @@ grub_hfsplus_label (grub_device_t device, char **label)

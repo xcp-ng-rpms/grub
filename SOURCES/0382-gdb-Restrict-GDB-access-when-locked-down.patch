@@ -14,7 +14,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 18 insertions(+), 14 deletions(-)
 
 diff --git a/grub-core/gdb/gdb.c b/grub-core/gdb/gdb.c
-index 847a1e1e36f..1818cb6f8eb 100644
+index 847a1e1e3..1818cb6f8 100644
 --- a/grub-core/gdb/gdb.c
 +++ b/grub-core/gdb/gdb.c
 @@ -75,20 +75,24 @@ static grub_command_t cmd, cmd_stop, cmd_break;

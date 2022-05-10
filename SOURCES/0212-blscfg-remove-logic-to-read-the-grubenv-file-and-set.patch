@@ -25,7 +25,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 16 insertions(+), 163 deletions(-)
 
 diff --git a/grub-core/commands/blscfg.c b/grub-core/commands/blscfg.c
-index 69bfb5db295..bdb1c5a95aa 100644
+index 69bfb5db2..bdb1c5a95 100644
 --- a/grub-core/commands/blscfg.c
 +++ b/grub-core/commands/blscfg.c
 @@ -45,13 +45,6 @@ GRUB_MOD_LICENSE ("GPLv3+");

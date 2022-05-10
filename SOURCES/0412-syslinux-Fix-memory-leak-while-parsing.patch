@@ -15,7 +15,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/lib/syslinux_parse.c b/grub-core/lib/syslinux_parse.c
-index 83e7bdb9161..f477feff1c3 100644
+index 83e7bdb91..f477feff1 100644
 --- a/grub-core/lib/syslinux_parse.c
 +++ b/grub-core/lib/syslinux_parse.c
 @@ -737,7 +737,10 @@ syslinux_parse_real (struct syslinux_menu *menu)

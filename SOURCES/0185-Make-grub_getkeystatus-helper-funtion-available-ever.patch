@@ -16,7 +16,7 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  3 files changed, 19 insertions(+), 18 deletions(-)
 
 diff --git a/grub-core/commands/keystatus.c b/grub-core/commands/keystatus.c
-index 460cf4e7e50..ff3f5878163 100644
+index 460cf4e7e..ff3f58781 100644
 --- a/grub-core/commands/keystatus.c
 +++ b/grub-core/commands/keystatus.c
 @@ -35,24 +35,6 @@ static const struct grub_arg_option options[] =
@@ -45,7 +45,7 @@ index 460cf4e7e50..ff3f5878163 100644
  grub_cmd_keystatus (grub_extcmd_context_t ctxt,
  		    int argc __attribute__ ((unused)),
 diff --git a/grub-core/kern/term.c b/grub-core/kern/term.c
-index 07720ee6746..93bd3378d18 100644
+index 07720ee67..93bd3378d 100644
 --- a/grub-core/kern/term.c
 +++ b/grub-core/kern/term.c
 @@ -120,6 +120,24 @@ grub_getkey (void)
@@ -74,7 +74,7 @@ index 07720ee6746..93bd3378d18 100644
  grub_refresh (void)
  {
 diff --git a/include/grub/term.h b/include/grub/term.h
-index 8117e2a24da..c215133383f 100644
+index 8117e2a24..c21513338 100644
 --- a/include/grub/term.h
 +++ b/include/grub/term.h
 @@ -327,6 +327,7 @@ grub_term_unregister_output (grub_term_output_t term)

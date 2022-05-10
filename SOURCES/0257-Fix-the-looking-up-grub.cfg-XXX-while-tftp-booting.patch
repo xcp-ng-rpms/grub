@@ -22,7 +22,7 @@ Resolves: rhbz#1658500
  1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index a011b940100..19ff2d486a1 100644
+index a011b9401..19ff2d486 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -1942,11 +1942,9 @@ grub_net_search_configfile (char *config)

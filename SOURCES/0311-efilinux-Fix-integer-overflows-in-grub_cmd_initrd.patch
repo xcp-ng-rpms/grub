@@ -13,7 +13,7 @@ Signed-off-by: Colin Watson <cjwatson@debian.org>
  1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/loader/i386/efi/linux.c b/grub-core/loader/i386/efi/linux.c
-index ea9f5134e67..ade7ab8f573 100644
+index ea9f5134e..ade7ab8f5 100644
 --- a/grub-core/loader/i386/efi/linux.c
 +++ b/grub-core/loader/i386/efi/linux.c
 @@ -28,6 +28,7 @@

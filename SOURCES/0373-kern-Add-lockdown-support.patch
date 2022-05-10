@@ -52,7 +52,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  create mode 100644 include/grub/lockdown.h
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 8914083d13f..02fbecd4b81 100644
+index 8914083d1..02fbecd4b 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -197,6 +197,7 @@ kernel = {
@@ -64,7 +64,7 @@ index 8914083d13f..02fbecd4b81 100644
    efi = kern/efi/tpm.c;
    i386_coreboot = kern/i386/pc/acpi.c;
 diff --git a/grub-core/commands/extcmd.c b/grub-core/commands/extcmd.c
-index 69574e2b05b..90a5ca24a64 100644
+index 69574e2b0..90a5ca24a 100644
 --- a/grub-core/commands/extcmd.c
 +++ b/grub-core/commands/extcmd.c
 @@ -19,6 +19,7 @@
@@ -105,7 +105,7 @@ index 69574e2b05b..90a5ca24a64 100644
  grub_unregister_extcmd (grub_extcmd_t ext)
  {
 diff --git a/grub-core/kern/command.c b/grub-core/kern/command.c
-index acd72187992..4aabcd4b5f9 100644
+index acd721879..4aabcd4b5 100644
 --- a/grub-core/kern/command.c
 +++ b/grub-core/kern/command.c
 @@ -17,6 +17,7 @@
@@ -148,7 +148,7 @@ index acd72187992..4aabcd4b5f9 100644
  {
 diff --git a/grub-core/kern/lockdown.c b/grub-core/kern/lockdown.c
 new file mode 100644
-index 00000000000..f87ddaeb1ee
+index 000000000..f87ddaeb1
 --- /dev/null
 +++ b/grub-core/kern/lockdown.c
 @@ -0,0 +1,93 @@
@@ -246,7 +246,7 @@ index 00000000000..f87ddaeb1ee
 +  return lockdown;
 +}
 diff --git a/include/grub/command.h b/include/grub/command.h
-index eee4e847ee4..2a6f7f84697 100644
+index eee4e847e..2a6f7f846 100644
 --- a/include/grub/command.h
 +++ b/include/grub/command.h
 @@ -86,6 +86,11 @@ EXPORT_FUNC(grub_register_command_prio) (const char *name,
@@ -262,7 +262,7 @@ index eee4e847ee4..2a6f7f84697 100644
  
  static inline grub_command_t
 diff --git a/include/grub/extcmd.h b/include/grub/extcmd.h
-index 19fe592669e..fe9248b8bb6 100644
+index 19fe59266..fe9248b8b 100644
 --- a/include/grub/extcmd.h
 +++ b/include/grub/extcmd.h
 @@ -62,6 +62,13 @@ grub_extcmd_t EXPORT_FUNC(grub_register_extcmd) (const char *name,
@@ -281,7 +281,7 @@ index 19fe592669e..fe9248b8bb6 100644
  						      grub_command_flags_t flags,
 diff --git a/include/grub/lockdown.h b/include/grub/lockdown.h
 new file mode 100644
-index 00000000000..40531fa823b
+index 000000000..40531fa82
 --- /dev/null
 +++ b/include/grub/lockdown.h
 @@ -0,0 +1,44 @@
@@ -330,7 +330,7 @@ index 00000000000..40531fa823b
 +#endif
 +#endif /* ! GRUB_LOCKDOWN_H */
 diff --git a/conf/Makefile.common b/conf/Makefile.common
-index b93879804c0..521cdda1f5a 100644
+index b93879804..521cdda1f 100644
 --- a/conf/Makefile.common
 +++ b/conf/Makefile.common
 @@ -85,7 +85,9 @@ CPPFLAGS_PARTTOOL_LIST = -Dgrub_parttool_register=PARTTOOL_LIST_MARKER
@@ -344,7 +344,7 @@ index b93879804c0..521cdda1f5a 100644
  CPPFLAGS_FDT_LIST := '-Dgrub_fdtbus_register(...)=FDT_DRIVER_LIST_MARKER(__VA_ARGS__)'
  CPPFLAGS_MARKER = $(CPPFLAGS_FS_LIST) $(CPPFLAGS_VIDEO_LIST) \
 diff --git a/docs/grub-dev.texi b/docs/grub-dev.texi
-index 3ce827ab726..421dd410e50 100644
+index 3ce827ab7..421dd410e 100644
 --- a/docs/grub-dev.texi
 +++ b/docs/grub-dev.texi
 @@ -84,6 +84,7 @@ This edition documents version @value{VERSION}.
@@ -389,7 +389,7 @@ index 3ce827ab726..421dd410e50 100644
  @appendix Copying This Manual
  
 diff --git a/docs/grub.texi b/docs/grub.texi
-index 97f0f47e082..f957535dbea 100644
+index 97f0f47e0..f957535db 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
 @@ -5687,6 +5687,7 @@ environment variables and commands are listed in the same order.
@@ -415,7 +415,7 @@ index 97f0f47e082..f957535dbea 100644
  @chapter Platform limitations
  
 diff --git a/grub-core/Makefile.am b/grub-core/Makefile.am
-index 4062652506d..a6f1b0dcd06 100644
+index 406265250..a6f1b0dcd 100644
 --- a/grub-core/Makefile.am
 +++ b/grub-core/Makefile.am
 @@ -82,6 +82,7 @@ KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/fs.h

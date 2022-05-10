@@ -21,7 +21,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/grub-core/video/readers/jpeg.c b/grub-core/video/readers/jpeg.c
-index 0b6ce3cee64..23f919aa070 100644
+index 0b6ce3cee..23f919aa0 100644
 --- a/grub-core/video/readers/jpeg.c
 +++ b/grub-core/video/readers/jpeg.c
 @@ -333,7 +333,11 @@ grub_jpeg_decode_sof (struct grub_jpeg_data *data)

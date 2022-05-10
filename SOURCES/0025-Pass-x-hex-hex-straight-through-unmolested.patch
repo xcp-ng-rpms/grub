@@ -10,7 +10,7 @@ Subject: [PATCH] Pass "\x[[:hex:]][[:hex:]]" straight through unmolested.
  3 files changed, 84 insertions(+), 9 deletions(-)
 
 diff --git a/grub-core/commands/wildcard.c b/grub-core/commands/wildcard.c
-index 9b4e72766ff..02c46f9fdfa 100644
+index 9b4e72766..02c46f9fd 100644
 --- a/grub-core/commands/wildcard.c
 +++ b/grub-core/commands/wildcard.c
 @@ -462,6 +462,12 @@ check_file (const char *dir, const char *basename)
@@ -44,7 +44,7 @@ index 9b4e72766ff..02c46f9fdfa 100644
  	  *optr++ = iptr[1];
  	  iptr += 2;
 diff --git a/grub-core/lib/cmdline.c b/grub-core/lib/cmdline.c
-index d5e10ee8798..0a5b2afb94b 100644
+index d5e10ee87..0a5b2afb9 100644
 --- a/grub-core/lib/cmdline.c
 +++ b/grub-core/lib/cmdline.c
 @@ -20,6 +20,12 @@
@@ -103,7 +103,7 @@ index d5e10ee8798..0a5b2afb94b 100644
  
  	  *buf++ = *c;
 diff --git a/grub-core/script/execute.c b/grub-core/script/execute.c
-index ab78ca87f90..cf6cd6601d6 100644
+index ab78ca87f..cf6cd6601 100644
 --- a/grub-core/script/execute.c
 +++ b/grub-core/script/execute.c
 @@ -55,6 +55,12 @@ static struct grub_script_scope *scope = 0;

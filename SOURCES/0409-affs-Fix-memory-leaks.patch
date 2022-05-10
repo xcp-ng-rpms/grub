@@ -25,7 +25,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 8 insertions(+), 10 deletions(-)
 
 diff --git a/grub-core/fs/affs.c b/grub-core/fs/affs.c
-index 91073795f90..e4615c74381 100644
+index 91073795f..e4615c743 100644
 --- a/grub-core/fs/affs.c
 +++ b/grub-core/fs/affs.c
 @@ -400,12 +400,12 @@ grub_affs_iterate_dir (grub_fshelp_node_t dir,

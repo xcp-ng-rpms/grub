@@ -19,7 +19,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/commands/pgp.c b/grub-core/commands/pgp.c
-index 29e74a64004..5c913c2e2fe 100644
+index 29e74a640..5c913c2e2 100644
 --- a/grub-core/commands/pgp.c
 +++ b/grub-core/commands/pgp.c
 @@ -950,7 +950,7 @@ struct grub_file_verifier grub_pubkey_verifier =
@@ -41,7 +41,7 @@ index 29e74a64004..5c913c2e2fe 100644
    grub_verifier_unregister (&grub_pubkey_verifier);
    grub_unregister_extcmd (cmd);
 diff --git a/tests/file_filter_test.in b/tests/file_filter_test.in
-index bfb6382274e..ed6abcb5af4 100644
+index bfb638227..ed6abcb5a 100644
 --- a/tests/file_filter_test.in
 +++ b/tests/file_filter_test.in
 @@ -19,7 +19,7 @@ grubshell=@builddir@/grub-shell

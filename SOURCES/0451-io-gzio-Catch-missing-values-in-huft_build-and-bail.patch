@@ -20,7 +20,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/io/gzio.c b/grub-core/io/gzio.c
-index 97b34f88574..f85dbae237d 100644
+index 97b34f885..f85dbae23 100644
 --- a/grub-core/io/gzio.c
 +++ b/grub-core/io/gzio.c
 @@ -507,6 +507,7 @@ huft_build (unsigned *b,	/* code lengths in bits (all assumed <= BMAX) */

@@ -16,7 +16,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  1 file changed, 11 insertions(+)
 
 diff --git a/include/grub/dl.h b/include/grub/dl.h
-index f7cfe64823c..877821dcb04 100644
+index f7cfe6482..877821dcb 100644
 --- a/include/grub/dl.h
 +++ b/include/grub/dl.h
 @@ -243,11 +243,22 @@ grub_dl_get (const char *name)

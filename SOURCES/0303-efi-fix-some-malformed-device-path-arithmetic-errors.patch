@@ -25,7 +25,7 @@ Upstream-commit-id: 23e68a83990
  4 files changed, 88 insertions(+), 21 deletions(-)
 
 diff --git a/grub-core/kern/efi/efi.c b/grub-core/kern/efi/efi.c
-index b1379b92fb8..03de9cb14e7 100644
+index b1379b92f..03de9cb14 100644
 --- a/grub-core/kern/efi/efi.c
 +++ b/grub-core/kern/efi/efi.c
 @@ -344,7 +344,7 @@ grub_efi_get_filename (grub_efi_device_path_t *dp0)
@@ -151,7 +151,7 @@ index b1379b92fb8..03de9cb14e7 100644
    return 0;
  }
 diff --git a/grub-core/loader/efi/chainloader.c b/grub-core/loader/efi/chainloader.c
-index 2da119ad513..c2411b6dab2 100644
+index 2da119ad5..c2411b6da 100644
 --- a/grub-core/loader/efi/chainloader.c
 +++ b/grub-core/loader/efi/chainloader.c
 @@ -125,6 +125,12 @@ copy_file_path (grub_efi_file_path_device_path_t *fp,
@@ -189,7 +189,7 @@ index 2da119ad513..c2411b6dab2 100644
  	break;
        d = GRUB_EFI_NEXT_DEVICE_PATH (d);
 diff --git a/grub-core/loader/i386/xnu.c b/grub-core/loader/i386/xnu.c
-index c760db30fc0..44f7ebfa2b6 100644
+index c760db30f..44f7ebfa2 100644
 --- a/grub-core/loader/i386/xnu.c
 +++ b/grub-core/loader/i386/xnu.c
 @@ -515,14 +515,15 @@ grub_cmd_devprop_load (grub_command_t cmd __attribute__ ((unused)),
@@ -213,7 +213,7 @@ index c760db30fc0..44f7ebfa2b6 100644
        dev = grub_xnu_devprop_add_device (dpstart, (char *) buf
  					 - (char *) dpstart);
 diff --git a/include/grub/efi/api.h b/include/grub/efi/api.h
-index 6c440c61316..a092fddb629 100644
+index 6c440c613..a092fddb6 100644
 --- a/include/grub/efi/api.h
 +++ b/include/grub/efi/api.h
 @@ -671,6 +671,7 @@ typedef struct grub_efi_device_path grub_efi_device_path_protocol_t;

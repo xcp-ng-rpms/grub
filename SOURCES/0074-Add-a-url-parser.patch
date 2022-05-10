@@ -20,7 +20,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  create mode 100644 include/grub/net/url.h
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index cd0902b46b8..991891a6e09 100644
+index cd0902b46..991891a6e 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -2185,6 +2185,7 @@ module = {
@@ -32,7 +32,7 @@ index cd0902b46b8..991891a6e09 100644
  
  module = {
 diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
-index 8344526be7f..f1fab700048 100644
+index 8344526be..f1fab7000 100644
 --- a/grub-core/kern/misc.c
 +++ b/grub-core/kern/misc.c
 @@ -296,6 +296,19 @@ grub_strrchr (const char *s, int c)
@@ -57,7 +57,7 @@ index 8344526be7f..f1fab700048 100644
  {
 diff --git a/grub-core/net/url.c b/grub-core/net/url.c
 new file mode 100644
-index 00000000000..146858284cd
+index 000000000..146858284
 --- /dev/null
 +++ b/grub-core/net/url.c
 @@ -0,0 +1,861 @@
@@ -923,7 +923,7 @@ index 00000000000..146858284cd
 +}
 +#endif
 diff --git a/include/grub/misc.h b/include/grub/misc.h
-index 83fd69f4ada..fcaf1201e39 100644
+index 83fd69f4a..fcaf1201e 100644
 --- a/include/grub/misc.h
 +++ b/include/grub/misc.h
 @@ -85,6 +85,7 @@ int EXPORT_FUNC(grub_strncmp) (const char *s1, const char *s2, grub_size_t n);
@@ -987,7 +987,7 @@ index 83fd69f4ada..fcaf1201e39 100644
  {
 diff --git a/include/grub/net/url.h b/include/grub/net/url.h
 new file mode 100644
-index 00000000000..a215fa27d0a
+index 000000000..a215fa27d
 --- /dev/null
 +++ b/include/grub/net/url.h
 @@ -0,0 +1,28 @@

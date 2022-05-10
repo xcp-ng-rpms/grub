@@ -20,7 +20,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  create mode 100644 grub-core/gnulib-fix-regexec-null-deref.patch
 
 diff --git a/grub-core/gnulib/regexec.c b/grub-core/gnulib/regexec.c
-index 9264f262893..fdacff12ce3 100644
+index 9264f2628..fdacff12c 100644
 --- a/grub-core/gnulib/regexec.c
 +++ b/grub-core/gnulib/regexec.c
 @@ -1754,6 +1754,9 @@ clean_state_log_if_needed (re_match_context_t *mctx, Idx next_state_log_idx)
@@ -34,7 +34,7 @@ index 9264f262893..fdacff12ce3 100644
         && mctx->input.bufs_len < mctx->input.len)
        || (next_state_log_idx >= mctx->input.valid_len
 diff --git a/conf/Makefile.extra-dist b/conf/Makefile.extra-dist
-index 06606de8d19..edbe7846eb1 100644
+index 06606de8d..edbe7846e 100644
 --- a/conf/Makefile.extra-dist
 +++ b/conf/Makefile.extra-dist
 @@ -32,6 +32,7 @@ EXTRA_DIST += grub-core/genemuinitheader.sh
@@ -47,7 +47,7 @@ index 06606de8d19..edbe7846eb1 100644
  EXTRA_DIST += grub-core/gnulib-fix-width.diff
 diff --git a/grub-core/gnulib-fix-regexec-null-deref.patch b/grub-core/gnulib-fix-regexec-null-deref.patch
 new file mode 100644
-index 00000000000..db6dac9c9e3
+index 000000000..db6dac9c9
 --- /dev/null
 +++ b/grub-core/gnulib-fix-regexec-null-deref.patch
 @@ -0,0 +1,12 @@

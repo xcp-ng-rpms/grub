@@ -12,7 +12,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
 
 diff --git a/.gitattributes b/.gitattributes
 new file mode 100644
-index 00000000000..33ffaa40460
+index 000000000..33ffaa404
 --- /dev/null
 +++ b/.gitattributes
 @@ -0,0 +1 @@

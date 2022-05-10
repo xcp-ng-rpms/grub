@@ -17,7 +17,7 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/util/grub.d/00_menu_auto_hide.in b/util/grub.d/00_menu_auto_hide.in
-index a10fe45bb2c..ca95c0d1c9f 100644
+index a10fe45bb..ca95c0d1c 100644
 --- a/util/grub.d/00_menu_auto_hide.in
 +++ b/util/grub.d/00_menu_auto_hide.in
 @@ -33,7 +33,7 @@ if [ x\$feature_timeout_style = xy ] ; then

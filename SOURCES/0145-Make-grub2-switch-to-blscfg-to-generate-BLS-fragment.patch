@@ -12,7 +12,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 4 insertions(+)
 
 diff --git a/util/grub-switch-to-blscfg.in b/util/grub-switch-to-blscfg.in
-index c59299ffa6a..bc28053cd30 100644
+index c59299ffa..bc28053cd 100644
 --- a/util/grub-switch-to-blscfg.in
 +++ b/util/grub-switch-to-blscfg.in
 @@ -243,6 +243,10 @@ for kernelver in $(cd /lib/modules/ ; ls -1) "" ; do

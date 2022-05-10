@@ -17,7 +17,7 @@ Upstream-commit-id: 482814113dc
  1 file changed, 6 insertions(+)
 
 diff --git a/grub-core/font/font.c b/grub-core/font/font.c
-index d63354fb51b..a7b955a1a74 100644
+index d63354fb5..a7b955a1a 100644
 --- a/grub-core/font/font.c
 +++ b/grub-core/font/font.c
 @@ -532,6 +532,12 @@ grub_font_load (const char *filename)

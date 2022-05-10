@@ -13,7 +13,7 @@ Signed-off-by: Renaud Métrich <rmetrich@redhat.com>
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/kern/disk.c b/grub-core/kern/disk.c
-index 789f8c05233..7f58c561472 100644
+index 789f8c052..7f58c5614 100644
 --- a/grub-core/kern/disk.c
 +++ b/grub-core/kern/disk.c
 @@ -285,6 +285,8 @@ grub_disk_open (const char *name)

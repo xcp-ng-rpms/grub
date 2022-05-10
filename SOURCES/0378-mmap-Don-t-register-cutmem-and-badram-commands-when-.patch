@@ -19,7 +19,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  2 files changed, 11 insertions(+), 6 deletions(-)
 
 diff --git a/grub-core/mmap/mmap.c b/grub-core/mmap/mmap.c
-index 57b4e9a72a9..7ebf32e1e5e 100644
+index 57b4e9a72..7ebf32e1e 100644
 --- a/grub-core/mmap/mmap.c
 +++ b/grub-core/mmap/mmap.c
 @@ -20,6 +20,7 @@
@@ -50,7 +50,7 @@ index 57b4e9a72a9..7ebf32e1e5e 100644
  }
  
 diff --git a/docs/grub.texi b/docs/grub.texi
-index 01acf672b80..f1675b6140c 100644
+index 01acf672b..f1675b614 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
 @@ -4103,6 +4103,10 @@ this page is to be filtered.  This syntax makes it easy to represent patterns

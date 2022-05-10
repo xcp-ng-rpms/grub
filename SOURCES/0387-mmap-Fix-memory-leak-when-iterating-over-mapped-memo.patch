@@ -15,7 +15,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 2 insertions(+)
 
 diff --git a/grub-core/mmap/mmap.c b/grub-core/mmap/mmap.c
-index 7ebf32e1e5e..8bf235f3400 100644
+index 7ebf32e1e..8bf235f34 100644
 --- a/grub-core/mmap/mmap.c
 +++ b/grub-core/mmap/mmap.c
 @@ -270,6 +270,7 @@ grub_mmap_iterate (grub_memory_hook_t hook, void *hook_data)

@@ -13,7 +13,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/commands/hdparm.c b/grub-core/commands/hdparm.c
-index d3fa9661e5f..2e2319e645a 100644
+index d3fa9661e..2e2319e64 100644
 --- a/grub-core/commands/hdparm.c
 +++ b/grub-core/commands/hdparm.c
 @@ -436,9 +436,9 @@ static grub_extcmd_t cmd;

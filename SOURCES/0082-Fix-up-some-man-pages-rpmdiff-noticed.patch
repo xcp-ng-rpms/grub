@@ -13,7 +13,7 @@ Subject: [PATCH] Fix up some man pages rpmdiff noticed.
  create mode 100644 util/grub-syslinux2cfg.1
 
 diff --git a/configure.ac b/configure.ac
-index aa06ed59c8d..f69f8986791 100644
+index aa06ed59c..f69f89867 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -80,6 +80,7 @@ grub_TRANSFORM([grub-get-kernel-settings.3])
@@ -34,7 +34,7 @@ index aa06ed59c8d..f69f8986791 100644
  if test "x$TARGET_CFLAGS" = x; then
 diff --git a/util/grub-macbless.8 b/util/grub-macbless.8
 new file mode 100644
-index 00000000000..ae842f3a606
+index 000000000..ae842f3a6
 --- /dev/null
 +++ b/util/grub-macbless.8
 @@ -0,0 +1,26 @@
@@ -65,7 +65,7 @@ index 00000000000..ae842f3a606
 +.SH SEE ALSO
 +.BR "info grub"
 diff --git a/util/grub-mkimage.1 b/util/grub-mkimage.1
-index 4dea4f54597..0eaaafe505b 100644
+index 4dea4f545..0eaaafe50 100644
 --- a/util/grub-mkimage.1
 +++ b/util/grub-mkimage.1
 @@ -17,7 +17,7 @@
@@ -79,7 +79,7 @@ index 4dea4f54597..0eaaafe505b 100644
  .TP
 diff --git a/util/grub-syslinux2cfg.1 b/util/grub-syslinux2cfg.1
 new file mode 100644
-index 00000000000..85309482718
+index 000000000..853094827
 --- /dev/null
 +++ b/util/grub-syslinux2cfg.1
 @@ -0,0 +1,65 @@

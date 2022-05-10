@@ -16,7 +16,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 30 insertions(+), 28 deletions(-)
 
 diff --git a/grub-core/kern/efi/tpm.c b/grub-core/kern/efi/tpm.c
-index 0d3ebe22e57..5dc90865242 100644
+index 0d3ebe22e..5dc908652 100644
 --- a/grub-core/kern/efi/tpm.c
 +++ b/grub-core/kern/efi/tpm.c
 @@ -161,6 +161,34 @@ grub_tpm_execute(PassThroughToTPM_InputParamBlock *inbuf,

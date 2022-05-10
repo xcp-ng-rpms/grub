@@ -14,7 +14,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  2 files changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/grub-core/normal/menu.c b/grub-core/normal/menu.c
-index d2f64b05e0a..5e2f5283d3d 100644
+index d2f64b05e..5e2f5283d 100644
 --- a/grub-core/normal/menu.c
 +++ b/grub-core/normal/menu.c
 @@ -838,12 +838,14 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot)
@@ -34,7 +34,7 @@ index d2f64b05e0a..5e2f5283d3d 100644
  
  /* Callback invoked when a default menu entry executed because of a timeout
 diff --git a/grub-core/normal/menu_entry.c b/grub-core/normal/menu_entry.c
-index cdf3590a364..5785f67ee1c 100644
+index cdf3590a3..5785f67ee 100644
 --- a/grub-core/normal/menu_entry.c
 +++ b/grub-core/normal/menu_entry.c
 @@ -1167,9 +1167,6 @@ run (struct screen *screen)

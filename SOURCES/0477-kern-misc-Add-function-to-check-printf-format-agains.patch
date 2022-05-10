@@ -49,7 +49,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  2 files changed, 94 insertions(+), 4 deletions(-)
 
 diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
-index 07456faa2a7..859d71659a2 100644
+index 07456faa2..859d71659 100644
 --- a/grub-core/kern/misc.c
 +++ b/grub-core/kern/misc.c
 @@ -711,8 +711,26 @@ grub_lltoa (char *str, int c, unsigned long long n)
@@ -187,7 +187,7 @@ index 07456faa2a7..859d71659a2 100644
  static inline void __attribute__ ((noreturn))
  grub_abort (void)
 diff --git a/include/grub/misc.h b/include/grub/misc.h
-index 6ca03c4d692..6be6a88f652 100644
+index 6ca03c4d6..6be6a88f6 100644
 --- a/include/grub/misc.h
 +++ b/include/grub/misc.h
 @@ -488,6 +488,22 @@ grub_error_load (const struct grub_error_saved *save)

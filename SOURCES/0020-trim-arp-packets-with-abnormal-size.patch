@@ -10,7 +10,7 @@ is foobared, GRUB needs to trim the arp response packet before sending it.
  1 file changed, 6 insertions(+)
 
 diff --git a/grub-core/net/arp.c b/grub-core/net/arp.c
-index 54306e3b16d..d1c69ed2b55 100644
+index 54306e3b1..d1c69ed2b 100644
 --- a/grub-core/net/arp.c
 +++ b/grub-core/net/arp.c
 @@ -150,6 +150,12 @@ grub_net_arp_receive (struct grub_net_buff *nb, struct grub_net_card *card,

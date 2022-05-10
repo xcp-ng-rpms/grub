@@ -16,7 +16,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  6 files changed, 11 insertions(+), 9 deletions(-)
 
 diff --git a/grub-core/commands/blscfg.c b/grub-core/commands/blscfg.c
-index 70ce5c7bf6f..795a9f9f178 100644
+index 70ce5c7bf..795a9f9f1 100644
 --- a/grub-core/commands/blscfg.c
 +++ b/grub-core/commands/blscfg.c
 @@ -463,7 +463,7 @@ static int read_entry (
@@ -29,7 +29,7 @@ index 70ce5c7bf6f..795a9f9f178 100644
      goto finish;
  
 diff --git a/grub-core/loader/arm64/linux.c b/grub-core/loader/arm64/linux.c
-index 864724dd4fa..e1923cf7257 100644
+index 864724dd4..e1923cf72 100644
 --- a/grub-core/loader/arm64/linux.c
 +++ b/grub-core/loader/arm64/linux.c
 @@ -31,6 +31,7 @@
@@ -41,7 +41,7 @@ index 864724dd4fa..e1923cf7257 100644
  #include <grub/lib/cmdline.h>
  #include <grub/verify.h>
 diff --git a/grub-core/loader/i386/efi/linux.c b/grub-core/loader/i386/efi/linux.c
-index 361e503cb52..576f8c07eaf 100644
+index 361e503cb..576f8c07e 100644
 --- a/grub-core/loader/i386/efi/linux.c
 +++ b/grub-core/loader/i386/efi/linux.c
 @@ -101,8 +101,8 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
@@ -75,7 +75,7 @@ index 361e503cb52..576f8c07eaf 100644
    grub_dprintf ("linux", "cmdline:%s\n", linux_cmdline);
    grub_dprintf ("linux", "setting lh->cmd_line_ptr\n");
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index 0e72bbb9b39..1fd104aeaf2 100644
+index 0e72bbb9b..1fd104aea 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -1907,7 +1907,7 @@ grub_net_search_configfile (char *config)
@@ -88,7 +88,7 @@ index 0e72bbb9b39..1fd104aeaf2 100644
            if (file)
              {
 diff --git a/grub-core/normal/main.c b/grub-core/normal/main.c
-index cee71a4c2ab..49141039f8f 100644
+index cee71a4c2..49141039f 100644
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
 @@ -363,7 +363,7 @@ grub_try_normal (const char *variable)
@@ -101,7 +101,7 @@ index cee71a4c2ab..49141039f8f 100644
  	      {
  		grub_file_close (file);
 diff --git a/grub-core/osdep/generic/blocklist.c b/grub-core/osdep/generic/blocklist.c
-index 74024fd06f3..ab1f96da62d 100644
+index 74024fd06..ab1f96da6 100644
 --- a/grub-core/osdep/generic/blocklist.c
 +++ b/grub-core/osdep/generic/blocklist.c
 @@ -60,7 +60,7 @@ grub_install_get_blocklist (grub_device_t root_dev,

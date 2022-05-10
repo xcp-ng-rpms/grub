@@ -9,7 +9,7 @@ It is already highlighted.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/normal/menu_text.c b/grub-core/normal/menu_text.c
-index e22bb91f6e8..a3d1f23f68f 100644
+index e22bb91f6..a3d1f23f6 100644
 --- a/grub-core/normal/menu_text.c
 +++ b/grub-core/normal/menu_text.c
 @@ -242,7 +242,7 @@ print_entry (int y, int highlight, grub_menu_entry_t entry,

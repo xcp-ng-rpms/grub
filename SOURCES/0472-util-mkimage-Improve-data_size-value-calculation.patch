@@ -21,7 +21,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/util/mkimage.c b/util/mkimage.c
-index e73a5864b22..f22b398d973 100644
+index e73a5864b..f22b398d9 100644
 --- a/util/mkimage.c
 +++ b/util/mkimage.c
 @@ -1248,6 +1248,7 @@ grub_install_generate_image (const char *dir, const char *prefix,

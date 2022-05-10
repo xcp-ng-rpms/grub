@@ -11,7 +11,7 @@ Measure the kernel and initrd when loaded on BIOS systems
  3 files changed, 10 insertions(+)
 
 diff --git a/grub-core/loader/i386/linux.c b/grub-core/loader/i386/linux.c
-index c84747ea857..94526966e8a 100644
+index c84747ea8..94526966e 100644
 --- a/grub-core/loader/i386/linux.c
 +++ b/grub-core/loader/i386/linux.c
 @@ -36,6 +36,7 @@
@@ -42,7 +42,7 @@ index c84747ea857..94526966e8a 100644
    if (grub_errno == GRUB_ERR_NONE)
      {
 diff --git a/grub-core/loader/i386/pc/linux.c b/grub-core/loader/i386/pc/linux.c
-index 783a3cd93bc..15544230763 100644
+index 783a3cd93..155442307 100644
 --- a/grub-core/loader/i386/pc/linux.c
 +++ b/grub-core/loader/i386/pc/linux.c
 @@ -36,6 +36,7 @@
@@ -63,7 +63,7 @@ index 783a3cd93bc..15544230763 100644
    kernel_offset = sizeof (lh);
  
 diff --git a/grub-core/loader/linux.c b/grub-core/loader/linux.c
-index be6fa0f4d45..3005c0d19c9 100644
+index be6fa0f4d..3005c0d19 100644
 --- a/grub-core/loader/linux.c
 +++ b/grub-core/loader/linux.c
 @@ -4,6 +4,7 @@

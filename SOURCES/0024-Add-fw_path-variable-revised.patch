@@ -14,7 +14,7 @@ https://bugzilla.redhat.com/show_bug.cgi?id=857936
  2 files changed, 30 insertions(+), 8 deletions(-)
 
 diff --git a/grub-core/kern/main.c b/grub-core/kern/main.c
-index 9cad0c4485c..8ab7794c47b 100644
+index 9cad0c448..8ab7794c4 100644
 --- a/grub-core/kern/main.c
 +++ b/grub-core/kern/main.c
 @@ -127,16 +127,15 @@ grub_set_prefix_and_root (void)
@@ -41,7 +41,7 @@ index 9cad0c4485c..8ab7794c47b 100644
      }
  
 diff --git a/grub-core/normal/main.c b/grub-core/normal/main.c
-index 249e19bc788..759c475c4d9 100644
+index 249e19bc7..759c475c4 100644
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
 @@ -338,7 +338,30 @@ grub_cmd_normal (struct grub_command *cmd __attribute__ ((unused)),

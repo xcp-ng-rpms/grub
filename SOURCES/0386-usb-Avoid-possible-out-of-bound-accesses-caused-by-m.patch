@@ -20,7 +20,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  2 files changed, 19 insertions(+), 6 deletions(-)
 
 diff --git a/grub-core/bus/usb/usb.c b/grub-core/bus/usb/usb.c
-index 8da5e4c7491..7cb3cc230b2 100644
+index 8da5e4c74..7cb3cc230 100644
 --- a/grub-core/bus/usb/usb.c
 +++ b/grub-core/bus/usb/usb.c
 @@ -75,6 +75,9 @@ grub_usb_controller_iterate (grub_usb_controller_iterate_hook_t hook,
@@ -69,7 +69,7 @@ index 8da5e4c7491..7cb3cc230b2 100644
  
    return err;
 diff --git a/include/grub/usb.h b/include/grub/usb.h
-index 512ae1dd0e6..6475c552fc6 100644
+index 512ae1dd0..6475c552f 100644
 --- a/include/grub/usb.h
 +++ b/include/grub/usb.h
 @@ -23,6 +23,10 @@

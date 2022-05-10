@@ -24,7 +24,7 @@ Subject: [PATCH] re-write .gitignore
  create mode 100644 util/bash-completion.d/.gitignore
 
 diff --git a/.gitignore b/.gitignore
-index eca17bec9b8..43f04d47277 100644
+index eca17bec9..43f04d472 100644
 --- a/.gitignore
 +++ b/.gitignore
 @@ -1,249 +1,126 @@
@@ -396,7 +396,7 @@ index eca17bec9b8..43f04d47277 100644
 +/widthspec.h
 diff --git a/build-aux/.gitignore b/build-aux/.gitignore
 new file mode 100644
-index 00000000000..f2f17aab9ff
+index 000000000..f2f17aab9
 --- /dev/null
 +++ b/build-aux/.gitignore
 @@ -0,0 +1,9 @@
@@ -411,7 +411,7 @@ index 00000000000..f2f17aab9ff
 +/texinfo.tex
 diff --git a/docs/.gitignore b/docs/.gitignore
 new file mode 100644
-index 00000000000..91aee84d3e9
+index 000000000..91aee84d3
 --- /dev/null
 +++ b/docs/.gitignore
 @@ -0,0 +1,4 @@
@@ -421,7 +421,7 @@ index 00000000000..91aee84d3e9
 +/version*.texi
 diff --git a/grub-core/.gitignore b/grub-core/.gitignore
 new file mode 100644
-index 00000000000..c738ac6c649
+index 000000000..c738ac6c6
 --- /dev/null
 +++ b/grub-core/.gitignore
 @@ -0,0 +1,15 @@
@@ -442,7 +442,7 @@ index 00000000000..c738ac6c649
 +/trigtables.c
 diff --git a/grub-core/gnulib/.gitignore b/grub-core/gnulib/.gitignore
 new file mode 100644
-index 00000000000..29e199c2db4
+index 000000000..29e199c2d
 --- /dev/null
 +++ b/grub-core/gnulib/.gitignore
 @@ -0,0 +1,22 @@
@@ -470,14 +470,14 @@ index 00000000000..29e199c2db4
 +/wctype.h
 diff --git a/grub-core/lib/.gitignore b/grub-core/lib/.gitignore
 new file mode 100644
-index 00000000000..68154591404
+index 000000000..681545914
 --- /dev/null
 +++ b/grub-core/lib/.gitignore
 @@ -0,0 +1 @@
 +/libgcrypt-grub/
 diff --git a/include/grub/gcrypt/.gitignore b/include/grub/gcrypt/.gitignore
 new file mode 100644
-index 00000000000..8fbf5646246
+index 000000000..8fbf56462
 --- /dev/null
 +++ b/include/grub/gcrypt/.gitignore
 @@ -0,0 +1,2 @@
@@ -485,7 +485,7 @@ index 00000000000..8fbf5646246
 +gcrypt.h
 diff --git a/po/.gitignore b/po/.gitignore
 new file mode 100644
-index 00000000000..97b679c3138
+index 000000000..97b679c31
 --- /dev/null
 +++ b/po/.gitignore
 @@ -0,0 +1,4 @@
@@ -495,7 +495,7 @@ index 00000000000..97b679c3138
 +/stamp-po
 diff --git a/util/bash-completion.d/.gitignore b/util/bash-completion.d/.gitignore
 new file mode 100644
-index 00000000000..b7e1eb12428
+index 000000000..b7e1eb124
 --- /dev/null
 +++ b/util/bash-completion.d/.gitignore
 @@ -0,0 +1 @@

@@ -9,7 +9,7 @@ That is consistent with the menu help text
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/normal/main.c b/grub-core/normal/main.c
-index f57b7508a76..0ce59fdc3f0 100644
+index f57b7508a..0ce59fdc3 100644
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
 @@ -426,8 +426,8 @@ grub_normal_reader_init (int nested)

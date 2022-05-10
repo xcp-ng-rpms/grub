@@ -16,7 +16,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/commands/ls.c b/grub-core/commands/ls.c
-index 2cdb2acc552..d4dcffd3168 100644
+index 2cdb2acc5..d4dcffd31 100644
 --- a/grub-core/commands/ls.c
 +++ b/grub-core/commands/ls.c
 @@ -196,7 +196,7 @@ grub_ls_list_files (char *dirname, int longlist, int all, int human)

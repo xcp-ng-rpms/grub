@@ -11,7 +11,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/grub-core/net/efi/http.c b/grub-core/net/efi/http.c
-index 484e0c68cee..de351b2cd03 100644
+index 484e0c68c..de351b2cd 100644
 --- a/grub-core/net/efi/http.c
 +++ b/grub-core/net/efi/http.c
 @@ -394,27 +394,27 @@ grub_efihttp_open (struct grub_efi_net_device *dev,

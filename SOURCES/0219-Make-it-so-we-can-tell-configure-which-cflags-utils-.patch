@@ -17,7 +17,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  3 files changed, 64 insertions(+), 16 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 9ab683fefac..819212095ff 100644
+index 9ab683fef..819212095 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -850,11 +850,23 @@ if ( test "x$target_cpu" = xi386 || test "x$target_cpu" = xx86_64 ) && test "x$p
@@ -88,7 +88,7 @@ index 9ab683fefac..819212095ff 100644
  GRUB_PLATFORM="${platform}"
  
 diff --git a/conf/Makefile.common b/conf/Makefile.common
-index 1ecb921db65..b93879804c0 100644
+index 1ecb921db..b93879804 100644
 --- a/conf/Makefile.common
 +++ b/conf/Makefile.common
 @@ -40,24 +40,25 @@ CPPFLAGS_KERNEL = $(CPPFLAGS_CPU) $(CPPFLAGS_PLATFORM) -DGRUB_KERNEL=1
@@ -129,7 +129,7 @@ index 1ecb921db65..b93879804c0 100644
  # Other variables
  
 diff --git a/gentpl.py b/gentpl.py
-index 6409736e81c..1e4635f4426 100644
+index 6409736e8..1e4635f44 100644
 --- a/gentpl.py
 +++ b/gentpl.py
 @@ -694,10 +694,10 @@ def module(defn, platform):

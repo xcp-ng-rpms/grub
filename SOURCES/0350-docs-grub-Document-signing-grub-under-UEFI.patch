@@ -14,7 +14,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  1 file changed, 18 insertions(+), 1 deletion(-)
 
 diff --git a/docs/grub.texi b/docs/grub.texi
-index fa11cc0aff7..acace6c0737 100644
+index fa11cc0af..acace6c07 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
 @@ -5610,6 +5610,7 @@ environment variables and commands are listed in the same order.

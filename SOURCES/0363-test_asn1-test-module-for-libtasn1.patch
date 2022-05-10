@@ -51,7 +51,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  create mode 100644 tests/test_asn1.in
 
 diff --git a/Makefile.util.def b/Makefile.util.def
-index 5062a0e50fa..3987d4cdacd 100644
+index 5062a0e50..3987d4cda 100644
 --- a/Makefile.util.def
 +++ b/Makefile.util.def
 @@ -1275,6 +1275,12 @@ script = {
@@ -68,7 +68,7 @@ index 5062a0e50fa..3987d4cdacd 100644
    testcase;
    name = example_unit_test;
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index c2d922e6d48..fd1229c6328 100644
+index c2d922e6d..fd1229c63 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -2451,3 +2451,16 @@ module = {
@@ -90,7 +90,7 @@ index c2d922e6d48..fd1229c6328 100644
 +};
 diff --git a/grub-core/lib/libtasn1_wrap/tests/CVE-2018-1000654.c b/grub-core/lib/libtasn1_wrap/tests/CVE-2018-1000654.c
 new file mode 100644
-index 00000000000..534e304521e
+index 000000000..534e30452
 --- /dev/null
 +++ b/grub-core/lib/libtasn1_wrap/tests/CVE-2018-1000654.c
 @@ -0,0 +1,61 @@
@@ -157,7 +157,7 @@ index 00000000000..534e304521e
 +}
 diff --git a/grub-core/lib/libtasn1_wrap/tests/Test_overflow.c b/grub-core/lib/libtasn1_wrap/tests/Test_overflow.c
 new file mode 100644
-index 00000000000..f48aea0ef8b
+index 000000000..f48aea0ef
 --- /dev/null
 +++ b/grub-core/lib/libtasn1_wrap/tests/Test_overflow.c
 @@ -0,0 +1,138 @@
@@ -301,7 +301,7 @@ index 00000000000..f48aea0ef8b
 +}
 diff --git a/grub-core/lib/libtasn1_wrap/tests/Test_simple.c b/grub-core/lib/libtasn1_wrap/tests/Test_simple.c
 new file mode 100644
-index 00000000000..9f01006ddf4
+index 000000000..9f01006dd
 --- /dev/null
 +++ b/grub-core/lib/libtasn1_wrap/tests/Test_simple.c
 @@ -0,0 +1,207 @@
@@ -514,7 +514,7 @@ index 00000000000..9f01006ddf4
 +}
 diff --git a/grub-core/lib/libtasn1_wrap/tests/Test_strings.c b/grub-core/lib/libtasn1_wrap/tests/Test_strings.c
 new file mode 100644
-index 00000000000..dbe1474b204
+index 000000000..dbe1474b2
 --- /dev/null
 +++ b/grub-core/lib/libtasn1_wrap/tests/Test_strings.c
 @@ -0,0 +1,150 @@
@@ -670,7 +670,7 @@ index 00000000000..dbe1474b204
 +}
 diff --git a/grub-core/lib/libtasn1_wrap/tests/object-id-decoding.c b/grub-core/lib/libtasn1_wrap/tests/object-id-decoding.c
 new file mode 100644
-index 00000000000..d367bbfb5a7
+index 000000000..d367bbfb5
 --- /dev/null
 +++ b/grub-core/lib/libtasn1_wrap/tests/object-id-decoding.c
 @@ -0,0 +1,116 @@
@@ -792,7 +792,7 @@ index 00000000000..d367bbfb5a7
 +}
 diff --git a/grub-core/lib/libtasn1_wrap/tests/object-id-encoding.c b/grub-core/lib/libtasn1_wrap/tests/object-id-encoding.c
 new file mode 100644
-index 00000000000..3a83b58c59f
+index 000000000..3a83b58c5
 --- /dev/null
 +++ b/grub-core/lib/libtasn1_wrap/tests/object-id-encoding.c
 @@ -0,0 +1,120 @@
@@ -918,7 +918,7 @@ index 00000000000..3a83b58c59f
 +}
 diff --git a/grub-core/lib/libtasn1_wrap/tests/octet-string.c b/grub-core/lib/libtasn1_wrap/tests/octet-string.c
 new file mode 100644
-index 00000000000..d8a049e8df0
+index 000000000..d8a049e8d
 --- /dev/null
 +++ b/grub-core/lib/libtasn1_wrap/tests/octet-string.c
 @@ -0,0 +1,211 @@
@@ -1135,7 +1135,7 @@ index 00000000000..d8a049e8df0
 +}
 diff --git a/grub-core/lib/libtasn1_wrap/tests/reproducers.c b/grub-core/lib/libtasn1_wrap/tests/reproducers.c
 new file mode 100644
-index 00000000000..dc7268d4c6c
+index 000000000..dc7268d4c
 --- /dev/null
 +++ b/grub-core/lib/libtasn1_wrap/tests/reproducers.c
 @@ -0,0 +1,81 @@
@@ -1222,7 +1222,7 @@ index 00000000000..dc7268d4c6c
 +}
 diff --git a/grub-core/lib/libtasn1_wrap/wrap_tests.c b/grub-core/lib/libtasn1_wrap/wrap_tests.c
 new file mode 100644
-index 00000000000..75fcd21f0d5
+index 000000000..75fcd21f0
 --- /dev/null
 +++ b/grub-core/lib/libtasn1_wrap/wrap_tests.c
 @@ -0,0 +1,75 @@
@@ -1303,7 +1303,7 @@ index 00000000000..75fcd21f0d5
 +}
 diff --git a/grub-core/lib/libtasn1_wrap/tests/CVE-2018-1000654-1_asn1_tab.h b/grub-core/lib/libtasn1_wrap/tests/CVE-2018-1000654-1_asn1_tab.h
 new file mode 100644
-index 00000000000..1e7d3d64f55
+index 000000000..1e7d3d64f
 --- /dev/null
 +++ b/grub-core/lib/libtasn1_wrap/tests/CVE-2018-1000654-1_asn1_tab.h
 @@ -0,0 +1,32 @@
@@ -1341,7 +1341,7 @@ index 00000000000..1e7d3d64f55
 +};
 diff --git a/grub-core/lib/libtasn1_wrap/tests/CVE-2018-1000654-2_asn1_tab.h b/grub-core/lib/libtasn1_wrap/tests/CVE-2018-1000654-2_asn1_tab.h
 new file mode 100644
-index 00000000000..e2561e5ec6d
+index 000000000..e2561e5ec
 --- /dev/null
 +++ b/grub-core/lib/libtasn1_wrap/tests/CVE-2018-1000654-2_asn1_tab.h
 @@ -0,0 +1,36 @@
@@ -1383,7 +1383,7 @@ index 00000000000..e2561e5ec6d
 +};
 diff --git a/grub-core/lib/libtasn1_wrap/wrap_tests.h b/grub-core/lib/libtasn1_wrap/wrap_tests.h
 new file mode 100644
-index 00000000000..555e56dd202
+index 000000000..555e56dd2
 --- /dev/null
 +++ b/grub-core/lib/libtasn1_wrap/wrap_tests.h
 @@ -0,0 +1,38 @@
@@ -1426,10 +1426,10 @@ index 00000000000..555e56dd202
 +
 +#endif
 diff --git a/.gitignore b/.gitignore
-index a999024652e..f8c5a51af4e 100644
+index 7aaae594d..146f4662a 100644
 --- a/.gitignore
 +++ b/.gitignore
-@@ -133,4 +133,5 @@ grub-*.tar.*
+@@ -131,4 +131,5 @@ grub-*.tar.*
  /libgrub_a_init.c
  /libgrub_a_init.lst
  /stamp-h.in
@@ -1437,7 +1437,7 @@ index a999024652e..f8c5a51af4e 100644
  /widthspec.h
 diff --git a/tests/test_asn1.in b/tests/test_asn1.in
 new file mode 100644
-index 00000000000..8173c5c270e
+index 000000000..8173c5c27
 --- /dev/null
 +++ b/tests/test_asn1.in
 @@ -0,0 +1,12 @@

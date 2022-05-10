@@ -24,7 +24,7 @@ Signed-off-by: Jeff Mahoney <jeffm@suse.com>
  2 files changed, 533 insertions(+), 20 deletions(-)
 
 diff --git a/grub-core/fs/btrfs.c b/grub-core/fs/btrfs.c
-index be195448dbe..51ed63d429b 100644
+index be195448d..51ed63d42 100644
 --- a/grub-core/fs/btrfs.c
 +++ b/grub-core/fs/btrfs.c
 @@ -29,6 +29,9 @@
@@ -690,7 +690,7 @@ index be195448dbe..51ed63d429b 100644
 +
 +// vim: si et sw=2:
 diff --git a/include/grub/btrfs.h b/include/grub/btrfs.h
-index 9d93fb6c182..234ad976771 100644
+index 9d93fb6c1..234ad9767 100644
 --- a/include/grub/btrfs.h
 +++ b/include/grub/btrfs.h
 @@ -29,6 +29,7 @@ enum

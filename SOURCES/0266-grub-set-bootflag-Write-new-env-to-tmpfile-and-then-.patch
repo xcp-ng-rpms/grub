@@ -8,25 +8,27 @@ writing the modified grubenv to a tmpfile first and then renaming the
 tmpfile over the old grubenv (following symlinks).
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+[rharwood: rebase around updates]
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
 ---
  util/grub-set-bootflag.c | 87 +++++++++++++++++++++++++++++++++++++++++++-----
  1 file changed, 78 insertions(+), 9 deletions(-)
 
 diff --git a/util/grub-set-bootflag.c b/util/grub-set-bootflag.c
-index 32f1c104a2b..d3b80a0d204 100644
+index a0ebd08ca..a85f11fce 100644
 --- a/util/grub-set-bootflag.c
 +++ b/util/grub-set-bootflag.c
-@@ -26,7 +26,9 @@
- #include <config-util.h>     /* For *_DIR_NAME defines */
+@@ -27,7 +27,9 @@
  #include <grub/types.h>
  #include <grub/lib/envblk.h> /* For GRUB_ENVBLK_DEFCFG define */
+ #include <errno.h>
 +#include <limits.h>
  #include <stdio.h>
 +#include <stdlib.h>
  #include <string.h>
  #include <unistd.h>
  
-@@ -52,8 +54,10 @@ int main(int argc, char *argv[])
+@@ -53,8 +55,10 @@ int main(int argc, char *argv[])
  {
    /* NOTE buf must be at least the longest bootflag length + 4 bytes */
    char env[GRUBENV_SIZE + 1], buf[64], *s;
@@ -38,7 +40,7 @@ index 32f1c104a2b..d3b80a0d204 100644
    FILE *f;
  
    if (argc != 2)
-@@ -75,7 +79,32 @@ int main(int argc, char *argv[])
+@@ -76,7 +80,32 @@ int main(int argc, char *argv[])
    bootflag = bootflags[i];
    len = strlen (bootflag);
  
@@ -72,7 +74,7 @@ index 32f1c104a2b..d3b80a0d204 100644
    if (!f)
      {
        perror ("Error opening " GRUBENV " for reading");
-@@ -129,30 +158,70 @@ int main(int argc, char *argv[])
+@@ -131,30 +160,70 @@ int main(int argc, char *argv[])
    snprintf(buf, sizeof(buf), "%s=1\n", bootflag);
    memcpy(s, buf, len + 3);
  

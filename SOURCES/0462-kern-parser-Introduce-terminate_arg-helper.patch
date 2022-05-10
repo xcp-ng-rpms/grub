@@ -13,7 +13,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 13 insertions(+), 10 deletions(-)
 
 diff --git a/grub-core/kern/parser.c b/grub-core/kern/parser.c
-index 0d3582bd874..572c67089f3 100644
+index 0d3582bd8..572c67089 100644
 --- a/grub-core/kern/parser.c
 +++ b/grub-core/kern/parser.c
 @@ -129,6 +129,16 @@ add_var (char *varname, char **bp, char **vp,

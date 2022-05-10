@@ -12,7 +12,7 @@ Subject: [PATCH] grub2-btrfs-05-grub2-mkconfig
  5 files changed, 37 insertions(+), 2 deletions(-)
 
 diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
-index 8218f3d477f..4248b9341ab 100644
+index 8218f3d47..4248b9341 100644
 --- a/util/grub-mkconfig.in
 +++ b/util/grub-mkconfig.in
 @@ -258,7 +258,8 @@ export GRUB_DEFAULT \
@@ -26,7 +26,7 @@ index 8218f3d477f..4248b9341ab 100644
  if test "x${grub_cfg}" != "x"; then
    rm -f "${grub_cfg}.new"
 diff --git a/util/grub-mkconfig_lib.in b/util/grub-mkconfig_lib.in
-index 113a41f9409..b3aae534ddc 100644
+index 113a41f94..b3aae534d 100644
 --- a/util/grub-mkconfig_lib.in
 +++ b/util/grub-mkconfig_lib.in
 @@ -52,7 +52,11 @@ grub_warn ()
@@ -42,7 +42,7 @@ index 113a41f9409..b3aae534ddc 100644
  
  is_path_readable_by_grub ()
 diff --git a/util/grub.d/00_header.in b/util/grub.d/00_header.in
-index 858b526c925..e2a53300126 100644
+index 858b526c9..e2a533001 100644
 --- a/util/grub.d/00_header.in
 +++ b/util/grub.d/00_header.in
 @@ -27,6 +27,14 @@ export TEXTDOMAINDIR="@localedir@"
@@ -88,7 +88,7 @@ index 858b526c925..e2a53300126 100644
 +EOF
 +fi
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 4e49ccdf742..d9a05937e46 100644
+index 4e49ccdf7..d9a05937e 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -66,10 +66,14 @@ fi
@@ -107,7 +107,7 @@ index 4e49ccdf742..d9a05937e46 100644
      xzfs)
  	rpool=`${grub_probe} --device ${GRUB_DEVICE} --target=fs_label 2>/dev/null || true`
 diff --git a/util/grub.d/20_linux_xen.in b/util/grub.d/20_linux_xen.in
-index 972a4b5a03d..bcdc3ceac02 100644
+index 972a4b5a0..bcdc3ceac 100644
 --- a/util/grub.d/20_linux_xen.in
 +++ b/util/grub.d/20_linux_xen.in
 @@ -73,10 +73,14 @@ fi

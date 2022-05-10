@@ -19,7 +19,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 6 insertions(+), 19 deletions(-)
 
 diff --git a/grub-core/video/efi_gop.c b/grub-core/video/efi_gop.c
-index c9e40e8d4e9..9fcc41ac03c 100644
+index c9e40e8d4..9fcc41ac0 100644
 --- a/grub-core/video/efi_gop.c
 +++ b/grub-core/video/efi_gop.c
 @@ -229,7 +229,7 @@ grub_video_gop_fill_real_mode_info (unsigned mode,

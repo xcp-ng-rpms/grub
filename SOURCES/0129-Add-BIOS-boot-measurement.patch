@@ -11,7 +11,7 @@ can't do this stage for us.
  2 files changed, 73 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/boot/i386/pc/boot.S b/grub-core/boot/i386/pc/boot.S
-index ea167fe1206..c1df86dec0b 100644
+index ea167fe12..c1df86dec 100644
 --- a/grub-core/boot/i386/pc/boot.S
 +++ b/grub-core/boot/i386/pc/boot.S
 @@ -24,11 +24,14 @@
@@ -99,7 +99,7 @@ index ea167fe1206..c1df86dec0b 100644
  	jmp	*(LOCAL(kernel_address))
  
 diff --git a/grub-core/boot/i386/pc/diskboot.S b/grub-core/boot/i386/pc/diskboot.S
-index 68d31de0c4c..f4744ec6fcb 100644
+index 68d31de0c..f4744ec6f 100644
 --- a/grub-core/boot/i386/pc/diskboot.S
 +++ b/grub-core/boot/i386/pc/diskboot.S
 @@ -19,6 +19,8 @@

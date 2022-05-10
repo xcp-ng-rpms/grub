@@ -15,7 +15,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 4 deletions(-)
 
 diff --git a/grub-core/io/lzopio.c b/grub-core/io/lzopio.c
-index 84edf6dd2dc..6bf14daf474 100644
+index 84edf6dd2..6bf14daf4 100644
 --- a/grub-core/io/lzopio.c
 +++ b/grub-core/io/lzopio.c
 @@ -125,8 +125,6 @@ read_block_header (struct grub_lzopio *lzopio)

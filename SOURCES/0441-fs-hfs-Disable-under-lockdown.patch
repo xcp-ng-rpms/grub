@@ -14,7 +14,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/fs/hfs.c b/grub-core/fs/hfs.c
-index 3fd4eec202c..49d1831c808 100644
+index 3fd4eec20..49d1831c8 100644
 --- a/grub-core/fs/hfs.c
 +++ b/grub-core/fs/hfs.c
 @@ -30,6 +30,7 @@

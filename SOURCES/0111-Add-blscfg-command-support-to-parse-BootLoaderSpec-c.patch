@@ -20,7 +20,7 @@ the bls_import command, change it to blscfg and improve the BLS support.
  create mode 100644 grub-core/commands/loadenv.h
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 27563743ba9..96ccb402125 100644
+index 27563743b..96ccb4021 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -129,6 +129,7 @@ kernel = {
@@ -42,7 +42,7 @@ index 27563743ba9..96ccb402125 100644
  };
  
 diff --git a/grub-core/commands/blscfg.c b/grub-core/commands/blscfg.c
-index 4274aca5a9d..86796c8cd83 100644
+index 4274aca5a..86796c8cd 100644
 --- a/grub-core/commands/blscfg.c
 +++ b/grub-core/commands/blscfg.c
 @@ -30,32 +30,405 @@
@@ -951,7 +951,7 @@ index 4274aca5a9d..86796c8cd83 100644
 +  grub_unregister_extcmd (oldcmd);
  }
 diff --git a/grub-core/commands/loadenv.c b/grub-core/commands/loadenv.c
-index acd93d123ed..91c99456091 100644
+index acd93d123..91c994560 100644
 --- a/grub-core/commands/loadenv.c
 +++ b/grub-core/commands/loadenv.c
 @@ -28,6 +28,8 @@
@@ -1047,7 +1047,7 @@ index acd93d123ed..91c99456091 100644
  {
 diff --git a/grub-core/commands/loadenv.h b/grub-core/commands/loadenv.h
 new file mode 100644
-index 00000000000..952f46121bd
+index 000000000..952f46121
 --- /dev/null
 +++ b/grub-core/commands/loadenv.h
 @@ -0,0 +1,93 @@
@@ -1145,7 +1145,7 @@ index 00000000000..952f46121bd
 +  return 0;
 +}
 diff --git a/include/grub/compiler.h b/include/grub/compiler.h
-index c9e1d7a73dc..9859ff4cc79 100644
+index c9e1d7a73..9859ff4cc 100644
 --- a/include/grub/compiler.h
 +++ b/include/grub/compiler.h
 @@ -48,4 +48,6 @@

@@ -79,7 +79,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  2 files changed, 82 insertions(+), 28 deletions(-)
 
 diff --git a/grub-core/kern/efi/mm.c b/grub-core/kern/efi/mm.c
-index 7692e63ba24..306924f73a4 100644
+index 7692e63ba..306924f73 100644
 --- a/grub-core/kern/efi/mm.c
 +++ b/grub-core/kern/efi/mm.c
 @@ -154,6 +154,7 @@ grub_efi_allocate_pages_real (grub_efi_physical_address_t address,
@@ -155,7 +155,7 @@ index 7692e63ba24..306924f73a4 100644
    grub_free(memory_map);
  
 diff --git a/grub-core/loader/arm64/linux.c b/grub-core/loader/arm64/linux.c
-index 93b5cd306eb..e1110749eb9 100644
+index 93b5cd306..e1110749e 100644
 --- a/grub-core/loader/arm64/linux.c
 +++ b/grub-core/loader/arm64/linux.c
 @@ -70,13 +70,15 @@ finalize_params_linux (void)

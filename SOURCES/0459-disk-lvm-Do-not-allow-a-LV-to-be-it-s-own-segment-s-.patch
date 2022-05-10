@@ -13,7 +13,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/disk/lvm.c b/grub-core/disk/lvm.c
-index 9eda28d852c..7e86bb7df4f 100644
+index 9eda28d85..7e86bb7df 100644
 --- a/grub-core/disk/lvm.c
 +++ b/grub-core/disk/lvm.c
 @@ -840,9 +840,13 @@ error_parsing_metadata:

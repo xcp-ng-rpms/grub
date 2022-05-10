@@ -19,7 +19,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/loader/xnu.c b/grub-core/loader/xnu.c
-index b33a384321c..16bfa7cec72 100644
+index b33a38432..16bfa7cec 100644
 --- a/grub-core/loader/xnu.c
 +++ b/grub-core/loader/xnu.c
 @@ -1392,9 +1392,9 @@ grub_xnu_fill_devicetree (void)

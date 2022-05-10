@@ -10,7 +10,7 @@ is used. So replace the hardcoded /etc/default/grub with it.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/util/grub-switch-to-blscfg.in b/util/grub-switch-to-blscfg.in
-index f740b8f4d03..eae3c379e4a 100644
+index f740b8f4d..eae3c379e 100644
 --- a/util/grub-switch-to-blscfg.in
 +++ b/util/grub-switch-to-blscfg.in
 @@ -252,7 +252,7 @@ if [[ "${GENERATE}" -eq 1 ]] ; then

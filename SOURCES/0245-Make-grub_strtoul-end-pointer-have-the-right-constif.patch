@@ -28,7 +28,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  18 files changed, 34 insertions(+), 34 deletions(-)
 
 diff --git a/grub-core/kern/fs.c b/grub-core/kern/fs.c
-index 9085895b6fe..1bd748be83b 100644
+index 9085895b6..1bd748be8 100644
 --- a/grub-core/kern/fs.c
 +++ b/grub-core/kern/fs.c
 @@ -134,7 +134,7 @@ struct grub_fs_block
@@ -41,7 +41,7 @@ index 9085895b6fe..1bd748be83b 100644
    unsigned i;
    grub_disk_t disk = file->device->disk;
 diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
-index 5c3899f0e5b..aaae9aa0ab7 100644
+index 5c3899f0e..aaae9aa0a 100644
 --- a/grub-core/kern/misc.c
 +++ b/grub-core/kern/misc.c
 @@ -383,7 +383,7 @@ grub_isspace (int c)
@@ -80,7 +80,7 @@ index 5c3899f0e5b..aaae9aa0ab7 100644
        if (*fmt == '$')
  	{
 diff --git a/grub-core/kern/partition.c b/grub-core/kern/partition.c
-index e499147cbcb..2c401b866c4 100644
+index e499147cb..2c401b866 100644
 --- a/grub-core/kern/partition.c
 +++ b/grub-core/kern/partition.c
 @@ -126,7 +126,7 @@ grub_partition_probe (struct grub_disk *disk, const char *str)
@@ -93,7 +93,7 @@ index e499147cbcb..2c401b866c4 100644
        curpart = 0;
        /* Use the first partition map type found.  */
 diff --git a/grub-core/lib/legacy_parse.c b/grub-core/lib/legacy_parse.c
-index ef56150ac77..05719ab2ccb 100644
+index ef56150ac..05719ab2c 100644
 --- a/grub-core/lib/legacy_parse.c
 +++ b/grub-core/lib/legacy_parse.c
 @@ -418,7 +418,7 @@ adjust_file (const char *in, grub_size_t len)
@@ -106,7 +106,7 @@ index ef56150ac77..05719ab2ccb 100644
      {
        subpart = rest[1] - 'a';
 diff --git a/grub-core/lib/syslinux_parse.c b/grub-core/lib/syslinux_parse.c
-index 28ba3aef0bb..21ca040ada7 100644
+index 28ba3aef0..21ca040ad 100644
 --- a/grub-core/lib/syslinux_parse.c
 +++ b/grub-core/lib/syslinux_parse.c
 @@ -1058,7 +1058,7 @@ write_entry (struct output_buffer *outbuf,
@@ -134,7 +134,7 @@ index 28ba3aef0bb..21ca040ada7 100644
  		  }
  		/* FIXME: isolinux, ntldr, cmldr, *dos, seg, hide
 diff --git a/grub-core/loader/i386/xen_fileXX.c b/grub-core/loader/i386/xen_fileXX.c
-index fb66e66fe96..293f1ad5c3e 100644
+index fb66e66fe..293f1ad5c 100644
 --- a/grub-core/loader/i386/xen_fileXX.c
 +++ b/grub-core/loader/i386/xen_fileXX.c
 @@ -25,7 +25,7 @@ parse_xen_guest (grub_elf_t elf, struct grub_xen_file_info *xi,
@@ -147,7 +147,7 @@ index fb66e66fe96..293f1ad5c3e 100644
  
    grub_errno = GRUB_ERR_NONE;
 diff --git a/grub-core/net/efi/ip4_config.c b/grub-core/net/efi/ip4_config.c
-index b711a5d9457..38e2a04747a 100644
+index b711a5d94..38e2a0474 100644
 --- a/grub-core/net/efi/ip4_config.c
 +++ b/grub-core/net/efi/ip4_config.c
 @@ -62,7 +62,7 @@ grub_efi_string_to_ip4_address (const char *val, grub_efi_ipv4_address_t *addres
@@ -160,7 +160,7 @@ index b711a5d9457..38e2a04747a 100644
  	{
  	  grub_errno = GRUB_ERR_NONE;
 diff --git a/grub-core/net/efi/ip6_config.c b/grub-core/net/efi/ip6_config.c
-index 017c4d05bc7..e0e00c23d21 100644
+index 017c4d05b..e0e00c23d 100644
 --- a/grub-core/net/efi/ip6_config.c
 +++ b/grub-core/net/efi/ip6_config.c
 @@ -84,7 +84,7 @@ grub_efi_string_to_ip6_address (const char *val, grub_efi_ipv6_address_t *addres
@@ -173,7 +173,7 @@ index 017c4d05bc7..e0e00c23d21 100644
  	{
  	  grub_errno = GRUB_ERR_NONE;
 diff --git a/grub-core/net/efi/net.c b/grub-core/net/efi/net.c
-index f208d1b180c..4c70fc4da2a 100644
+index f208d1b18..4c70fc4da 100644
 --- a/grub-core/net/efi/net.c
 +++ b/grub-core/net/efi/net.c
 @@ -729,7 +729,7 @@ grub_efi_net_parse_address (const char *address,
@@ -195,7 +195,7 @@ index f208d1b180c..4c70fc4da2a 100644
  	    {
  	      ip6->prefix_length = prefix_length;
 diff --git a/grub-core/net/efi/pxe.c b/grub-core/net/efi/pxe.c
-index 531949cba5c..73e2bb01c1b 100644
+index 531949cba..73e2bb01c 100644
 --- a/grub-core/net/efi/pxe.c
 +++ b/grub-core/net/efi/pxe.c
 @@ -187,7 +187,7 @@ parse_ip6 (const char *val, grub_uint64_t *ip, const char **rest)
@@ -226,7 +226,7 @@ index 531949cba5c..73e2bb01c1b 100644
    grub_efi_pxe_t *pxe = (prefer_ip6) ? dev->ip6_pxe : dev->ip4_pxe;
    grub_efi_uint64_t bufsz = len;
 diff --git a/grub-core/net/http.c b/grub-core/net/http.c
-index c9c59690a98..b52b558d631 100644
+index c9c59690a..b52b558d6 100644
 --- a/grub-core/net/http.c
 +++ b/grub-core/net/http.c
 @@ -110,7 +110,7 @@ parse_line (grub_file_t file, http_data_t data, char *ptr, grub_size_t len)
@@ -248,7 +248,7 @@ index c9c59690a98..b52b558d631 100644
        return GRUB_ERR_NONE;
      }
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index a571ee92efa..a011b940100 100644
+index a571ee92e..a011b9401 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -411,7 +411,7 @@ parse_ip (const char *val, grub_uint32_t *ip, const char **rest)
@@ -288,7 +288,7 @@ index a571ee92efa..a011b940100 100644
  	    return GRUB_ERR_NONE;
  	  grub_errno = GRUB_ERR_NONE;
 diff --git a/grub-core/net/url.c b/grub-core/net/url.c
-index 146858284cd..d9d2fc9a9dc 100644
+index 146858284..d9d2fc9a9 100644
 --- a/grub-core/net/url.c
 +++ b/grub-core/net/url.c
 @@ -235,7 +235,7 @@ extract_http_url_info (char *url, int ssl,
@@ -301,7 +301,7 @@ index 146858284cd..d9d2fc9a9dc 100644
  #ifdef URL_TEST
        if (portul == ULONG_MAX && errno == ERANGE)
 diff --git a/grub-core/script/execute.c b/grub-core/script/execute.c
-index 93965777138..7d327f59d92 100644
+index 939657771..7d327f59d 100644
 --- a/grub-core/script/execute.c
 +++ b/grub-core/script/execute.c
 @@ -146,7 +146,7 @@ replace_scope (struct grub_script_scope *new_scope)
@@ -332,7 +332,7 @@ index 93965777138..7d327f59d92 100644
  
    if (! scope || argc > 1)
 diff --git a/grub-core/term/serial.c b/grub-core/term/serial.c
-index db80b3ba0fb..f9271b09239 100644
+index db80b3ba0..f9271b092 100644
 --- a/grub-core/term/serial.c
 +++ b/grub-core/term/serial.c
 @@ -269,7 +269,7 @@ grub_cmd_serial (grub_extcmd_context_t ctxt, int argc, char **args)
@@ -345,7 +345,7 @@ index db80b3ba0fb..f9271b09239 100644
        if (grub_errno)
  	return grub_errno;
 diff --git a/grub-core/term/terminfo.c b/grub-core/term/terminfo.c
-index 29df35e6d20..537a5c0cb0b 100644
+index 29df35e6d..537a5c0cb 100644
 --- a/grub-core/term/terminfo.c
 +++ b/grub-core/term/terminfo.c
 @@ -737,7 +737,7 @@ grub_cmd_terminfo (grub_extcmd_context_t ctxt, int argc, char **args)
@@ -358,7 +358,7 @@ index 29df35e6d20..537a5c0cb0b 100644
        if (grub_errno)
  	return grub_errno;
 diff --git a/grub-core/tests/strtoull_test.c b/grub-core/tests/strtoull_test.c
-index 7da615ff33e..5488ab26b43 100644
+index 7da615ff3..5488ab26b 100644
 --- a/grub-core/tests/strtoull_test.c
 +++ b/grub-core/tests/strtoull_test.c
 @@ -25,7 +25,7 @@ static void
@@ -371,7 +371,7 @@ index 7da615ff33e..5488ab26b43 100644
    grub_errno = 0;
    value = grub_strtoull(input, &output, base);
 diff --git a/include/grub/misc.h b/include/grub/misc.h
-index de9016ab709..1258ec6bbf3 100644
+index de9016ab7..1258ec6bb 100644
 --- a/include/grub/misc.h
 +++ b/include/grub/misc.h
 @@ -288,11 +288,11 @@ grub_strncasecmp (const char *s1, const char *s2, grub_size_t n)

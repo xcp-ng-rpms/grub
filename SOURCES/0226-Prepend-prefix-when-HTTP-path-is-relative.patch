@@ -14,7 +14,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  2 files changed, 71 insertions(+), 21 deletions(-)
 
 diff --git a/grub-core/kern/main.c b/grub-core/kern/main.c
-index da47b18b50e..dcf48726d54 100644
+index da47b18b5..dcf48726d 100644
 --- a/grub-core/kern/main.c
 +++ b/grub-core/kern/main.c
 @@ -130,11 +130,19 @@ grub_set_prefix_and_root (void)
@@ -39,7 +39,7 @@ index da47b18b50e..dcf48726d54 100644
  	}
      }
 diff --git a/grub-core/net/efi/http.c b/grub-core/net/efi/http.c
-index 243acbaa35b..2a9624dacc4 100644
+index 243acbaa3..2a9624dac 100644
 --- a/grub-core/net/efi/http.c
 +++ b/grub-core/net/efi/http.c
 @@ -9,10 +9,52 @@

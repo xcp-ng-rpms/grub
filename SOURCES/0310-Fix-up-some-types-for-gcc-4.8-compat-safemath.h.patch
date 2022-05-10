@@ -17,7 +17,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  7 files changed, 39 insertions(+), 25 deletions(-)
 
 diff --git a/grub-core/disk/lvm.c b/grub-core/disk/lvm.c
-index ca09d469990..4fbb3eac0ea 100644
+index ca09d4699..4fbb3eac0 100644
 --- a/grub-core/disk/lvm.c
 +++ b/grub-core/disk/lvm.c
 @@ -103,7 +103,7 @@ grub_lvm_detect (grub_disk_t disk,
@@ -73,7 +73,7 @@ index ca09d469990..4fbb3eac0ea 100644
  
  		lv->fullname = grub_malloc (sz0);
 diff --git a/grub-core/font/font.c b/grub-core/font/font.c
-index a7b955a1a74..b36a099b856 100644
+index a7b955a1a..b36a099b8 100644
 --- a/grub-core/font/font.c
 +++ b/grub-core/font/font.c
 @@ -361,10 +361,10 @@ static char *
@@ -90,7 +90,7 @@ index a7b955a1a74..b36a099b856 100644
  
    str = grub_malloc (sz);
 diff --git a/grub-core/fs/btrfs.c b/grub-core/fs/btrfs.c
-index 1d801f6c9ee..3faf9056c72 100644
+index 1d801f6c9..3faf9056c 100644
 --- a/grub-core/fs/btrfs.c
 +++ b/grub-core/fs/btrfs.c
 @@ -323,10 +323,15 @@ save_ref (struct grub_btrfs_leaf_descriptor *desc,
@@ -133,7 +133,7 @@ index 1d801f6c9ee..3faf9056c72 100644
        if (!data->devices_attached)
  	{
 diff --git a/grub-core/fs/ext2.c b/grub-core/fs/ext2.c
-index b4bd019f49a..3d59cf13125 100644
+index b4bd019f4..3d59cf131 100644
 --- a/grub-core/fs/ext2.c
 +++ b/grub-core/fs/ext2.c
 @@ -719,7 +719,8 @@ grub_ext2_read_symlink (grub_fshelp_node_t node)
@@ -147,7 +147,7 @@ index b4bd019f49a..3d59cf13125 100644
        grub_error (GRUB_ERR_OUT_OF_RANGE, N_("overflow is detected"));
        return NULL;
 diff --git a/grub-core/fs/hfsplus.c b/grub-core/fs/hfsplus.c
-index 8b17ebba296..e06bcbb9ba3 100644
+index 8b17ebba2..e06bcbb9b 100644
 --- a/grub-core/fs/hfsplus.c
 +++ b/grub-core/fs/hfsplus.c
 @@ -478,7 +478,7 @@ grub_hfsplus_read_symlink (grub_fshelp_node_t node)
@@ -160,7 +160,7 @@ index 8b17ebba296..e06bcbb9ba3 100644
  
    symlink = grub_malloc (sz);
 diff --git a/grub-core/fs/iso9660.c b/grub-core/fs/iso9660.c
-index 6fc9302bce3..a4403e29dee 100644
+index 6fc9302bc..a4403e29d 100644
 --- a/grub-core/fs/iso9660.c
 +++ b/grub-core/fs/iso9660.c
 @@ -536,7 +536,7 @@ add_part (struct iterate_dir_ctx *ctx,
@@ -199,7 +199,7 @@ index 6fc9302bce3..a4403e29dee 100644
  		    grub_mul (sz, sizeof (node->dirents[0]), &sz) ||
  		    grub_add (sz, sizeof (struct grub_fshelp_node), &sz))
 diff --git a/grub-core/normal/charset.c b/grub-core/normal/charset.c
-index 4dfcc31078d..f902b13b44e 100644
+index 4dfcc3107..f902b13b4 100644
 --- a/grub-core/normal/charset.c
 +++ b/grub-core/normal/charset.c
 @@ -479,8 +479,9 @@ grub_unicode_aglomerate_comb (const grub_uint32_t *in, grub_size_t inlen,

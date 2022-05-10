@@ -14,7 +14,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  4 files changed, 4489 insertions(+), 1869 deletions(-)
 
 diff --git a/grub-core/lib/minilzo/minilzo.c b/grub-core/lib/minilzo/minilzo.c
-index 25a1f68b3b5..ab2be5f4fd0 100644
+index 25a1f68b3..ab2be5f4f 100644
 --- a/grub-core/lib/minilzo/minilzo.c
 +++ b/grub-core/lib/minilzo/minilzo.c
 @@ -2,22 +2,7 @@
@@ -5251,7 +5251,7 @@ index 25a1f68b3b5..ab2be5f4fd0 100644
  /***** End of minilzo.c *****/
 -
 diff --git a/grub-core/lib/minilzo/lzoconf.h b/grub-core/lib/minilzo/lzoconf.h
-index 1d0fe14fcda..61be29c5dc2 100644
+index 1d0fe14fc..61be29c5d 100644
 --- a/grub-core/lib/minilzo/lzoconf.h
 +++ b/grub-core/lib/minilzo/lzoconf.h
 @@ -2,22 +2,7 @@
@@ -5590,7 +5590,7 @@ index 1d0fe14fcda..61be29c5dc2 100644
 -/* vim:set ts=4 et: */
 +/* vim:set ts=4 sw=4 et: */
 diff --git a/grub-core/lib/minilzo/lzodefs.h b/grub-core/lib/minilzo/lzodefs.h
-index 0e40e332a8d..f4ae9487ebe 100644
+index 0e40e332a..f4ae9487e 100644
 --- a/grub-core/lib/minilzo/lzodefs.h
 +++ b/grub-core/lib/minilzo/lzodefs.h
 @@ -2,22 +2,7 @@
@@ -8462,7 +8462,7 @@ index 0e40e332a8d..f4ae9487ebe 100644
 -/* vim:set ts=4 et: */
 +/* vim:set ts=4 sw=4 et: */
 diff --git a/grub-core/lib/minilzo/minilzo.h b/grub-core/lib/minilzo/minilzo.h
-index 74fefa9fe20..79374546748 100644
+index 74fefa9fe..793745467 100644
 --- a/grub-core/lib/minilzo/minilzo.h
 +++ b/grub-core/lib/minilzo/minilzo.h
 @@ -2,22 +2,7 @@

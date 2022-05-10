@@ -13,7 +13,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  3 files changed, 89 insertions(+), 37 deletions(-)
 
 diff --git a/grub-core/loader/efi/linux.c b/grub-core/loader/efi/linux.c
-index c8ecce6dfd0..0622dfa48d4 100644
+index c8ecce6df..0622dfa48 100644
 --- a/grub-core/loader/efi/linux.c
 +++ b/grub-core/loader/efi/linux.c
 @@ -69,12 +69,17 @@ grub_linuxefi_secure_validate (void *data, grub_uint32_t size)
@@ -37,7 +37,7 @@ index c8ecce6dfd0..0622dfa48d4 100644
  
    return GRUB_ERR_BUG;
 diff --git a/grub-core/loader/i386/efi/linux.c b/grub-core/loader/i386/efi/linux.c
-index 8db228c5bf5..800c3e54022 100644
+index 8db228c5b..800c3e540 100644
 --- a/grub-core/loader/i386/efi/linux.c
 +++ b/grub-core/loader/i386/efi/linux.c
 @@ -44,14 +44,10 @@ static char *linux_cmdline;
@@ -244,7 +244,7 @@ index 8db228c5bf5..800c3e54022 100644
    if (kernel_mem && !loaded)
      grub_efi_free_pages ((grub_efi_physical_address_t)(grub_addr_t)kernel_mem,
 diff --git a/include/grub/i386/linux.h b/include/grub/i386/linux.h
-index bb19dbd5a77..8474a857ed2 100644
+index bb19dbd5a..8474a857e 100644
 --- a/include/grub/i386/linux.h
 +++ b/include/grub/i386/linux.h
 @@ -133,7 +133,12 @@ struct linux_i386_kernel_header

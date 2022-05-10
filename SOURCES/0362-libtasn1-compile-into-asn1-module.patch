@@ -14,7 +14,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  create mode 100644 grub-core/lib/libtasn1_wrap/wrap.c
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 99615c07b94..c2d922e6d48 100644
+index 99615c07b..c2d922e6d 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -2436,3 +2436,18 @@ module = {
@@ -38,7 +38,7 @@ index 99615c07b94..c2d922e6d48 100644
 +};
 diff --git a/grub-core/lib/libtasn1_wrap/wrap.c b/grub-core/lib/libtasn1_wrap/wrap.c
 new file mode 100644
-index 00000000000..622ba942e33
+index 000000000..622ba942e
 --- /dev/null
 +++ b/grub-core/lib/libtasn1_wrap/wrap.c
 @@ -0,0 +1,26 @@

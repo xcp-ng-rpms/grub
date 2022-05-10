@@ -21,7 +21,7 @@ Signed-off-by: Alexander Graf <agraf@suse.de>
  2 files changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/video/efi_gop.c b/grub-core/video/efi_gop.c
-index 7f9d1c2dfa1..c9e40e8d4e9 100644
+index 7f9d1c2df..c9e40e8d4 100644
 --- a/grub-core/video/efi_gop.c
 +++ b/grub-core/video/efi_gop.c
 @@ -121,6 +121,7 @@ grub_video_gop_get_bpp (struct grub_efi_gop_mode_info *in)
@@ -41,7 +41,7 @@ index 7f9d1c2dfa1..c9e40e8d4e9 100644
        out->red_field_pos = 0;
        out->green_mask_size = 8;
 diff --git a/include/grub/efi/graphics_output.h b/include/grub/efi/graphics_output.h
-index 12977741192..e4388127c66 100644
+index 129777411..e4388127c 100644
 --- a/include/grub/efi/graphics_output.h
 +++ b/include/grub/efi/graphics_output.h
 @@ -28,7 +28,8 @@ typedef enum

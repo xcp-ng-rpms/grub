@@ -486,3 +486,15 @@ Patch0485: 0485-ieee1275-ofdisk-retry-on-open-failure.patch
 Patch0486: 0486-normal-main-Discover-the-device-to-read-the-config-f.patch
 Patch0487: 0487-powerpc-adjust-setting-of-prefix-for-signed-binary-c.patch
 Patch0488: 0488-powerpc-fix-prefix-signed-grub-special-case-for-Powe.patch
+Patch0489: 0489-grub-mkconfig-restore-umask-for-grub.cfg.patch
+Patch0490: 0490-efinet-Add-DHCP-proxy-support.patch
+Patch0491: 0491-at_keyboard-Fix-unreliable-key-presses.patch
+Patch0492: 0492-commands-search-Fix-bug-stopping-iteration-when-no-f.patch
+Patch0493: 0493-search-new-efidisk-only-option-on-EFI-systems.patch
+Patch0494: 0494-efi-new-connectefi-command.patch
+Patch0495: 0495-Try-to-pick-better-locations-for-kernel-and-initrd.patch
+Patch0496: 0496-x86-efi-Use-bounce-buffers-for-reading-to-addresses-.patch
+Patch0497: 0497-x86-efi-Re-arrange-grub_cmd_linux-a-little-bit.patch
+Patch0498: 0498-x86-efi-Make-our-own-allocator-for-kernel-stuff.patch
+Patch0499: 0499-x86-efi-Allow-initrd-params-cmdline-allocations-abov.patch
+Patch0500: 0500-x86-efi-Reduce-maximum-bounce-buffer-size-to-16-MiB.patch

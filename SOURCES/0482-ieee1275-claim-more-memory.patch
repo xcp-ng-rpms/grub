@@ -86,7 +86,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  2 files changed, 69 insertions(+), 18 deletions(-)
 
 diff --git a/grub-core/kern/ieee1275/init.c b/grub-core/kern/ieee1275/init.c
-index ee97d761d1e..a6e169bd003 100644
+index ee97d761d..a6e169bd0 100644
 --- a/grub-core/kern/ieee1275/init.c
 +++ b/grub-core/kern/ieee1275/init.c
 @@ -42,11 +42,12 @@
@@ -227,7 +227,7 @@ index ee97d761d1e..a6e169bd003 100644
  #endif
  
 diff --git a/docs/grub-dev.texi b/docs/grub-dev.texi
-index 421dd410e50..03d53498c51 100644
+index 421dd410e..03d53498c 100644
 --- a/docs/grub-dev.texi
 +++ b/docs/grub-dev.texi
 @@ -930,7 +930,9 @@ space is limited to 4GiB. GRUB allocates pages from EFI for its heap, at most

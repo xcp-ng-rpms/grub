@@ -55,7 +55,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
-index c7b0e6a9c46..287fff66b20 100644
+index c7b0e6a9c..287fff66b 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -209,7 +209,7 @@ pc-chainloader.elf: $(srcdir)/grub-core/tests/boot/kernel-8086.S $(srcdir)/grub-
@@ -68,7 +68,7 @@ index c7b0e6a9c46..287fff66b20 100644
  ntldr.elf: $(srcdir)/grub-core/tests/boot/kernel-8086.S $(srcdir)/grub-core/tests/boot/qemu-shutdown-x86.S
  	$(TARGET_CC) -o $@ $< -DTARGET_NTLDR=1 -DSUCCESSFUL_BOOT_STRING=\"$(SUCCESSFUL_BOOT_STRING)\" -static -ffreestanding -nostdlib -nostdinc -Wl,--build-id=none -Wl,-N -Wl,-Ttext,0 -m32
 diff --git a/gentpl.py b/gentpl.py
-index 1e4635f4426..d662c305f66 100644
+index 1e4635f44..d662c305f 100644
 --- a/gentpl.py
 +++ b/gentpl.py
 @@ -776,7 +776,7 @@ def image(defn, platform):

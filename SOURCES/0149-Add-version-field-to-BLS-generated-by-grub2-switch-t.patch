@@ -13,7 +13,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 3 insertions(+)
 
 diff --git a/util/grub-switch-to-blscfg.in b/util/grub-switch-to-blscfg.in
-index bc28053cd30..89487ad611c 100644
+index bc28053cd..89487ad61 100644
 --- a/util/grub-switch-to-blscfg.in
 +++ b/util/grub-switch-to-blscfg.in
 @@ -190,12 +190,14 @@ mkbls() {

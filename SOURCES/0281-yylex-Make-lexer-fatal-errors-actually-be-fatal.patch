@@ -48,7 +48,7 @@ Upstream-commit-id: 926df817dc8
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/script/yylex.l b/grub-core/script/yylex.l
-index 7b44c37b76f..b7203c82309 100644
+index 7b44c37b7..b7203c823 100644
 --- a/grub-core/script/yylex.l
 +++ b/grub-core/script/yylex.l
 @@ -37,11 +37,11 @@

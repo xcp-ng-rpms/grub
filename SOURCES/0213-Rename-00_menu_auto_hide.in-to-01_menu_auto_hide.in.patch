@@ -13,7 +13,7 @@ boot_success = 0, which will be used by the boot counting script
  rename util/grub.d/{00_menu_auto_hide.in => 01_menu_auto_hide.in} (100%)
 
 diff --git a/Makefile.util.def b/Makefile.util.def
-index 97cd8bdebd9..cba4d500198 100644
+index 97cd8bdeb..cba4d5001 100644
 --- a/Makefile.util.def
 +++ b/Makefile.util.def
 @@ -449,8 +449,8 @@ script = {

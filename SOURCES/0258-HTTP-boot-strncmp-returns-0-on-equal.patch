@@ -9,7 +9,7 @@ Resolves: rhbz#1490991
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/net/efi/http.c b/grub-core/net/efi/http.c
-index 2a9624dacc4..484e0c68cee 100644
+index 2a9624dac..484e0c68c 100644
 --- a/grub-core/net/efi/http.c
 +++ b/grub-core/net/efi/http.c
 @@ -19,7 +19,7 @@ http_configure (struct grub_efi_net_device *dev, int prefer_ip6)

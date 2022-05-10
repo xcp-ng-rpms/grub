@@ -11,7 +11,7 @@ Upstream-commit-id: f2bd30b2fe7
  1 file changed, 20 insertions(+), 4 deletions(-)
 
 diff --git a/grub-core/fs/iso9660.c b/grub-core/fs/iso9660.c
-index f45841e2b47..6fc9302bce3 100644
+index f45841e2b..6fc9302bc 100644
 --- a/grub-core/fs/iso9660.c
 +++ b/grub-core/fs/iso9660.c
 @@ -533,14 +533,20 @@ add_part (struct iterate_dir_ctx *ctx,

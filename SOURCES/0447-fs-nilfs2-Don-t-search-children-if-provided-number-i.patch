@@ -18,7 +18,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 23 insertions(+), 15 deletions(-)
 
 diff --git a/grub-core/fs/nilfs2.c b/grub-core/fs/nilfs2.c
-index 61e8af9ff7b..054ad3dc18a 100644
+index 61e8af9ff..054ad3dc1 100644
 --- a/grub-core/fs/nilfs2.c
 +++ b/grub-core/fs/nilfs2.c
 @@ -416,14 +416,34 @@ grub_nilfs2_btree_node_get_key (struct grub_nilfs2_btree_node *node,

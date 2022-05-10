@@ -32,7 +32,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  create mode 100644 grub-core/commands/appendedsig/appendedsig.c
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index fd1229c6328..1cf6b60f82e 100644
+index fd1229c63..1cf6b60f8 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -921,6 +921,18 @@ module = {
@@ -56,7 +56,7 @@ index fd1229c6328..1cf6b60f82e 100644
    common = commands/verifiers.c;
 diff --git a/grub-core/commands/appendedsig/appendedsig.c b/grub-core/commands/appendedsig/appendedsig.c
 new file mode 100644
-index 00000000000..5d8897be5c8
+index 000000000..5d8897be5
 --- /dev/null
 +++ b/grub-core/commands/appendedsig/appendedsig.c
 @@ -0,0 +1,644 @@
@@ -705,7 +705,7 @@ index 00000000000..5d8897be5c8
 +  grub_unregister_command (cmd_distrust);
 +}
 diff --git a/include/grub/file.h b/include/grub/file.h
-index cbbd294655b..2e337dbd68d 100644
+index cbbd29465..2e337dbd6 100644
 --- a/include/grub/file.h
 +++ b/include/grub/file.h
 @@ -82,6 +82,8 @@ enum grub_file_type

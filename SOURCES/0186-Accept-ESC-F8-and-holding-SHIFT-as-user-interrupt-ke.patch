@@ -28,7 +28,7 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  4 files changed, 19 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/commands/sleep.c b/grub-core/commands/sleep.c
-index e77e7900fac..a1370b710c9 100644
+index e77e7900f..a1370b710 100644
 --- a/grub-core/commands/sleep.c
 +++ b/grub-core/commands/sleep.c
 @@ -55,7 +55,7 @@ grub_interruptible_millisleep (grub_uint32_t ms)
@@ -41,7 +41,7 @@ index e77e7900fac..a1370b710c9 100644
  
    return 0;
 diff --git a/grub-core/kern/term.c b/grub-core/kern/term.c
-index 93bd3378d18..6cae4c23e7a 100644
+index 93bd3378d..6cae4c23e 100644
 --- a/grub-core/kern/term.c
 +++ b/grub-core/kern/term.c
 @@ -138,6 +138,22 @@ grub_getkeystatus (void)
@@ -68,7 +68,7 @@ index 93bd3378d18..6cae4c23e7a 100644
  grub_refresh (void)
  {
 diff --git a/grub-core/normal/menu.c b/grub-core/normal/menu.c
-index 5e2f5283d3d..6cb2a071490 100644
+index 5e2f5283d..6cb2a0714 100644
 --- a/grub-core/normal/menu.c
 +++ b/grub-core/normal/menu.c
 @@ -655,7 +655,7 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot)
@@ -81,7 +81,7 @@ index 5e2f5283d3d..6cb2a071490 100644
  	      timeout = -1;
  	      break;
 diff --git a/include/grub/term.h b/include/grub/term.h
-index c215133383f..2b079c29b80 100644
+index c21513338..2b079c29b 100644
 --- a/include/grub/term.h
 +++ b/include/grub/term.h
 @@ -328,6 +328,7 @@ void grub_putcode (grub_uint32_t code, struct grub_term_output *term);

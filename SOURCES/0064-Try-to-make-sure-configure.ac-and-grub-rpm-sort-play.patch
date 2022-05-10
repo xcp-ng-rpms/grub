@@ -15,7 +15,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  2 files changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 679f634ce4c..71d1056969e 100644
+index 679f634ce..71d105696 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -1796,7 +1796,7 @@ AC_SUBST([LIBDEVMAPPER])
@@ -28,7 +28,7 @@ index 679f634ce4c..71d1056969e 100644
  fi
  
 diff --git a/util/grub-mkconfig_lib.in b/util/grub-mkconfig_lib.in
-index 7fe3598435c..113a41f9409 100644
+index 7fe359843..113a41f94 100644
 --- a/util/grub-mkconfig_lib.in
 +++ b/util/grub-mkconfig_lib.in
 @@ -33,6 +33,9 @@ fi

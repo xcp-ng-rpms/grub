@@ -22,7 +22,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  3 files changed, 13 insertions(+)
 
 diff --git a/util/grub-module-verifier32.c b/util/grub-module-verifier32.c
-index 257229f8f08..ba7d41aafea 100644
+index 257229f8f..ba7d41aaf 100644
 --- a/util/grub-module-verifier32.c
 +++ b/util/grub-module-verifier32.c
 @@ -1,2 +1,4 @@
@@ -31,7 +31,7 @@ index 257229f8f08..ba7d41aafea 100644
  #include "grub-module-verifierXX.c"
 +#endif
 diff --git a/util/grub-module-verifier64.c b/util/grub-module-verifier64.c
-index 4db6b4bedd1..fc23ef800b3 100644
+index 4db6b4bed..fc23ef800 100644
 --- a/util/grub-module-verifier64.c
 +++ b/util/grub-module-verifier64.c
 @@ -1,2 +1,4 @@
@@ -40,7 +40,7 @@ index 4db6b4bedd1..fc23ef800b3 100644
  #include "grub-module-verifierXX.c"
 +#endif
 diff --git a/util/grub-module-verifierXX.c b/util/grub-module-verifierXX.c
-index 1feaafc9b9e..597ded14362 100644
+index 1feaafc9b..597ded143 100644
 --- a/util/grub-module-verifierXX.c
 +++ b/util/grub-module-verifierXX.c
 @@ -1,3 +1,12 @@

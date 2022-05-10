@@ -13,7 +13,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  2 files changed, 16 insertions(+), 14 deletions(-)
 
 diff --git a/grub-core/net/http.c b/grub-core/net/http.c
-index f182d7b871d..00737c52750 100644
+index f182d7b87..00737c527 100644
 --- a/grub-core/net/http.c
 +++ b/grub-core/net/http.c
 @@ -289,7 +289,9 @@ http_receive (grub_net_tcp_socket_t sock __attribute__ ((unused)),
@@ -37,7 +37,7 @@ index f182d7b871d..00737c52750 100644
    if (!data->sock)
      {
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index 1f887d44b32..a0f4d00f0be 100644
+index 1f887d44b..a0f4d00f0 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -441,10 +441,11 @@ parse_ip6 (const char *val, grub_uint64_t *ip, const char **rest)

@@ -49,7 +49,7 @@ Changes in v2:
  create mode 100644 util/grub.d/00_menu_auto_hide.in
 
 diff --git a/Makefile.util.def b/Makefile.util.def
-index cbd661d6348..0fdfdd91fb0 100644
+index cbd661d63..0fdfdd91f 100644
 --- a/Makefile.util.def
 +++ b/Makefile.util.def
 @@ -448,6 +448,12 @@ script = {
@@ -67,7 +67,7 @@ index cbd661d6348..0fdfdd91fb0 100644
    common = util/grub.d/01_users.in;
 diff --git a/util/grub.d/00_menu_auto_hide.in b/util/grub.d/00_menu_auto_hide.in
 new file mode 100644
-index 00000000000..a10fe45bb2c
+index 000000000..a10fe45bb
 --- /dev/null
 +++ b/util/grub.d/00_menu_auto_hide.in
 @@ -0,0 +1,50 @@
@@ -122,7 +122,7 @@ index 00000000000..a10fe45bb2c
 +fi
 +EOF
 diff --git a/util/grub.d/30_os-prober.in b/util/grub.d/30_os-prober.in
-index 13a3a6bc752..ab634393a31 100644
+index 13a3a6bc7..ab634393a 100644
 --- a/util/grub.d/30_os-prober.in
 +++ b/util/grub.d/30_os-prober.in
 @@ -42,6 +42,7 @@ if [ -z "${OSPROBED}" ] ; then

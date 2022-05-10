@@ -9,7 +9,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/loader/linux.c b/grub-core/loader/linux.c
-index c2c7cfcd0fd..61a2e144db0 100644
+index c2c7cfcd0..61a2e144d 100644
 --- a/grub-core/loader/linux.c
 +++ b/grub-core/loader/linux.c
 @@ -152,8 +152,8 @@ grub_initrd_init (int argc, char *argv[],

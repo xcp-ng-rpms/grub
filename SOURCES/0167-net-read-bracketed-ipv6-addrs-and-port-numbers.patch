@@ -14,7 +14,7 @@ number
  4 files changed, 101 insertions(+), 6 deletions(-)
 
 diff --git a/grub-core/net/http.c b/grub-core/net/http.c
-index 5aa4ad3befc..f182d7b871d 100644
+index 5aa4ad3be..f182d7b87 100644
 --- a/grub-core/net/http.c
 +++ b/grub-core/net/http.c
 @@ -312,12 +312,14 @@ http_establish (struct grub_file *file, grub_off_t offset, int initial)
@@ -72,7 +72,7 @@ index 5aa4ad3befc..f182d7b871d 100644
  				  file);
    if (!data->sock)
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index 9b8944292c7..1f887d44b32 100644
+index 9b8944292..1f887d44b 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -439,6 +439,12 @@ parse_ip6 (const char *val, grub_uint64_t *ip, const char **rest)
@@ -183,7 +183,7 @@ index 9b8944292c7..1f887d44b32 100644
      {
        FOR_NET_APP_LEVEL (proto)
 diff --git a/grub-core/net/tftp.c b/grub-core/net/tftp.c
-index f90071353ad..e267af354f4 100644
+index f90071353..e267af354 100644
 --- a/grub-core/net/tftp.c
 +++ b/grub-core/net/tftp.c
 @@ -333,6 +333,7 @@ tftp_open (struct grub_file *file, const char *filename)
@@ -216,7 +216,7 @@ index f90071353ad..e267af354f4 100644
    if (!data->sock)
      {
 diff --git a/include/grub/net.h b/include/grub/net.h
-index e9ebc6a1b4f..f4cd86e582f 100644
+index e9ebc6a1b..f4cd86e58 100644
 --- a/include/grub/net.h
 +++ b/include/grub/net.h
 @@ -273,6 +273,7 @@ typedef struct grub_net

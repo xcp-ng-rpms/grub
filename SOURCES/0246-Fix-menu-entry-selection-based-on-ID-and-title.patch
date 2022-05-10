@@ -20,7 +20,7 @@ Resolves: rhbz#1640979
  1 file changed, 75 insertions(+), 71 deletions(-)
 
 diff --git a/grub-core/normal/menu.c b/grub-core/normal/menu.c
-index 6cb2a071490..95f7abaf2fd 100644
+index 6cb2a0714..95f7abaf2 100644
 --- a/grub-core/normal/menu.c
 +++ b/grub-core/normal/menu.c
 @@ -164,12 +164,12 @@ grub_menu_set_timeout (int timeout)

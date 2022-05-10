@@ -17,7 +17,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  create mode 100644 grub-core/tests/appended_signatures.h
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 1cf6b60f82e..8914083d13f 100644
+index 1cf6b60f8..8914083d1 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -2040,6 +2040,12 @@ module = {
@@ -35,7 +35,7 @@ index 1cf6b60f82e..8914083d13f 100644
    common = tests/signature_test.c;
 diff --git a/grub-core/tests/appended_signature_test.c b/grub-core/tests/appended_signature_test.c
 new file mode 100644
-index 00000000000..88a485200d8
+index 000000000..88a485200
 --- /dev/null
 +++ b/grub-core/tests/appended_signature_test.c
 @@ -0,0 +1,281 @@
@@ -321,7 +321,7 @@ index 00000000000..88a485200d8
 +
 +GRUB_FUNCTIONAL_TEST (appended_signature_test, appended_signature_test);
 diff --git a/grub-core/tests/lib/functional_test.c b/grub-core/tests/lib/functional_test.c
-index 96781fb39b5..403fa5c789a 100644
+index 96781fb39..403fa5c78 100644
 --- a/grub-core/tests/lib/functional_test.c
 +++ b/grub-core/tests/lib/functional_test.c
 @@ -73,6 +73,7 @@ grub_functional_all_tests (grub_extcmd_context_t ctxt __attribute__ ((unused)),
@@ -334,7 +334,7 @@ index 96781fb39b5..403fa5c789a 100644
    grub_dl_load ("ctz_test");
 diff --git a/grub-core/tests/appended_signatures.h b/grub-core/tests/appended_signatures.h
 new file mode 100644
-index 00000000000..aa3dc6278e3
+index 000000000..aa3dc6278
 --- /dev/null
 +++ b/grub-core/tests/appended_signatures.h
 @@ -0,0 +1,557 @@

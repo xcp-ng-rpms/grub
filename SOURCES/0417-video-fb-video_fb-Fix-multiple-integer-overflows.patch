@@ -16,7 +16,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 36 insertions(+), 16 deletions(-)
 
 diff --git a/grub-core/video/fb/video_fb.c b/grub-core/video/fb/video_fb.c
-index 1a602c8b251..1c9a138dcdc 100644
+index 1a602c8b2..1c9a138dc 100644
 --- a/grub-core/video/fb/video_fb.c
 +++ b/grub-core/video/fb/video_fb.c
 @@ -25,6 +25,7 @@

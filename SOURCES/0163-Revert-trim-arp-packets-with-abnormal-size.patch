@@ -9,7 +9,7 @@ This reverts commit d11b2eb425d2125f67dd8d8e9b11d9be7d6f3f11.
  1 file changed, 6 deletions(-)
 
 diff --git a/grub-core/net/arp.c b/grub-core/net/arp.c
-index d1c69ed2b55..54306e3b16d 100644
+index d1c69ed2b..54306e3b1 100644
 --- a/grub-core/net/arp.c
 +++ b/grub-core/net/arp.c
 @@ -150,12 +150,6 @@ grub_net_arp_receive (struct grub_net_buff *nb, struct grub_net_card *card,

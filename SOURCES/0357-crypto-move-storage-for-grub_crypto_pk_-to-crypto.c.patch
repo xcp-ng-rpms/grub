@@ -40,7 +40,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/grub-core/commands/pgp.c b/grub-core/commands/pgp.c
-index bb6543819f0..75de32c2a00 100644
+index bb6543819..75de32c2a 100644
 --- a/grub-core/commands/pgp.c
 +++ b/grub-core/commands/pgp.c
 @@ -147,10 +147,6 @@ const char *hashes[] = {
@@ -55,7 +55,7 @@ index bb6543819f0..75de32c2a00 100644
  dsa_pad (gcry_mpi_t *hmpi, grub_uint8_t *hval,
  	 const gcry_md_spec_t *hash, struct grub_public_subkey *sk);
 diff --git a/grub-core/lib/crypto.c b/grub-core/lib/crypto.c
-index e6c78d16d39..ff62fa30e1a 100644
+index e6c78d16d..ff62fa30e 100644
 --- a/grub-core/lib/crypto.c
 +++ b/grub-core/lib/crypto.c
 @@ -121,6 +121,10 @@ grub_md_unregister (gcry_md_spec_t *cipher)

@@ -27,7 +27,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 16 insertions(+), 7 deletions(-)
 
 diff --git a/grub-core/kern/efi/mm.c b/grub-core/kern/efi/mm.c
-index 306924f73a4..2d9c9032b2a 100644
+index 306924f73..2d9c9032b 100644
 --- a/grub-core/kern/efi/mm.c
 +++ b/grub-core/kern/efi/mm.c
 @@ -372,16 +372,25 @@ grub_efi_get_memory_map (grub_efi_uintn_t *memory_map_size,

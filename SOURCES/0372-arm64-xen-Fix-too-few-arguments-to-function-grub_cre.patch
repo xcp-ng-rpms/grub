@@ -25,7 +25,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/loader/arm64/xen_boot.c b/grub-core/loader/arm64/xen_boot.c
-index 318c833de57..1a337866f08 100644
+index 318c833de..1a337866f 100644
 --- a/grub-core/loader/arm64/xen_boot.c
 +++ b/grub-core/loader/arm64/xen_boot.c
 @@ -367,7 +367,8 @@ xen_boot_binary_load (struct xen_boot_binary *binary, grub_file_t file,

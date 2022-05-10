@@ -12,7 +12,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 1 insertion(+)
 
 diff --git a/grub-core/disk/ldm.c b/grub-core/disk/ldm.c
-index 428415fac24..54713f45a12 100644
+index 428415fac..54713f45a 100644
 --- a/grub-core/disk/ldm.c
 +++ b/grub-core/disk/ldm.c
 @@ -199,6 +199,7 @@ make_vg (grub_disk_t disk,

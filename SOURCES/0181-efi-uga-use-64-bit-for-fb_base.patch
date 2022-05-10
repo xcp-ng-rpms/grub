@@ -12,7 +12,7 @@ Closes: 50931
  1 file changed, 16 insertions(+), 15 deletions(-)
 
 diff --git a/grub-core/video/efi_uga.c b/grub-core/video/efi_uga.c
-index 044af1d20d3..97a607c01a5 100644
+index 044af1d20..97a607c01 100644
 --- a/grub-core/video/efi_uga.c
 +++ b/grub-core/video/efi_uga.c
 @@ -34,7 +34,7 @@ GRUB_MOD_LICENSE ("GPLv3+");

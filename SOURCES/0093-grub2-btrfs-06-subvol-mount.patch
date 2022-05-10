@@ -11,7 +11,7 @@ Subject: [PATCH] grub2-btrfs-06-subvol-mount
  4 files changed, 392 insertions(+), 5 deletions(-)
 
 diff --git a/grub-core/fs/btrfs.c b/grub-core/fs/btrfs.c
-index a47d297567f..2e36ac47e8a 100644
+index a47d29756..2e36ac47e 100644
 --- a/grub-core/fs/btrfs.c
 +++ b/grub-core/fs/btrfs.c
 @@ -32,6 +32,7 @@
@@ -277,7 +277,7 @@ index a47d297567f..2e36ac47e8a 100644
  					 grub_cmd_btrfs_list_subvols, 0,
  					 "[-p|-n] [-o var] DEVICE",
 diff --git a/grub-core/osdep/linux/getroot.c b/grub-core/osdep/linux/getroot.c
-index 5d50dd6f8dc..4c5a13022dc 100644
+index 5d50dd6f8..4c5a13022 100644
 --- a/grub-core/osdep/linux/getroot.c
 +++ b/grub-core/osdep/linux/getroot.c
 @@ -107,6 +107,14 @@ struct btrfs_ioctl_search_key
@@ -460,7 +460,7 @@ index 5d50dd6f8dc..4c5a13022dc 100644
  grub_make_system_path_relative_to_its_root_os (const char *path)
  {
 diff --git a/util/grub-install.c b/util/grub-install.c
-index 4375c161955..a0ad99729fd 100644
+index 4375c1619..a0ad99729 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
 @@ -1535,6 +1535,55 @@ main (int argc, char *argv[])
@@ -520,7 +520,7 @@ index 4375c161955..a0ad99729fd 100644
    const char *core_name = NULL;
  
 diff --git a/include/grub/emu/getroot.h b/include/grub/emu/getroot.h
-index 73fa2d34abb..9c642ae3fe3 100644
+index 73fa2d34a..9c642ae3f 100644
 --- a/include/grub/emu/getroot.h
 +++ b/include/grub/emu/getroot.h
 @@ -53,6 +53,11 @@ char **

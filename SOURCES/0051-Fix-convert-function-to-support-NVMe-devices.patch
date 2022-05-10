@@ -18,7 +18,7 @@ Signed-off-by: Peter Jones <grub2-owner@fedoraproject.org>
  1 file changed, 19 insertions(+)
 
 diff --git a/util/getroot.c b/util/getroot.c
-index 847406fbab0..fa3460d6cd8 100644
+index 847406fba..fa3460d6c 100644
 --- a/util/getroot.c
 +++ b/util/getroot.c
 @@ -153,6 +153,7 @@ convert_system_partition_to_system_disk (const char *os_dev, int *is_part)

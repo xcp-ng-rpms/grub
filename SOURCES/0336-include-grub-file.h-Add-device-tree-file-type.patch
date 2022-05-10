@@ -16,7 +16,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  1 file changed, 2 insertions(+)
 
 diff --git a/include/grub/file.h b/include/grub/file.h
-index 19dda67f68b..9aae463557a 100644
+index 19dda67f6..9aae46355 100644
 --- a/include/grub/file.h
 +++ b/include/grub/file.h
 @@ -69,6 +69,8 @@ enum grub_file_type

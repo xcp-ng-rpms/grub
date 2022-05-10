@@ -27,7 +27,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  create mode 100644 include/grub/pkcs1_v15.h
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 809f11feaef..99615c07b94 100644
+index 809f11fea..99615c07b 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -2387,6 +2387,14 @@ module = {
@@ -46,7 +46,7 @@ index 809f11feaef..99615c07b94 100644
    name = all_video;
    common = lib/fake_module.c;
 diff --git a/grub-core/commands/pgp.c b/grub-core/commands/pgp.c
-index d39846d8cfe..bb6543819f0 100644
+index d39846d8c..bb6543819 100644
 --- a/grub-core/commands/pgp.c
 +++ b/grub-core/commands/pgp.c
 @@ -24,6 +24,7 @@
@@ -93,7 +93,7 @@ index d39846d8cfe..bb6543819f0 100644
  struct grub_pubkey_context
 diff --git a/grub-core/lib/pkcs1_v15.c b/grub-core/lib/pkcs1_v15.c
 new file mode 100644
-index 00000000000..dbacd563d01
+index 000000000..dbacd563d
 --- /dev/null
 +++ b/grub-core/lib/pkcs1_v15.c
 @@ -0,0 +1,59 @@
@@ -158,7 +158,7 @@ index 00000000000..dbacd563d01
 +}
 diff --git a/include/grub/pkcs1_v15.h b/include/grub/pkcs1_v15.h
 new file mode 100644
-index 00000000000..5c338c84a15
+index 000000000..5c338c84a
 --- /dev/null
 +++ b/include/grub/pkcs1_v15.h
 @@ -0,0 +1,27 @@

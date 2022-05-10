@@ -29,7 +29,7 @@ solution":
  1 file changed, 96 insertions(+), 25 deletions(-)
 
 diff --git a/grub-core/term/at_keyboard.c b/grub-core/term/at_keyboard.c
-index 69d99b61df5..c805cccbdde 100644
+index 69d99b61d..c805cccbd 100644
 --- a/grub-core/term/at_keyboard.c
 +++ b/grub-core/term/at_keyboard.c
 @@ -31,6 +31,7 @@ GRUB_MOD_LICENSE ("GPLv3+");

@@ -17,7 +17,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 20 insertions(+)
 
 diff --git a/grub-core/io/gzio.c b/grub-core/io/gzio.c
-index 2ecf076dd5e..6e9b9c9361a 100644
+index 2ecf076dd..6e9b9c936 100644
 --- a/grub-core/io/gzio.c
 +++ b/grub-core/io/gzio.c
 @@ -669,6 +669,13 @@ inflate_codes_in_window (grub_gzio_t gzio)

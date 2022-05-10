@@ -13,7 +13,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/conf/Makefile.common b/conf/Makefile.common
-index c75848f5c06..1ecb921db65 100644
+index c75848f5c..1ecb921db 100644
 --- a/conf/Makefile.common
 +++ b/conf/Makefile.common
 @@ -128,11 +128,11 @@ BUILT_SOURCES =
@@ -31,7 +31,7 @@ index c75848f5c06..1ecb921db65 100644
 +	python3 $^ > $@.new || (rm -f $@.new; exit 1)
  	mv $@.new $@
 diff --git a/gentpl.py b/gentpl.py
-index baac6a2af69..6409736e81c 100644
+index baac6a2af..6409736e8 100644
 --- a/gentpl.py
 +++ b/gentpl.py
 @@ -1,4 +1,4 @@

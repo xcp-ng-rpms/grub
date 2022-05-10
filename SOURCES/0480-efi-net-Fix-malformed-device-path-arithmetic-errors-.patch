@@ -9,7 +9,7 @@ Subject: [PATCH] efi/net: Fix malformed device path arithmetic errors in efi
  1 file changed, 20 insertions(+), 6 deletions(-)
 
 diff --git a/grub-core/net/efi/net.c b/grub-core/net/efi/net.c
-index 3ae1fbbe3c8..a58c24f6364 100644
+index 3ae1fbbe3..a58c24f63 100644
 --- a/grub-core/net/efi/net.c
 +++ b/grub-core/net/efi/net.c
 @@ -1318,11 +1318,18 @@ grub_efi_net_boot_from_https (void)

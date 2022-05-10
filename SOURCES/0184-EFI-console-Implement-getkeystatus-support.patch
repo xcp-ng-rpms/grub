@@ -19,7 +19,7 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  1 file changed, 34 insertions(+)
 
 diff --git a/grub-core/term/efi/console.c b/grub-core/term/efi/console.c
-index 3d36c5c701b..92dd4996bb7 100644
+index 3d36c5c70..92dd4996b 100644
 --- a/grub-core/term/efi/console.c
 +++ b/grub-core/term/efi/console.c
 @@ -223,6 +223,39 @@ grub_console_getkey_ex(struct grub_term_input *term)

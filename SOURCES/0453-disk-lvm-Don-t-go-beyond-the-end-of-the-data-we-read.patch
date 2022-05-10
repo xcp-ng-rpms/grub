@@ -19,7 +19,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 14 insertions(+)
 
 diff --git a/grub-core/disk/lvm.c b/grub-core/disk/lvm.c
-index 4fbb3eac0ea..0f466040a55 100644
+index 4fbb3eac0..0f466040a 100644
 --- a/grub-core/disk/lvm.c
 +++ b/grub-core/disk/lvm.c
 @@ -142,6 +142,20 @@ grub_lvm_detect (grub_disk_t disk,

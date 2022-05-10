@@ -18,7 +18,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/fs/sfs.c b/grub-core/fs/sfs.c
-index 3ddc6b5e287..61d6c303cb3 100644
+index 3ddc6b5e2..61d6c303c 100644
 --- a/grub-core/fs/sfs.c
 +++ b/grub-core/fs/sfs.c
 @@ -373,6 +373,7 @@ grub_sfs_mount (grub_disk_t disk)

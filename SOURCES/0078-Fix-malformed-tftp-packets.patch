@@ -16,7 +16,7 @@ Signed-off-by: Mark Salter <msalter@redhat.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/net/tftp.c b/grub-core/net/tftp.c
-index 5ca0a96a6f6..dcd82494309 100644
+index 5ca0a96a6..dcd824943 100644
 --- a/grub-core/net/tftp.c
 +++ b/grub-core/net/tftp.c
 @@ -360,8 +360,8 @@ tftp_open (struct grub_file *file, const char *filename)

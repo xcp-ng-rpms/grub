@@ -44,7 +44,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  2 files changed, 18 insertions(+), 19 deletions(-)
 
 diff --git a/grub-core/commands/pgp.c b/grub-core/commands/pgp.c
-index 5c913c2e2fe..d39846d8cfe 100644
+index 5c913c2e2..d39846d8c 100644
 --- a/grub-core/commands/pgp.c
 +++ b/grub-core/commands/pgp.c
 @@ -495,13 +495,12 @@ grub_verify_signature_init (struct grub_pubkey_context *ctxt, grub_file_t sig)
@@ -132,7 +132,7 @@ index 5c913c2e2fe..d39846d8cfe 100644
      }
    *context = ctxt;
 diff --git a/include/grub/pubkey.h b/include/grub/pubkey.h
-index 4a9d04b4305..fb8be9cbb73 100644
+index 4a9d04b43..fb8be9cbb 100644
 --- a/include/grub/pubkey.h
 +++ b/include/grub/pubkey.h
 @@ -25,7 +25,7 @@ struct grub_public_key *

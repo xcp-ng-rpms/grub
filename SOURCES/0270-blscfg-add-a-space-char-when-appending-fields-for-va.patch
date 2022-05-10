@@ -19,7 +19,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 18 insertions(+), 13 deletions(-)
 
 diff --git a/grub-core/commands/blscfg.c b/grub-core/commands/blscfg.c
-index 11cc82b6f31..c92e1c84543 100644
+index 11cc82b6f..c92e1c845 100644
 --- a/grub-core/commands/blscfg.c
 +++ b/grub-core/commands/blscfg.c
 @@ -597,26 +597,29 @@ static char **bls_make_list (struct bls_entry *entry, const char *key, int *num)

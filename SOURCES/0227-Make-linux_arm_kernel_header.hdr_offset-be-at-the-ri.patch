@@ -42,7 +42,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  2 files changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/loader/efi/linux.c b/grub-core/loader/efi/linux.c
-index 0622dfa48d4..b56ea0bc041 100644
+index 0622dfa48..b56ea0bc0 100644
 --- a/grub-core/loader/efi/linux.c
 +++ b/grub-core/loader/efi/linux.c
 @@ -79,7 +79,10 @@ grub_efi_linux_boot (void *kernel_addr, grub_off_t handover_offset,
@@ -57,7 +57,7 @@ index 0622dfa48d4..b56ea0bc041 100644
  
    return GRUB_ERR_BUG;
 diff --git a/include/grub/arm/linux.h b/include/grub/arm/linux.h
-index 5900fc8a40c..bed308f22cb 100644
+index 5900fc8a4..bed308f22 100644
 --- a/include/grub/arm/linux.h
 +++ b/include/grub/arm/linux.h
 @@ -31,7 +31,7 @@ struct linux_arm_kernel_header {

@@ -8,7 +8,7 @@ Subject: [PATCH] Indent menu entries
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/normal/menu_text.c b/grub-core/normal/menu_text.c
-index 1062d64ee29..ecc60f99fc3 100644
+index 1062d64ee..ecc60f99f 100644
 --- a/grub-core/normal/menu_text.c
 +++ b/grub-core/normal/menu_text.c
 @@ -239,7 +239,8 @@ print_entry (int y, int highlight, grub_menu_entry_t entry,

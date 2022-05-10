@@ -12,7 +12,7 @@ parses: ` = 9, _ = 8, ^ = 7, ] = 6, \ = 5, and [ = 4
  1 file changed, 8 insertions(+), 5 deletions(-)
 
 diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
-index 0e89c483d5e..5c3899f0e5b 100644
+index 0e89c483d..5c3899f0e 100644
 --- a/grub-core/kern/misc.c
 +++ b/grub-core/kern/misc.c
 @@ -434,11 +434,14 @@ grub_strtoull (const char *str, char **end, int base)

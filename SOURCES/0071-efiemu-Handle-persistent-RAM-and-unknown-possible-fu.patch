@@ -12,7 +12,7 @@ Resolves: rhbz#1288608
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/efiemu/mm.c b/grub-core/efiemu/mm.c
-index 52a032f7b2e..92e7df7e501 100644
+index 52a032f7b..92e7df7e5 100644
 --- a/grub-core/efiemu/mm.c
 +++ b/grub-core/efiemu/mm.c
 @@ -410,8 +410,8 @@ fill_hook (grub_uint64_t addr, grub_uint64_t size, grub_memory_type_t type,

@@ -12,7 +12,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 15 insertions(+), 3 deletions(-)
 
 diff --git a/util/grub.d/10_linux_bls.in b/util/grub.d/10_linux_bls.in
-index 8a3379578bd..1bc97f29898 100644
+index 8a3379578..1bc97f298 100644
 --- a/util/grub.d/10_linux_bls.in
 +++ b/util/grub.d/10_linux_bls.in
 @@ -151,10 +151,22 @@ read_config()

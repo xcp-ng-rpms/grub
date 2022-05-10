@@ -16,7 +16,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 5 insertions(+)
 
 diff --git a/include/grub/verify.h b/include/grub/verify.h
-index 60c13e7ea8e..ace72d74663 100644
+index 60c13e7ea..ace72d746 100644
 --- a/include/grub/verify.h
 +++ b/include/grub/verify.h
 @@ -16,6 +16,9 @@

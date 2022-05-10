@@ -13,7 +13,7 @@ Reviewed-by: Ross Philipson <ross.philipson@oracle.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/loader/mips/linux.c b/grub-core/loader/mips/linux.c
-index 20135ce253d..e4ed95921df 100644
+index 20135ce25..e4ed95921 100644
 --- a/grub-core/loader/mips/linux.c
 +++ b/grub-core/loader/mips/linux.c
 @@ -314,7 +314,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),

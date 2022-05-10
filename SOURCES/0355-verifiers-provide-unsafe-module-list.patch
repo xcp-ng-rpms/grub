@@ -17,7 +17,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  2 files changed, 59 insertions(+)
 
 diff --git a/grub-core/commands/verifiers.c b/grub-core/commands/verifiers.c
-index 599d79b757e..f64343ac90b 100644
+index 599d79b75..f64343ac9 100644
 --- a/grub-core/commands/verifiers.c
 +++ b/grub-core/commands/verifiers.c
 @@ -218,6 +218,52 @@ grub_verify_string (char *str, enum grub_verify_string_type type)
@@ -74,7 +74,7 @@ index 599d79b757e..f64343ac90b 100644
  {
    grub_file_filter_register (GRUB_FILE_FILTER_VERIFY, grub_verifiers_open);
 diff --git a/include/grub/verify.h b/include/grub/verify.h
-index 79022b42258..60c13e7ea8e 100644
+index 79022b422..60c13e7ea 100644
 --- a/include/grub/verify.h
 +++ b/include/grub/verify.h
 @@ -76,3 +76,16 @@ grub_verifier_unregister (struct grub_file_verifier *ver)

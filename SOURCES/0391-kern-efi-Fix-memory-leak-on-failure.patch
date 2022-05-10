@@ -14,7 +14,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 1 insertion(+)
 
 diff --git a/grub-core/kern/efi/efi.c b/grub-core/kern/efi/efi.c
-index 5dfcf943322..4b95a400490 100644
+index 5dfcf9433..4b95a4004 100644
 --- a/grub-core/kern/efi/efi.c
 +++ b/grub-core/kern/efi/efi.c
 @@ -400,6 +400,7 @@ grub_efi_get_filename (grub_efi_device_path_t *dp0)

@@ -22,7 +22,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  2 files changed, 20 insertions(+), 32 deletions(-)
 
 diff --git a/grub-core/commands/iorw.c b/grub-core/commands/iorw.c
-index 41a7f3f0466..584baec8f91 100644
+index 41a7f3f04..584baec8f 100644
 --- a/grub-core/commands/iorw.c
 +++ b/grub-core/commands/iorw.c
 @@ -23,7 +23,7 @@
@@ -79,7 +79,7 @@ index 41a7f3f0466..584baec8f91 100644
    grub_unregister_extcmd (cmd_read_word);
    grub_unregister_extcmd (cmd_read_dword);
 diff --git a/grub-core/commands/memrw.c b/grub-core/commands/memrw.c
-index 088cbe9e2bc..d401a6db0ef 100644
+index 088cbe9e2..d401a6db0 100644
 --- a/grub-core/commands/memrw.c
 +++ b/grub-core/commands/memrw.c
 @@ -22,7 +22,7 @@

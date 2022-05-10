@@ -16,7 +16,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 9 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
-index 475f3e0ef05..ebfcc95f01d 100644
+index 475f3e0ef..ebfcc95f0 100644
 --- a/grub-core/kern/misc.c
 +++ b/grub-core/kern/misc.c
 @@ -711,8 +711,7 @@ grub_lltoa (char *str, int c, unsigned long long n)

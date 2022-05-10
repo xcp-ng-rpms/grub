@@ -11,7 +11,7 @@ before pulling out the individual blocks later on.
  1 file changed, 21 insertions(+), 13 deletions(-)
 
 diff --git a/grub-core/loader/i386/pc/linux.c b/grub-core/loader/i386/pc/linux.c
-index a3c87cf2fc2..caa76bee8af 100644
+index a3c87cf2f..caa76bee8 100644
 --- a/grub-core/loader/i386/pc/linux.c
 +++ b/grub-core/loader/i386/pc/linux.c
 @@ -123,13 +123,14 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),

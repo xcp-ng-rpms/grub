@@ -12,7 +12,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
-index 04371ac49f2..636f97e1ba1 100644
+index 04371ac49..636f97e1b 100644
 --- a/grub-core/kern/misc.c
 +++ b/grub-core/kern/misc.c
 @@ -1103,7 +1103,7 @@ static void __attribute__ ((noreturn))

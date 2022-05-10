@@ -8,7 +8,7 @@ Subject: [PATCH] Grub not working correctly with btrfs snapshots (bsc#1026511)
  1 file changed, 238 insertions(+)
 
 diff --git a/grub-core/fs/btrfs.c b/grub-core/fs/btrfs.c
-index 4a31d39ee74..7002ad81b7e 100644
+index 4a31d39ee..7002ad81b 100644
 --- a/grub-core/fs/btrfs.c
 +++ b/grub-core/fs/btrfs.c
 @@ -2446,6 +2446,238 @@ out:

@@ -15,7 +15,7 @@ Signed-off-by: Diego Domingos <diegodo@br.ibm.com>
  1 file changed, 49 insertions(+)
 
 diff --git a/grub-core/osdep/linux/ofpath.c b/grub-core/osdep/linux/ofpath.c
-index a6153d35954..0f5d54e9f2d 100644
+index a6153d359..0f5d54e9f 100644
 --- a/grub-core/osdep/linux/ofpath.c
 +++ b/grub-core/osdep/linux/ofpath.c
 @@ -350,6 +350,38 @@ of_path_of_ide(const char *sys_devname __attribute__((unused)), const char *devi

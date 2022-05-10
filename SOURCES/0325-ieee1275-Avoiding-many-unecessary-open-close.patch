@@ -9,7 +9,7 @@ Signed-off-by: Diego Domingos <diegodo@br.ibm.com>
  1 file changed, 35 insertions(+), 29 deletions(-)
 
 diff --git a/grub-core/disk/ieee1275/ofdisk.c b/grub-core/disk/ieee1275/ofdisk.c
-index d887d4b6eee..f3a6ecd797f 100644
+index d887d4b6e..f3a6ecd79 100644
 --- a/grub-core/disk/ieee1275/ofdisk.c
 +++ b/grub-core/disk/ieee1275/ofdisk.c
 @@ -44,7 +44,7 @@ struct ofdisk_hash_ent

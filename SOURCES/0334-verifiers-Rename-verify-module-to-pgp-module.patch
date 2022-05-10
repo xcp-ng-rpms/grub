@@ -16,7 +16,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  rename grub-core/commands/{verify.c => pgp.c} (100%)
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 29c3bf6cd66..809f11feaef 100644
+index 29c3bf6cd..809f11fea 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -915,8 +915,8 @@ module = {

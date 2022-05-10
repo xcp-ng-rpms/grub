@@ -21,7 +21,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  create mode 100644 grub-core/gnulib-fix-uninit-structure.patch
 
 diff --git a/grub-core/gnulib/regcomp.c b/grub-core/gnulib/regcomp.c
-index 596e0cf3ef7..de9f622088f 100644
+index 596e0cf3e..de9f62208 100644
 --- a/grub-core/gnulib/regcomp.c
 +++ b/grub-core/gnulib/regcomp.c
 @@ -3641,7 +3641,7 @@ build_charclass_op (re_dfa_t *dfa, RE_TRANSLATE_TYPE trans,
@@ -34,7 +34,7 @@ index 596e0cf3ef7..de9f622088f 100644
  
    sbcset = (re_bitset_ptr_t) calloc (sizeof (bitset_t), 1);
 diff --git a/conf/Makefile.extra-dist b/conf/Makefile.extra-dist
-index b53fe6dfdcc..883baba56d5 100644
+index b53fe6dfd..883baba56 100644
 --- a/conf/Makefile.extra-dist
 +++ b/conf/Makefile.extra-dist
 @@ -31,6 +31,7 @@ EXTRA_DIST += grub-core/genemuinit.sh
@@ -47,7 +47,7 @@ index b53fe6dfdcc..883baba56d5 100644
  EXTRA_DIST += grub-core/gnulib-no-abort.diff
 diff --git a/grub-core/gnulib-fix-uninit-structure.patch b/grub-core/gnulib-fix-uninit-structure.patch
 new file mode 100644
-index 00000000000..7b4d9f67af4
+index 000000000..7b4d9f67a
 --- /dev/null
 +++ b/grub-core/gnulib-fix-uninit-structure.patch
 @@ -0,0 +1,11 @@

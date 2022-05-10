@@ -9,7 +9,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/configure.ac b/configure.ac
-index 5f47a9265f3..9ab683fefac 100644
+index 5f47a9265..9ab683fef 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -307,7 +307,7 @@ fi

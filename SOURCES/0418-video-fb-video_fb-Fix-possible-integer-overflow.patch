@@ -16,7 +16,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/video/fb/video_fb.c b/grub-core/video/fb/video_fb.c
-index 1c9a138dcdc..ae6b89f9aea 100644
+index 1c9a138dc..ae6b89f9a 100644
 --- a/grub-core/video/fb/video_fb.c
 +++ b/grub-core/video/fb/video_fb.c
 @@ -1537,7 +1537,13 @@ doublebuf_pageflipping_init (struct grub_video_mode_info *mode_info,

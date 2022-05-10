@@ -16,7 +16,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 12 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/commands/hashsum.c b/grub-core/commands/hashsum.c
-index 456ba908b6f..b8a22b0c8bb 100644
+index 456ba908b..b8a22b0c8 100644
 --- a/grub-core/commands/hashsum.c
 +++ b/grub-core/commands/hashsum.c
 @@ -128,11 +128,17 @@ check_list (const gcry_md_spec_t *hash, const char *hashfilename,

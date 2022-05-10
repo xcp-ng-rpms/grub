@@ -13,7 +13,7 @@ Subject: [PATCH] grub2-btrfs-04-grub2-install
  6 files changed, 54 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/osdep/linux/getroot.c b/grub-core/osdep/linux/getroot.c
-index 6d9f4e5faa2..5d50dd6f8dc 100644
+index 6d9f4e5fa..5d50dd6f8 100644
 --- a/grub-core/osdep/linux/getroot.c
 +++ b/grub-core/osdep/linux/getroot.c
 @@ -376,6 +376,7 @@ get_btrfs_fs_prefix (const char *mount_path)
@@ -38,7 +38,7 @@ index 6d9f4e5faa2..5d50dd6f8dc 100644
        else if (!retry && grub_strcmp (entries[i].fstype, "autofs") == 0)
  	{
 diff --git a/grub-core/osdep/unix/config.c b/grub-core/osdep/unix/config.c
-index 65effa9f3a7..b637c58efb7 100644
+index 65effa9f3..b637c58ef 100644
 --- a/grub-core/osdep/unix/config.c
 +++ b/grub-core/osdep/unix/config.c
 @@ -82,6 +82,19 @@ grub_util_load_config (struct grub_util_config *cfg)
@@ -73,7 +73,7 @@ index 65effa9f3a7..b637c58efb7 100644
    argv[2] = script;
    argv[3] = '\0';
 diff --git a/util/config.c b/util/config.c
-index ebcdd8f5e22..f044a880a76 100644
+index ebcdd8f5e..f044a880a 100644
 --- a/util/config.c
 +++ b/util/config.c
 @@ -42,6 +42,16 @@ grub_util_parse_config (FILE *f, struct grub_util_config *cfg, int simple)
@@ -94,7 +94,7 @@ index ebcdd8f5e22..f044a880a76 100644
  			sizeof ("GRUB_DISTRIBUTOR=") - 1) == 0)
  	{
 diff --git a/util/grub-install.c b/util/grub-install.c
-index 78d0138cb0a..4375c161955 100644
+index 78d0138cb..4375c1619 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
 @@ -816,6 +816,8 @@ fill_core_services (const char *core_services)
@@ -134,7 +134,7 @@ index 78d0138cb0a..4375c161955 100644
    char *install_drive = NULL;
  
 diff --git a/util/grub-mkrelpath.c b/util/grub-mkrelpath.c
-index 47a241a391b..5db7a9a7d97 100644
+index 47a241a39..5db7a9a7d 100644
 --- a/util/grub-mkrelpath.c
 +++ b/util/grub-mkrelpath.c
 @@ -40,9 +40,12 @@ struct arguments
@@ -161,7 +161,7 @@ index 47a241a391b..5db7a9a7d97 100644
        if (state->arg_num == 0)
  	arguments->pathname = xstrdup (arg);
 diff --git a/include/grub/emu/config.h b/include/grub/emu/config.h
-index 875d5896ce1..c9a7e5f4ade 100644
+index 875d5896c..c9a7e5f4a 100644
 --- a/include/grub/emu/config.h
 +++ b/include/grub/emu/config.h
 @@ -37,6 +37,7 @@ struct grub_util_config

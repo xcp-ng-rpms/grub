@@ -14,7 +14,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 1 insertion(+)
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 3346d1be658..6864e780fd4 100644
+index 3346d1be6..6864e780f 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -782,6 +782,7 @@ module = {

@@ -11,7 +11,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 5 insertions(+)
 
 diff --git a/grub-core/net/bootp.c b/grub-core/net/bootp.c
-index ff1d7776e7f..242cd1f4cbd 100644
+index ff1d7776e..242cd1f4c 100644
 --- a/grub-core/net/bootp.c
 +++ b/grub-core/net/bootp.c
 @@ -976,6 +976,7 @@ grub_net_configure_by_dhcpv6_reply (const char *name,

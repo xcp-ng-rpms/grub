@@ -10,7 +10,7 @@ Signed-off-by: Peter Jones <grub2-owner@fedoraproject.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/normal/menu_text.c b/grub-core/normal/menu_text.c
-index 0e43f2c10cc..537d4bf86ff 100644
+index 0e43f2c10..537d4bf86 100644
 --- a/grub-core/normal/menu_text.c
 +++ b/grub-core/normal/menu_text.c
 @@ -334,7 +334,7 @@ grub_menu_init_page (int nested, int edit,

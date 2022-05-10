@@ -13,7 +13,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 4 insertions(+)
 
 diff --git a/grub-core/fs/hfsplus.c b/grub-core/fs/hfsplus.c
-index 03a33ea2477..423f4b956ba 100644
+index 03a33ea24..423f4b956 100644
 --- a/grub-core/fs/hfsplus.c
 +++ b/grub-core/fs/hfsplus.c
 @@ -635,6 +635,10 @@ grub_hfsplus_btree_search (struct grub_hfsplus_btree *btree,

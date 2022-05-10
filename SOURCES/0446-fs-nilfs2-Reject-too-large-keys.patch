@@ -16,7 +16,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/fs/nilfs2.c b/grub-core/fs/nilfs2.c
-index 598a2a55baf..61e8af9ff7b 100644
+index 598a2a55b..61e8af9ff 100644
 --- a/grub-core/fs/nilfs2.c
 +++ b/grub-core/fs/nilfs2.c
 @@ -569,6 +569,11 @@ grub_nilfs2_btree_lookup (struct grub_nilfs2_data *data,

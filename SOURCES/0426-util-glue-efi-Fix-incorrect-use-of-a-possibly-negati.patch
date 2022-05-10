@@ -16,7 +16,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/util/glue-efi.c b/util/glue-efi.c
-index 68f53168b58..de0fa6d33d5 100644
+index 68f53168b..de0fa6d33 100644
 --- a/util/glue-efi.c
 +++ b/util/glue-efi.c
 @@ -39,13 +39,23 @@ write_fat (FILE *in32, FILE *in64, FILE *out, const char *out_filename,

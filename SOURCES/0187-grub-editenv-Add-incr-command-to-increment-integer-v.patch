@@ -17,7 +17,7 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  1 file changed, 50 insertions(+)
 
 diff --git a/util/grub-editenv.c b/util/grub-editenv.c
-index 118e89fe57f..2918bb71cfe 100644
+index 118e89fe5..2918bb71c 100644
 --- a/util/grub-editenv.c
 +++ b/util/grub-editenv.c
 @@ -53,6 +53,9 @@ static struct argp_option options[] = {

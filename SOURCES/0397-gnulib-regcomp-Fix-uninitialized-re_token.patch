@@ -19,7 +19,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  create mode 100644 grub-core/gnulib-fix-regcomp-uninit-token.patch
 
 diff --git a/grub-core/gnulib/regcomp.c b/grub-core/gnulib/regcomp.c
-index de9f622088f..6d0830ac691 100644
+index de9f62208..6d0830ac6 100644
 --- a/grub-core/gnulib/regcomp.c
 +++ b/grub-core/gnulib/regcomp.c
 @@ -3790,8 +3790,7 @@ static bin_tree_t *
@@ -33,7 +33,7 @@ index de9f622088f..6d0830ac691 100644
  }
  
 diff --git a/conf/Makefile.extra-dist b/conf/Makefile.extra-dist
-index edbe7846eb1..ee276a87764 100644
+index edbe7846e..ee276a877 100644
 --- a/conf/Makefile.extra-dist
 +++ b/conf/Makefile.extra-dist
 @@ -32,6 +32,7 @@ EXTRA_DIST += grub-core/genemuinitheader.sh
@@ -46,7 +46,7 @@ index edbe7846eb1..ee276a87764 100644
  EXTRA_DIST += grub-core/gnulib-fix-unused-value.patch
 diff --git a/grub-core/gnulib-fix-regcomp-uninit-token.patch b/grub-core/gnulib-fix-regcomp-uninit-token.patch
 new file mode 100644
-index 00000000000..d615745221b
+index 000000000..d61574522
 --- /dev/null
 +++ b/grub-core/gnulib-fix-regcomp-uninit-token.patch
 @@ -0,0 +1,12 @@

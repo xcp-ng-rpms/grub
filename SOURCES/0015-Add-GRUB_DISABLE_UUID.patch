@@ -15,7 +15,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  3 files changed, 28 insertions(+), 5 deletions(-)
 
 diff --git a/docs/grub.texi b/docs/grub.texi
-index 2adfa97bee8..2fd32608c01 100644
+index 2adfa97be..2fd32608c 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
 @@ -1441,6 +1441,13 @@ enable the use of partition UUIDs, set this option to @samp{false}.
@@ -33,7 +33,7 @@ index 2adfa97bee8..2fd32608c01 100644
  If graphical video support is required, either because the @samp{gfxterm}
  graphical terminal is in use or because @samp{GRUB_GFXPAYLOAD_LINUX} is set,
 diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
-index bc5a3f17541..b0a8626dd1c 100644
+index bc5a3f175..b0a8626dd 100644
 --- a/util/grub-mkconfig.in
 +++ b/util/grub-mkconfig.in
 @@ -133,12 +133,12 @@ fi
@@ -83,7 +83,7 @@ index bc5a3f17541..b0a8626dd1c 100644
    GRUB_GFXMODE \
    GRUB_BACKGROUND \
 diff --git a/util/grub-mkconfig_lib.in b/util/grub-mkconfig_lib.in
-index 0f801cab3e4..1001a12232b 100644
+index 0f801cab3..1001a1223 100644
 --- a/util/grub-mkconfig_lib.in
 +++ b/util/grub-mkconfig_lib.in
 @@ -156,7 +156,7 @@ prepare_grub_to_access_device ()

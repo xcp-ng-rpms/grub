@@ -14,7 +14,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  6 files changed, 478 insertions(+), 14 deletions(-)
 
 diff --git a/grub-core/net/bootp.c b/grub-core/net/bootp.c
-index f03eeab2fb4..da3e454466b 100644
+index f03eeab2f..da3e45446 100644
 --- a/grub-core/net/bootp.c
 +++ b/grub-core/net/bootp.c
 @@ -23,6 +23,7 @@
@@ -206,7 +206,7 @@ index f03eeab2fb4..da3e454466b 100644
  grub_net_process_dhcp (struct grub_net_buff *nb,
  		       struct grub_net_card *card)
 diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
-index 5388f952ba9..a4daaa460bd 100644
+index 5388f952b..a4daaa460 100644
 --- a/grub-core/net/drivers/efi/efinet.c
 +++ b/grub-core/net/drivers/efi/efinet.c
 @@ -18,11 +18,15 @@
@@ -315,7 +315,7 @@ index 5388f952ba9..a4daaa460bd 100644
    }
  }
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index 16d2ce06d5a..4be228d9576 100644
+index 16d2ce06d..4be228d95 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -955,6 +955,78 @@ grub_net_network_level_interface_register (struct grub_net_network_level_interfa
@@ -398,7 +398,7 @@ index 16d2ce06d5a..4be228d9576 100644
  grub_err_t
  grub_net_add_ipv4_local (struct grub_net_network_level_interface *inter,
 diff --git a/grub-core/net/tftp.c b/grub-core/net/tftp.c
-index 7d90bf66e76..1157524fc50 100644
+index 7d90bf66e..1157524fc 100644
 --- a/grub-core/net/tftp.c
 +++ b/grub-core/net/tftp.c
 @@ -379,19 +379,23 @@ tftp_open (struct grub_file *file, const char *filename)
@@ -426,7 +426,7 @@ index 7d90bf66e76..1157524fc50 100644
        grub_free (data);
        return grub_errno;
 diff --git a/include/grub/efi/api.h b/include/grub/efi/api.h
-index c7c9f0e1db1..28b6adf7648 100644
+index c7c9f0e1d..28b6adf76 100644
 --- a/include/grub/efi/api.h
 +++ b/include/grub/efi/api.h
 @@ -572,10 +572,16 @@ typedef void *grub_efi_handle_t;
@@ -581,7 +581,7 @@ index c7c9f0e1db1..28b6adf7648 100644
  
  typedef struct grub_efi_pxe
 diff --git a/include/grub/net.h b/include/grub/net.h
-index 50d62ab0c8c..f8f3ec13acc 100644
+index 50d62ab0c..f8f3ec13a 100644
 --- a/include/grub/net.h
 +++ b/include/grub/net.h
 @@ -442,6 +442,51 @@ struct grub_net_bootp_packet

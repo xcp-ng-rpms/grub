@@ -13,7 +13,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  2 files changed, 161 insertions(+), 161 deletions(-)
 
 diff --git a/docs/grub-dev.texi b/docs/grub-dev.texi
-index a9f4de6318c..3ce827ab726 100644
+index a9f4de631..3ce827ab7 100644
 --- a/docs/grub-dev.texi
 +++ b/docs/grub-dev.texi
 @@ -1,7 +1,7 @@
@@ -35,7 +35,7 @@ index a9f4de6318c..3ce827ab726 100644
  
  @setchapternewpage odd
 diff --git a/docs/grub.texi b/docs/grub.texi
-index a7155c22ffe..2b7b7faf847 100644
+index a7155c22f..2b7b7faf8 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
 @@ -1,7 +1,7 @@

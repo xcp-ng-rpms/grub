@@ -23,7 +23,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 14 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/net/tftp.c b/grub-core/net/tftp.c
-index 79c16f9b041..b9a4b607a3d 100644
+index 79c16f9b0..b9a4b607a 100644
 --- a/grub-core/net/tftp.c
 +++ b/grub-core/net/tftp.c
 @@ -183,8 +183,20 @@ tftp_receive (grub_net_udp_socket_t sock __attribute__ ((unused)),

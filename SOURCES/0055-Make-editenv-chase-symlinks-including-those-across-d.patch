@@ -16,7 +16,7 @@ Reviewed-by: Adam Jackson <ajax@redhat.com>
  2 files changed, 53 insertions(+), 2 deletions(-)
 
 diff --git a/Makefile.util.def b/Makefile.util.def
-index c7b775bce73..d08713b5500 100644
+index c7b775bce..d08713b55 100644
 --- a/Makefile.util.def
 +++ b/Makefile.util.def
 @@ -231,8 +231,17 @@ program = {
@@ -38,7 +38,7 @@ index c7b775bce73..d08713b5500 100644
    ldadd = libgrubgcry.a;
    ldadd = libgrubkern.a;
 diff --git a/util/editenv.c b/util/editenv.c
-index c6f8d2298c3..d8d1dad6ab9 100644
+index c6f8d2298..d8d1dad6a 100644
 --- a/util/editenv.c
 +++ b/util/editenv.c
 @@ -37,6 +37,7 @@ grub_util_create_envblk_file (const char *name)

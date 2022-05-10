@@ -15,7 +15,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 20 insertions(+), 4 deletions(-)
 
 diff --git a/grub-core/loader/xnu.c b/grub-core/loader/xnu.c
-index 16bfa7cec72..af885a648c6 100644
+index 16bfa7cec..af885a648 100644
 --- a/grub-core/loader/xnu.c
 +++ b/grub-core/loader/xnu.c
 @@ -228,26 +228,33 @@ grub_xnu_writetree_toheap (grub_addr_t *target, grub_size_t *size)

@@ -12,7 +12,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  1 file changed, 3 insertions(+), 9 deletions(-)
 
 diff --git a/docs/grub.texi b/docs/grub.texi
-index 34517e67439..a833364d5ff 100644
+index 34517e674..a833364d5 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
 @@ -5695,15 +5695,9 @@ verified with a public key currently trusted by GRUB

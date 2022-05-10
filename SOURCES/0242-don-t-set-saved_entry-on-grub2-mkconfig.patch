@@ -17,7 +17,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  2 files changed, 2 deletions(-)
 
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 01e66e5fc74..b54d2774a7d 100644
+index 01e66e5fc..b54d2774a 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -165,7 +165,6 @@ if [ -s \$prefix/grubenv ]; then
@@ -29,7 +29,7 @@ index 01e66e5fc74..b54d2774a7d 100644
  	${grub_editenv} - set kernelopts="root=${linux_root_device_thisversion} ro ${args}"
      fi
 diff --git a/util/grub.d/10_linux_bls.in b/util/grub.d/10_linux_bls.in
-index 1bc97f29898..8745e598d0e 100644
+index 1bc97f298..8745e598d 100644
 --- a/util/grub.d/10_linux_bls.in
 +++ b/util/grub.d/10_linux_bls.in
 @@ -212,7 +212,6 @@ linux_entry ()

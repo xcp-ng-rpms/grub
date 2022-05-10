@@ -25,7 +25,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  3 files changed, 19 insertions(+), 5 deletions(-)
 
 diff --git a/grub-core/commands/minicmd.c b/grub-core/commands/minicmd.c
-index 6d66b7c453a..2bd3ac76f2d 100644
+index 6d66b7c45..2bd3ac76f 100644
 --- a/grub-core/commands/minicmd.c
 +++ b/grub-core/commands/minicmd.c
 @@ -140,8 +140,11 @@ grub_mini_cmd_rmmod (struct grub_command *cmd __attribute__ ((unused)),
@@ -43,7 +43,7 @@ index 6d66b7c453a..2bd3ac76f2d 100644
    return 0;
  }
 diff --git a/grub-core/kern/dl.c b/grub-core/kern/dl.c
-index d7a7c8f97b0..520126beab7 100644
+index d7a7c8f97..520126bea 100644
 --- a/grub-core/kern/dl.c
 +++ b/grub-core/kern/dl.c
 @@ -621,6 +621,15 @@ grub_dl_unref (grub_dl_t mod)
@@ -63,7 +63,7 @@ index d7a7c8f97b0..520126beab7 100644
  grub_dl_flush_cache (grub_dl_t mod)
  {
 diff --git a/include/grub/dl.h b/include/grub/dl.h
-index 877821dcb04..6a3e251b455 100644
+index 877821dcb..6a3e251b4 100644
 --- a/include/grub/dl.h
 +++ b/include/grub/dl.h
 @@ -205,9 +205,11 @@ grub_dl_t EXPORT_FUNC(grub_dl_load) (const char *name);

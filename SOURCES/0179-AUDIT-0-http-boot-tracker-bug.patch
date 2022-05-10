@@ -22,7 +22,7 @@ Signed-off-by: Michael Chang <mchang@suse.com>
  2 files changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/net/efi/net.c b/grub-core/net/efi/net.c
-index 9e0078ac1c6..2bf15447fd5 100644
+index 9e0078ac1..2bf15447f 100644
 --- a/grub-core/net/efi/net.c
 +++ b/grub-core/net/efi/net.c
 @@ -645,8 +645,10 @@ grub_efihttp_chunk_read (grub_file_t file, char *buf,
@@ -38,7 +38,7 @@ index 9e0078ac1c6..2bf15447fd5 100644
        if (buf)
  	{
 diff --git a/grub-core/net/http.c b/grub-core/net/http.c
-index 00737c52750..c9c59690a98 100644
+index 00737c527..c9c59690a 100644
 --- a/grub-core/net/http.c
 +++ b/grub-core/net/http.c
 @@ -31,7 +31,8 @@ GRUB_MOD_LICENSE ("GPLv3+");

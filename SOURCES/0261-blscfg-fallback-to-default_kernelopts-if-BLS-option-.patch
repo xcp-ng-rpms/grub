@@ -21,7 +21,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  2 files changed, 9 insertions(+)
 
 diff --git a/grub-core/commands/blscfg.c b/grub-core/commands/blscfg.c
-index c432c6ba27a..11cc82b6f31 100644
+index c432c6ba2..11cc82b6f 100644
 --- a/grub-core/commands/blscfg.c
 +++ b/grub-core/commands/blscfg.c
 @@ -628,6 +628,9 @@ static char *expand_val(char *value)
@@ -46,7 +46,7 @@ index c432c6ba27a..11cc82b6f31 100644
  
    hotkey = bls_get_val (entry, "grub_hotkey", NULL);
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index da2992ac9f1..04fd8953f40 100644
+index da2992ac9..04fd8953f 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -158,6 +158,8 @@ linux_entry ()

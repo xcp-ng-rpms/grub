@@ -9,7 +9,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/grub-core/net/efi/http.c b/grub-core/net/efi/http.c
-index fc8cb25ae0a..26647a50fa4 100644
+index fc8cb25ae..26647a50f 100644
 --- a/grub-core/net/efi/http.c
 +++ b/grub-core/net/efi/http.c
 @@ -412,8 +412,8 @@ grub_efihttp_open (struct grub_efi_net_device *dev,

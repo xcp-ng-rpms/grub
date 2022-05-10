@@ -9,7 +9,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/net/efi/dhcp.c b/grub-core/net/efi/dhcp.c
-index dbef63d8c08..e5c79b748b0 100644
+index dbef63d8c..e5c79b748 100644
 --- a/grub-core/net/efi/dhcp.c
 +++ b/grub-core/net/efi/dhcp.c
 @@ -80,7 +80,7 @@ grub_efi_dhcp4_parse_dns (grub_efi_dhcp4_protocol_t *dhcp4, grub_efi_dhcp4_packe

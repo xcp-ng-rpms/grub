@@ -35,7 +35,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  6 files changed, 22 insertions(+), 33 deletions(-)
 
 diff --git a/grub-core/lib/libtasn1/lib/decoding.c b/grub-core/lib/libtasn1/lib/decoding.c
-index 42f9a92b5d4..7856858b272 100644
+index 42f9a92b5..7856858b2 100644
 --- a/grub-core/lib/libtasn1/lib/decoding.c
 +++ b/grub-core/lib/libtasn1/lib/decoding.c
 @@ -32,7 +32,8 @@
@@ -71,7 +71,7 @@ index 42f9a92b5d4..7856858b272 100644
  		  result = asn1_create_element (definitions, name, &aux);
  		  if (result == ASN1_SUCCESS)
 diff --git a/grub-core/lib/libtasn1/lib/element.c b/grub-core/lib/libtasn1/lib/element.c
-index 539008d8e94..ed761ff56bd 100644
+index 539008d8e..ed761ff56 100644
 --- a/grub-core/lib/libtasn1/lib/element.c
 +++ b/grub-core/lib/libtasn1/lib/element.c
 @@ -30,9 +30,10 @@
@@ -87,7 +87,7 @@ index 539008d8e94..ed761ff56bd 100644
  _asn1_hierarchical_name (asn1_node_const node, char *name, int name_size)
  {
 diff --git a/grub-core/lib/libtasn1/lib/gstr.c b/grub-core/lib/libtasn1/lib/gstr.c
-index e91a3a151c0..e33875c2c7c 100644
+index e91a3a151..e33875c2c 100644
 --- a/grub-core/lib/libtasn1/lib/gstr.c
 +++ b/grub-core/lib/libtasn1/lib/gstr.c
 @@ -36,13 +36,13 @@ _asn1_str_cat (char *dest, size_t dest_tot_size, const char *src)
@@ -107,7 +107,7 @@ index e91a3a151c0..e33875c2c7c 100644
  	}
      }
 diff --git a/grub-core/lib/libtasn1/lib/parser_aux.c b/grub-core/lib/libtasn1/lib/parser_aux.c
-index d5dbbf8765d..89c9be69dc2 100644
+index d5dbbf876..89c9be69d 100644
 --- a/grub-core/lib/libtasn1/lib/parser_aux.c
 +++ b/grub-core/lib/libtasn1/lib/parser_aux.c
 @@ -26,7 +26,8 @@
@@ -139,7 +139,7 @@ index d5dbbf8765d..89c9be69dc2 100644
        temp[start + count] = '0' + (char) r;
        count++;
 diff --git a/grub-core/lib/libtasn1/lib/int.h b/grub-core/lib/libtasn1/lib/int.h
-index ea1625786c1..4a568efee9c 100644
+index ea1625786..4a568efee 100644
 --- a/grub-core/lib/libtasn1/lib/int.h
 +++ b/grub-core/lib/libtasn1/lib/int.h
 @@ -35,7 +35,7 @@
@@ -161,7 +161,7 @@ index ea1625786c1..4a568efee9c 100644
  #if SIZEOF_UNSIGNED_LONG_INT == 8
  # define _asn1_strtou64(n,e,b) strtoul((const char *) n, e, b)
 diff --git a/include/grub/libtasn1.h b/include/grub/libtasn1.h
-index 785eda2ae3f..28dbf16c4e0 100644
+index 785eda2ae..28dbf16c4 100644
 --- a/include/grub/libtasn1.h
 +++ b/include/grub/libtasn1.h
 @@ -38,29 +38,15 @@

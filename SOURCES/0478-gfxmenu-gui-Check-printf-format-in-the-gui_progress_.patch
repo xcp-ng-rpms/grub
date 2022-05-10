@@ -28,7 +28,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  2 files changed, 7 insertions(+)
 
 diff --git a/grub-core/gfxmenu/gui_label.c b/grub-core/gfxmenu/gui_label.c
-index a4c817891ee..1c190542a2b 100644
+index a4c817891..1c190542a 100644
 --- a/grub-core/gfxmenu/gui_label.c
 +++ b/grub-core/gfxmenu/gui_label.c
 @@ -193,6 +193,10 @@ label_set_property (void *vself, const char *name, const char *value)
@@ -43,7 +43,7 @@ index a4c817891ee..1c190542a2b 100644
  	  self->text = grub_xasprintf (value, self->value);
  	}
 diff --git a/grub-core/gfxmenu/gui_progress_bar.c b/grub-core/gfxmenu/gui_progress_bar.c
-index b128f08668e..ace85a12569 100644
+index b128f0866..ace85a125 100644
 --- a/grub-core/gfxmenu/gui_progress_bar.c
 +++ b/grub-core/gfxmenu/gui_progress_bar.c
 @@ -348,6 +348,9 @@ progress_bar_set_property (void *vself, const char *name, const char *value)

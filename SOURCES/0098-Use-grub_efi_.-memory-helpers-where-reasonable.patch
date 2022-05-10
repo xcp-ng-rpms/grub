@@ -13,7 +13,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 9 insertions(+), 15 deletions(-)
 
 diff --git a/grub-core/loader/efi/chainloader.c b/grub-core/loader/efi/chainloader.c
-index 5cd9b6e08a8..106eb10a362 100644
+index 5cd9b6e08..106eb10a3 100644
 --- a/grub-core/loader/efi/chainloader.c
 +++ b/grub-core/loader/efi/chainloader.c
 @@ -65,7 +65,7 @@ grub_chainloader_unload (void)

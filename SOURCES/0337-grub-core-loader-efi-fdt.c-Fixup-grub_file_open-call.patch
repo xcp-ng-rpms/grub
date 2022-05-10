@@ -14,7 +14,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/loader/efi/fdt.c b/grub-core/loader/efi/fdt.c
-index a9dbcfdfeaf..e3ee3ad79d6 100644
+index a9dbcfdfe..e3ee3ad79 100644
 --- a/grub-core/loader/efi/fdt.c
 +++ b/grub-core/loader/efi/fdt.c
 @@ -125,7 +125,7 @@ grub_cmd_devicetree (grub_command_t cmd __attribute__ ((unused)),

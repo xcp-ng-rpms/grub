@@ -16,7 +16,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  3 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/grub-core/loader/arm/linux.c b/grub-core/loader/arm/linux.c
-index beceda52030..1e944a2b671 100644
+index beceda520..1e944a2b6 100644
 --- a/grub-core/loader/arm/linux.c
 +++ b/grub-core/loader/arm/linux.c
 @@ -363,7 +363,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
@@ -47,7 +47,7 @@ index beceda52030..1e944a2b671 100644
      return grub_errno;
  
 diff --git a/grub-core/loader/ia64/efi/linux.c b/grub-core/loader/ia64/efi/linux.c
-index e325fe0ee83..2ad0b0c0407 100644
+index e325fe0ee..2ad0b0c04 100644
 --- a/grub-core/loader/ia64/efi/linux.c
 +++ b/grub-core/loader/ia64/efi/linux.c
 @@ -502,7 +502,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
@@ -60,7 +60,7 @@ index e325fe0ee83..2ad0b0c0407 100644
      goto fail;
  
 diff --git a/grub-core/loader/sparc64/ieee1275/linux.c b/grub-core/loader/sparc64/ieee1275/linux.c
-index abe46faa012..bb47ee0cc64 100644
+index abe46faa0..bb47ee0cc 100644
 --- a/grub-core/loader/sparc64/ieee1275/linux.c
 +++ b/grub-core/loader/sparc64/ieee1275/linux.c
 @@ -306,7 +306,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),

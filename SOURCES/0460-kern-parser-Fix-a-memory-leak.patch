@@ -14,7 +14,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 16 insertions(+), 4 deletions(-)
 
 diff --git a/grub-core/kern/parser.c b/grub-core/kern/parser.c
-index d1cf061ad68..39e4df65b86 100644
+index d1cf061ad..39e4df65b 100644
 --- a/grub-core/kern/parser.c
 +++ b/grub-core/kern/parser.c
 @@ -140,6 +140,7 @@ grub_parser_split_cmdline (const char *cmdline,

@@ -16,7 +16,7 @@ Signed-off-by: Alex Burmashev <alexander.burmashev@oracle.com>
  1 file changed, 118 insertions(+), 1 deletion(-)
 
 diff --git a/include/grub/safemath.h b/include/grub/safemath.h
-index c17b89bba17..1ccac276b59 100644
+index c17b89bba..1ccac276b 100644
 --- a/include/grub/safemath.h
 +++ b/include/grub/safemath.h
 @@ -31,7 +31,124 @@

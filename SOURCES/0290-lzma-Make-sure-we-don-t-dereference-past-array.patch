@@ -22,7 +22,7 @@ Upstream-commit-id: f91e043bda4
  1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/lib/LzmaEnc.c b/grub-core/lib/LzmaEnc.c
-index f2ec04a8c28..753e56a95e3 100644
+index f2ec04a8c..753e56a95 100644
 --- a/grub-core/lib/LzmaEnc.c
 +++ b/grub-core/lib/LzmaEnc.c
 @@ -1877,13 +1877,19 @@ static SRes LzmaEnc_CodeOneBlock(CLzmaEnc *p, Bool useLimits, UInt32 maxPackSize

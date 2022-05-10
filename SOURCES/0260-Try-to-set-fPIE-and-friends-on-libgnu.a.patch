@@ -23,7 +23,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/gnulib/Makefile.am b/grub-core/gnulib/Makefile.am
-index b7c5e60e1c3..bd3621930ff 100644
+index b7c5e60e1..bd3621930 100644
 --- a/grub-core/gnulib/Makefile.am
 +++ b/grub-core/gnulib/Makefile.am
 @@ -38,8 +38,8 @@ CLEANFILES =

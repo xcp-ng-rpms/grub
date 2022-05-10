@@ -11,7 +11,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/script/execute.c b/grub-core/script/execute.c
-index a1aadb9ee05..2e47c046741 100644
+index a1aadb9ee..2e47c0467 100644
 --- a/grub-core/script/execute.c
 +++ b/grub-core/script/execute.c
 @@ -978,7 +978,7 @@ grub_script_execute_cmdline (struct grub_script_cmd *cmd)

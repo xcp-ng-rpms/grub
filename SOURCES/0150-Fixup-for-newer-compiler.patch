@@ -9,7 +9,7 @@ Subject: [PATCH] Fixup for newer compiler
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/fs/btrfs.c b/grub-core/fs/btrfs.c
-index 7002ad81b7e..dac73b2fa8b 100644
+index 7002ad81b..dac73b2fa 100644
 --- a/grub-core/fs/btrfs.c
 +++ b/grub-core/fs/btrfs.c
 @@ -198,7 +198,7 @@ struct grub_btrfs_inode
@@ -22,7 +22,7 @@ index 7002ad81b7e..dac73b2fa8b 100644
  struct grub_btrfs_extent_data
  {
 diff --git a/include/grub/gpt_partition.h b/include/grub/gpt_partition.h
-index 7a93f43291c..8212697bf6b 100644
+index 7a93f4329..8212697bf 100644
 --- a/include/grub/gpt_partition.h
 +++ b/include/grub/gpt_partition.h
 @@ -76,7 +76,7 @@ struct grub_gpt_partentry

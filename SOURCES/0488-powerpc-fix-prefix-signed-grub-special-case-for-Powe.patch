@@ -15,7 +15,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/kern/main.c b/grub-core/kern/main.c
-index 25dbcfef1f6..40a709117f1 100644
+index 25dbcfef1..40a709117 100644
 --- a/grub-core/kern/main.c
 +++ b/grub-core/kern/main.c
 @@ -235,9 +235,20 @@ grub_set_prefix_and_root (void)

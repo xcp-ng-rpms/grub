@@ -13,7 +13,7 @@ the BootLoaderSpec config files.
 
 diff --git a/grub-core/kern/qsort.c b/grub-core/kern/qsort.c
 new file mode 100644
-index 00000000000..7f3fc9ffdae
+index 000000000..7f3fc9ffd
 --- /dev/null
 +++ b/grub-core/kern/qsort.c
 @@ -0,0 +1,279 @@
@@ -297,7 +297,7 @@ index 00000000000..7f3fc9ffdae
 +  return NULL;
 +}
 diff --git a/include/grub/misc.h b/include/grub/misc.h
-index fcaf1201e39..cbfae75a1b4 100644
+index fcaf1201e..cbfae75a1 100644
 --- a/include/grub/misc.h
 +++ b/include/grub/misc.h
 @@ -507,4 +507,19 @@ void EXPORT_FUNC(grub_real_boot_time) (const char *file,

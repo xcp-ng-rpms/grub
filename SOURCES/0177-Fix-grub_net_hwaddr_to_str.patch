@@ -16,7 +16,7 @@ Signed-off-by: Mark Salter <msalter@redhat.com>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index a0f4d00f0be..191e8e41bd6 100644
+index a0f4d00f0..191e8e41b 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -770,6 +770,7 @@ grub_net_hwaddr_to_str (const grub_net_link_level_address_t *addr, char *str)

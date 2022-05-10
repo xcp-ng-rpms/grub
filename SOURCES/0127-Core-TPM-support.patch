@@ -23,7 +23,7 @@ will measure all modules as they're loaded.
  create mode 100644 include/grub/tpm.h
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index cb24f92a431..420831bc89e 100644
+index cb24f92a4..420831bc8 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -131,6 +131,7 @@ kernel = {
@@ -51,7 +51,7 @@ index cb24f92a431..420831bc89e 100644
  
    i386_qemu = bus/pci.c;
 diff --git a/grub-core/kern/dl.c b/grub-core/kern/dl.c
-index eb8b969cded..387d1e6446d 100644
+index eb8b969cd..387d1e644 100644
 --- a/grub-core/kern/dl.c
 +++ b/grub-core/kern/dl.c
 @@ -33,6 +33,7 @@
@@ -73,7 +73,7 @@ index eb8b969cded..387d1e6446d 100644
    if (! mod)
 diff --git a/grub-core/kern/efi/tpm.c b/grub-core/kern/efi/tpm.c
 new file mode 100644
-index 00000000000..c9fb3c133f3
+index 000000000..c9fb3c133
 --- /dev/null
 +++ b/grub-core/kern/efi/tpm.c
 @@ -0,0 +1,282 @@
@@ -361,7 +361,7 @@ index 00000000000..c9fb3c133f3
 +}
 diff --git a/grub-core/kern/i386/pc/tpm.c b/grub-core/kern/i386/pc/tpm.c
 new file mode 100644
-index 00000000000..8c6c1e6ece2
+index 000000000..8c6c1e6ec
 --- /dev/null
 +++ b/grub-core/kern/i386/pc/tpm.c
 @@ -0,0 +1,132 @@
@@ -499,7 +499,7 @@ index 00000000000..8c6c1e6ece2
 +}
 diff --git a/grub-core/kern/tpm.c b/grub-core/kern/tpm.c
 new file mode 100644
-index 00000000000..1a991876c83
+index 000000000..1a991876c
 --- /dev/null
 +++ b/grub-core/kern/tpm.c
 @@ -0,0 +1,13 @@
@@ -518,7 +518,7 @@ index 00000000000..1a991876c83
 +}
 diff --git a/include/grub/efi/tpm.h b/include/grub/efi/tpm.h
 new file mode 100644
-index 00000000000..e2aff4a3c22
+index 000000000..e2aff4a3c
 --- /dev/null
 +++ b/include/grub/efi/tpm.h
 @@ -0,0 +1,153 @@
@@ -677,7 +677,7 @@ index 00000000000..e2aff4a3c22
 +#endif
 diff --git a/include/grub/tpm.h b/include/grub/tpm.h
 new file mode 100644
-index 00000000000..40d3cf65ba6
+index 000000000..40d3cf65b
 --- /dev/null
 +++ b/include/grub/tpm.h
 @@ -0,0 +1,91 @@
@@ -773,7 +773,7 @@ index 00000000000..40d3cf65ba6
 +
 +#endif
 diff --git a/grub-core/Makefile.am b/grub-core/Makefile.am
-index f36200bd688..3781bb9cbb9 100644
+index f36200bd6..3781bb9cb 100644
 --- a/grub-core/Makefile.am
 +++ b/grub-core/Makefile.am
 @@ -94,6 +94,7 @@ KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/term.h

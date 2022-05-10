@@ -20,7 +20,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/commands/blscfg.c b/grub-core/commands/blscfg.c
-index 80d8814fc3f..321c93069f2 100644
+index 80d8814fc..321c93069 100644
 --- a/grub-core/commands/blscfg.c
 +++ b/grub-core/commands/blscfg.c
 @@ -692,6 +692,7 @@ static int find_entry (const char *filename,

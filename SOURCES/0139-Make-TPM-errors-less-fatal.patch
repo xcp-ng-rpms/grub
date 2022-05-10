@@ -19,7 +19,7 @@ Handle TPM errors, and stop trying to use the TPM once we hit one.
  11 files changed, 29 insertions(+), 4 deletions(-)
 
 diff --git a/grub-core/kern/dl.c b/grub-core/kern/dl.c
-index d0989573866..91105bc4677 100644
+index d09895738..91105bc46 100644
 --- a/grub-core/kern/dl.c
 +++ b/grub-core/kern/dl.c
 @@ -831,6 +831,7 @@ grub_dl_load_file (const char *filename)
@@ -31,7 +31,7 @@ index d0989573866..91105bc4677 100644
    mod = grub_dl_load_core (core, size);
    grub_free (core);
 diff --git a/grub-core/kern/i386/pc/tpm.c b/grub-core/kern/i386/pc/tpm.c
-index 8c6c1e6ece2..f6f264aff2e 100644
+index 8c6c1e6ec..f6f264aff 100644
 --- a/grub-core/kern/i386/pc/tpm.c
 +++ b/grub-core/kern/i386/pc/tpm.c
 @@ -7,21 +7,28 @@
@@ -90,7 +90,7 @@ index 8c6c1e6ece2..f6f264aff2e 100644
  	return 0;
  }
 diff --git a/grub-core/lib/cmdline.c b/grub-core/lib/cmdline.c
-index 178f7382f07..d5c12957cad 100644
+index 178f7382f..d5c12957c 100644
 --- a/grub-core/lib/cmdline.c
 +++ b/grub-core/lib/cmdline.c
 @@ -128,6 +128,7 @@ int grub_create_loader_cmdline (int argc, char *argv[], char *buf,
@@ -102,7 +102,7 @@ index 178f7382f07..d5c12957cad 100644
    return i;
  }
 diff --git a/grub-core/loader/i386/efi/linux.c b/grub-core/loader/i386/efi/linux.c
-index 074dbd6513e..ea9f5134e67 100644
+index 074dbd651..ea9f5134e 100644
 --- a/grub-core/loader/i386/efi/linux.c
 +++ b/grub-core/loader/i386/efi/linux.c
 @@ -133,6 +133,7 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
@@ -122,7 +122,7 @@ index 074dbd6513e..ea9f5134e67 100644
    rc = grub_linuxefi_secure_validate (kernel, filelen);
    if (rc < 0)
 diff --git a/grub-core/loader/i386/linux.c b/grub-core/loader/i386/linux.c
-index 273f48a6c88..76304f05700 100644
+index 273f48a6c..76304f057 100644
 --- a/grub-core/loader/i386/linux.c
 +++ b/grub-core/loader/i386/linux.c
 @@ -726,6 +726,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
@@ -134,7 +134,7 @@ index 273f48a6c88..76304f05700 100644
    grub_memcpy (&lh, kernel, sizeof (lh));
  
 diff --git a/grub-core/loader/i386/multiboot_mbi.c b/grub-core/loader/i386/multiboot_mbi.c
-index 2ce424a997b..ca85358f771 100644
+index 2ce424a99..ca85358f7 100644
 --- a/grub-core/loader/i386/multiboot_mbi.c
 +++ b/grub-core/loader/i386/multiboot_mbi.c
 @@ -175,6 +175,7 @@ grub_multiboot_load (grub_file_t file, const char *filename)
@@ -146,7 +146,7 @@ index 2ce424a997b..ca85358f771 100644
    header = find_header (buffer, len);
  
 diff --git a/grub-core/loader/i386/pc/linux.c b/grub-core/loader/i386/pc/linux.c
-index 4f8c02288ec..cfff25c21b5 100644
+index 4f8c02288..cfff25c21 100644
 --- a/grub-core/loader/i386/pc/linux.c
 +++ b/grub-core/loader/i386/pc/linux.c
 @@ -163,6 +163,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
@@ -158,7 +158,7 @@ index 4f8c02288ec..cfff25c21b5 100644
    grub_memcpy (&lh, kernel, sizeof (lh));
    kernel_offset = sizeof (lh);
 diff --git a/grub-core/loader/linux.c b/grub-core/loader/linux.c
-index 78c41e33416..c2c7cfcd0fd 100644
+index 78c41e334..c2c7cfcd0 100644
 --- a/grub-core/loader/linux.c
 +++ b/grub-core/loader/linux.c
 @@ -290,6 +290,8 @@ grub_initrd_load (struct grub_linux_initrd_context *initrd_ctx,
@@ -171,7 +171,7 @@ index 78c41e33416..c2c7cfcd0fd 100644
      }
    if (newc)
 diff --git a/grub-core/loader/multiboot.c b/grub-core/loader/multiboot.c
-index 3b87dc4fab3..9a8dae5565b 100644
+index 3b87dc4fa..9a8dae556 100644
 --- a/grub-core/loader/multiboot.c
 +++ b/grub-core/loader/multiboot.c
 @@ -442,6 +442,7 @@ grub_cmd_module (grub_command_t cmd __attribute__ ((unused)),
@@ -183,7 +183,7 @@ index 3b87dc4fab3..9a8dae5565b 100644
  }
  
 diff --git a/grub-core/loader/multiboot_mbi2.c b/grub-core/loader/multiboot_mbi2.c
-index 60ae4606fda..54078455e2f 100644
+index 60ae4606f..54078455e 100644
 --- a/grub-core/loader/multiboot_mbi2.c
 +++ b/grub-core/loader/multiboot_mbi2.c
 @@ -133,6 +133,7 @@ grub_multiboot2_load (grub_file_t file, const char *filename)
@@ -195,7 +195,7 @@ index 60ae4606fda..54078455e2f 100644
    header = find_header (mld.buffer, len);
    if (header == 0)
 diff --git a/grub-core/script/execute.c b/grub-core/script/execute.c
-index 976643c47b0..93965777138 100644
+index 976643c47..939657771 100644
 --- a/grub-core/script/execute.c
 +++ b/grub-core/script/execute.c
 @@ -997,6 +997,7 @@ grub_script_execute_cmdline (struct grub_script_cmd *cmd)

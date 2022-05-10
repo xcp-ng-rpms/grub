@@ -89,7 +89,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  70 files changed, 292 insertions(+), 221 deletions(-)
 
 diff --git a/grub-core/commands/acpi.c b/grub-core/commands/acpi.c
-index 9f02f22019a..5a1499aa0e3 100644
+index 9f02f2201..5a1499aa0 100644
 --- a/grub-core/commands/acpi.c
 +++ b/grub-core/commands/acpi.c
 @@ -635,7 +635,7 @@ grub_cmd_acpi (struct grub_extcmd_context *ctxt, int argc, char **args)
@@ -102,7 +102,7 @@ index 9f02f22019a..5a1499aa0e3 100644
  	{
  	  free_tables ();
 diff --git a/grub-core/commands/blocklist.c b/grub-core/commands/blocklist.c
-index d1a47b504bf..944449b77d4 100644
+index d1a47b504..944449b77 100644
 --- a/grub-core/commands/blocklist.c
 +++ b/grub-core/commands/blocklist.c
 @@ -121,8 +121,8 @@ grub_cmd_blocklist (grub_command_t cmd __attribute__ ((unused)),
@@ -117,7 +117,7 @@ index d1a47b504bf..944449b77d4 100644
      return grub_errno;
  
 diff --git a/grub-core/commands/cat.c b/grub-core/commands/cat.c
-index 88d90443602..ba5f0061aa5 100644
+index 88d904436..ba5f0061a 100644
 --- a/grub-core/commands/cat.c
 +++ b/grub-core/commands/cat.c
 @@ -56,7 +56,7 @@ grub_cmd_cat (grub_extcmd_context_t ctxt, int argc, char **args)
@@ -130,7 +130,7 @@ index 88d90443602..ba5f0061aa5 100644
      return grub_errno;
  
 diff --git a/grub-core/commands/cmp.c b/grub-core/commands/cmp.c
-index cc23ee67ea3..e9c3b25d34c 100644
+index cc23ee67e..e9c3b25d3 100644
 --- a/grub-core/commands/cmp.c
 +++ b/grub-core/commands/cmp.c
 @@ -45,8 +45,8 @@ grub_cmd_cmp (grub_command_t cmd __attribute__ ((unused)),
@@ -145,7 +145,7 @@ index cc23ee67ea3..e9c3b25d34c 100644
      goto cleanup;
  
 diff --git a/grub-core/commands/efi/loadbios.c b/grub-core/commands/efi/loadbios.c
-index 132cadbc764..d41d521a4ae 100644
+index 132cadbc7..d41d521a4 100644
 --- a/grub-core/commands/efi/loadbios.c
 +++ b/grub-core/commands/efi/loadbios.c
 @@ -169,7 +169,7 @@ grub_cmd_loadbios (grub_command_t cmd __attribute__ ((unused)),
@@ -167,7 +167,7 @@ index 132cadbc764..d41d521a4ae 100644
      return grub_errno;
  
 diff --git a/grub-core/commands/file.c b/grub-core/commands/file.c
-index 3ff6d5522d2..4f81aa1f9e1 100644
+index 3ff6d5522..4f81aa1f9 100644
 --- a/grub-core/commands/file.c
 +++ b/grub-core/commands/file.c
 @@ -165,7 +165,7 @@ grub_cmd_file (grub_extcmd_context_t ctxt, int argc, char **args)
@@ -190,7 +190,7 @@ index 3ff6d5522d2..4f81aa1f9e1 100644
  	  break;
  	/* FIXME: more checks?  */
 diff --git a/grub-core/commands/hashsum.c b/grub-core/commands/hashsum.c
-index d18687351a5..456ba908b6f 100644
+index d18687351..456ba908b 100644
 --- a/grub-core/commands/hashsum.c
 +++ b/grub-core/commands/hashsum.c
 @@ -113,7 +113,7 @@ check_list (const gcry_md_spec_t *hash, const char *hashfilename,
@@ -240,7 +240,7 @@ index d18687351a5..456ba908b6f 100644
  	{
  	  if (!keep)
 diff --git a/grub-core/commands/hexdump.c b/grub-core/commands/hexdump.c
-index 4c884b3a19a..eaa12465bb3 100644
+index 4c884b3a1..eaa12465b 100644
 --- a/grub-core/commands/hexdump.c
 +++ b/grub-core/commands/hexdump.c
 @@ -90,7 +90,7 @@ grub_cmd_hexdump (grub_extcmd_context_t ctxt, int argc, char **args)
@@ -253,7 +253,7 @@ index 4c884b3a19a..eaa12465bb3 100644
  	return 0;
  
 diff --git a/grub-core/commands/i386/pc/play.c b/grub-core/commands/i386/pc/play.c
-index 7712e2a36a1..c8181310515 100644
+index 7712e2a36..c81813105 100644
 --- a/grub-core/commands/i386/pc/play.c
 +++ b/grub-core/commands/i386/pc/play.c
 @@ -93,7 +93,7 @@ grub_cmd_play (grub_command_t cmd __attribute__ ((unused)),
@@ -266,7 +266,7 @@ index 7712e2a36a1..c8181310515 100644
        if (! file)
          return grub_errno;
 diff --git a/grub-core/commands/keylayouts.c b/grub-core/commands/keylayouts.c
-index f35d3a369ba..c05d6128a6d 100644
+index f35d3a369..c05d6128a 100644
 --- a/grub-core/commands/keylayouts.c
 +++ b/grub-core/commands/keylayouts.c
 @@ -220,7 +220,7 @@ grub_cmd_keymap (struct grub_command *cmd __attribute__ ((unused)),
@@ -279,7 +279,7 @@ index f35d3a369ba..c05d6128a6d 100644
      goto fail;
  
 diff --git a/grub-core/commands/legacycfg.c b/grub-core/commands/legacycfg.c
-index 0de070eacc4..f5696a51a75 100644
+index 0de070eac..f5696a51a 100644
 --- a/grub-core/commands/legacycfg.c
 +++ b/grub-core/commands/legacycfg.c
 @@ -56,7 +56,7 @@ legacy_file (const char *filename)
@@ -292,7 +292,7 @@ index 0de070eacc4..f5696a51a75 100644
      {
        grub_free (suffix);
 diff --git a/grub-core/commands/loadenv.c b/grub-core/commands/loadenv.c
-index 91c99456091..163b9a09042 100644
+index 91c994560..163b9a090 100644
 --- a/grub-core/commands/loadenv.c
 +++ b/grub-core/commands/loadenv.c
 @@ -46,7 +46,8 @@ static const struct grub_arg_option options[] =
@@ -355,7 +355,7 @@ index 91c99456091..163b9a09042 100644
      return grub_errno;
  
 diff --git a/grub-core/commands/ls.c b/grub-core/commands/ls.c
-index c25161cc4f2..2cdb2acc552 100644
+index c25161cc4..2cdb2acc5 100644
 --- a/grub-core/commands/ls.c
 +++ b/grub-core/commands/ls.c
 @@ -129,8 +129,8 @@ print_files_long (const char *filename, const struct grub_dirhook_info *info,
@@ -381,7 +381,7 @@ index c25161cc4f2..2cdb2acc552 100644
  	    goto fail;
  
 diff --git a/grub-core/commands/minicmd.c b/grub-core/commands/minicmd.c
-index b25ca4b9f17..46bf135e8f0 100644
+index b25ca4b9f..46bf135e8 100644
 --- a/grub-core/commands/minicmd.c
 +++ b/grub-core/commands/minicmd.c
 @@ -43,7 +43,7 @@ grub_mini_cmd_cat (struct grub_command *cmd __attribute__ ((unused)),
@@ -394,7 +394,7 @@ index b25ca4b9f17..46bf135e8f0 100644
      return grub_errno;
  
 diff --git a/grub-core/commands/nativedisk.c b/grub-core/commands/nativedisk.c
-index d69214f6de0..f200a5ce092 100644
+index d69214f6d..f200a5ce0 100644
 --- a/grub-core/commands/nativedisk.c
 +++ b/grub-core/commands/nativedisk.c
 @@ -242,7 +242,8 @@ grub_cmd_nativedisk (grub_command_t cmd __attribute__ ((unused)),
@@ -408,7 +408,7 @@ index d69214f6de0..f200a5ce092 100644
        if (! file)
  	goto fail;
 diff --git a/grub-core/commands/parttool.c b/grub-core/commands/parttool.c
-index 36dadc0b1db..051e31320e9 100644
+index 36dadc0b1..051e31320 100644
 --- a/grub-core/commands/parttool.c
 +++ b/grub-core/commands/parttool.c
 @@ -199,7 +199,7 @@ grub_cmd_parttool (grub_command_t cmd __attribute__ ((unused)),
@@ -421,7 +421,7 @@ index 36dadc0b1db..051e31320e9 100644
  	      {
  		char *buf = 0;
 diff --git a/grub-core/commands/search.c b/grub-core/commands/search.c
-index 7dd32e445c9..ddda6e7c590 100644
+index 7dd32e445..ddda6e7c5 100644
 --- a/grub-core/commands/search.c
 +++ b/grub-core/commands/search.c
 @@ -81,8 +81,8 @@ iterate_device (const char *name, void *data)
@@ -436,7 +436,7 @@ index 7dd32e445c9..ddda6e7c590 100644
  	{
  	  found = 1;
 diff --git a/grub-core/commands/test.c b/grub-core/commands/test.c
-index 5f06642f6c6..13c6ed9534a 100644
+index 5f06642f6..13c6ed953 100644
 --- a/grub-core/commands/test.c
 +++ b/grub-core/commands/test.c
 @@ -355,8 +355,8 @@ test_parse (char **args, int *argn, int argc)
@@ -451,7 +451,7 @@ index 5f06642f6c6..13c6ed9534a 100644
  	      if (file)
  		grub_file_close (file);
 diff --git a/grub-core/commands/testload.c b/grub-core/commands/testload.c
-index cfab6763dc3..ff01a0516dd 100644
+index cfab6763d..ff01a0516 100644
 --- a/grub-core/commands/testload.c
 +++ b/grub-core/commands/testload.c
 @@ -57,7 +57,7 @@ grub_cmd_testload (struct grub_command *cmd __attribute__ ((unused)),
@@ -464,7 +464,7 @@ index cfab6763dc3..ff01a0516dd 100644
      return grub_errno;
  
 diff --git a/grub-core/commands/testspeed.c b/grub-core/commands/testspeed.c
-index 042645f8d26..c13a9b8d8d2 100644
+index 042645f8d..c13a9b8d8 100644
 --- a/grub-core/commands/testspeed.c
 +++ b/grub-core/commands/testspeed.c
 @@ -61,7 +61,7 @@ grub_cmd_testspeed (grub_extcmd_context_t ctxt, int argc, char **args)
@@ -477,7 +477,7 @@ index 042645f8d26..c13a9b8d8d2 100644
      goto quit;
  
 diff --git a/grub-core/commands/verify.c b/grub-core/commands/verify.c
-index 67cb1c78509..f0dfeceebd4 100644
+index 67cb1c785..f0dfeceeb 100644
 --- a/grub-core/commands/verify.c
 +++ b/grub-core/commands/verify.c
 @@ -680,10 +680,12 @@ grub_cmd_trust (grub_extcmd_context_t ctxt,
@@ -597,7 +597,7 @@ index 67cb1c78509..f0dfeceebd4 100644
        verified_free (verified);
        grub_free (ret);
 diff --git a/grub-core/disk/loopback.c b/grub-core/disk/loopback.c
-index 2d8deaeafbd..9406d931cdd 100644
+index 2d8deaeaf..9406d931c 100644
 --- a/grub-core/disk/loopback.c
 +++ b/grub-core/disk/loopback.c
 @@ -92,7 +92,8 @@ grub_cmd_loopback (grub_extcmd_context_t ctxt, int argc, char **args)
@@ -611,7 +611,7 @@ index 2d8deaeafbd..9406d931cdd 100644
      return grub_errno;
  
 diff --git a/grub-core/efiemu/main.c b/grub-core/efiemu/main.c
-index f6813b1ed15..a81934725be 100644
+index f6813b1ed..a81934725 100644
 --- a/grub-core/efiemu/main.c
 +++ b/grub-core/efiemu/main.c
 @@ -187,7 +187,7 @@ grub_efiemu_load_file (const char *filename)
@@ -624,7 +624,7 @@ index f6813b1ed15..a81934725be 100644
      return grub_errno;
  
 diff --git a/grub-core/font/font.c b/grub-core/font/font.c
-index b36a099b856..b67507fcc82 100644
+index b36a099b8..b67507fcc 100644
 --- a/grub-core/font/font.c
 +++ b/grub-core/font/font.c
 @@ -422,7 +422,7 @@ grub_font_load (const char *filename)
@@ -646,7 +646,7 @@ index b36a099b856..b67507fcc82 100644
      }
    if (!file)
 diff --git a/grub-core/fs/zfs/zfscrypt.c b/grub-core/fs/zfs/zfscrypt.c
-index f8488c35344..de3b015f582 100644
+index f8488c353..de3b015f5 100644
 --- a/grub-core/fs/zfs/zfscrypt.c
 +++ b/grub-core/fs/zfs/zfscrypt.c
 @@ -430,7 +430,7 @@ grub_cmd_zfs_key (grub_extcmd_context_t ctxt, int argc, char **args)
@@ -659,7 +659,7 @@ index f8488c35344..de3b015f582 100644
  	return grub_errno;
        real_size = grub_file_read (file, buf, 1024);
 diff --git a/grub-core/gettext/gettext.c b/grub-core/gettext/gettext.c
-index b22e1bcc94b..84d520cd494 100644
+index b22e1bcc9..84d520cd4 100644
 --- a/grub-core/gettext/gettext.c
 +++ b/grub-core/gettext/gettext.c
 @@ -291,7 +291,7 @@ grub_mofile_open (struct grub_gettext_context *ctx,
@@ -672,7 +672,7 @@ index b22e1bcc94b..84d520cd494 100644
    if (!fd)
      return grub_errno;
 diff --git a/grub-core/gfxmenu/theme_loader.c b/grub-core/gfxmenu/theme_loader.c
-index 02978392ccc..d6829bb5e90 100644
+index 02978392c..d6829bb5e 100644
 --- a/grub-core/gfxmenu/theme_loader.c
 +++ b/grub-core/gfxmenu/theme_loader.c
 @@ -743,7 +743,7 @@ grub_gfxmenu_view_load_theme (grub_gfxmenu_view_t view, const char *theme_path)
@@ -685,7 +685,7 @@ index 02978392ccc..d6829bb5e90 100644
      {
        grub_free (p.theme_dir);
 diff --git a/grub-core/io/bufio.c b/grub-core/io/bufio.c
-index 2781afe0515..0dbac1b3a1e 100644
+index 2781afe05..0dbac1b3a 100644
 --- a/grub-core/io/bufio.c
 +++ b/grub-core/io/bufio.c
 @@ -88,11 +88,11 @@ grub_bufio_open (grub_file_t io, grub_size_t size)
@@ -703,7 +703,7 @@ index 2781afe0515..0dbac1b3a1e 100644
      return 0;
  
 diff --git a/grub-core/io/gzio.c b/grub-core/io/gzio.c
-index 7024cda84ea..2ecf076dd5e 100644
+index 7024cda84..2ecf076dd 100644
 --- a/grub-core/io/gzio.c
 +++ b/grub-core/io/gzio.c
 @@ -1156,11 +1156,14 @@ initialize_tables (grub_gzio_t gzio)
@@ -723,7 +723,7 @@ index 7024cda84ea..2ecf076dd5e 100644
    if (! file)
      return 0;
 diff --git a/grub-core/io/lzopio.c b/grub-core/io/lzopio.c
-index 7559c6c9cab..84edf6dd2dc 100644
+index 7559c6c9c..84edf6dd2 100644
 --- a/grub-core/io/lzopio.c
 +++ b/grub-core/io/lzopio.c
 @@ -407,12 +407,14 @@ CORRUPTED:
@@ -744,7 +744,7 @@ index 7559c6c9cab..84edf6dd2dc 100644
    if (!file)
      return 0;
 diff --git a/grub-core/io/offset.c b/grub-core/io/offset.c
-index ebed0ebe63e..ec8e2320871 100644
+index ebed0ebe6..ec8e23208 100644
 --- a/grub-core/io/offset.c
 +++ b/grub-core/io/offset.c
 @@ -69,7 +69,8 @@ grub_file_offset_close (grub_file_t file)
@@ -771,7 +771,7 @@ index ebed0ebe63e..ec8e2320871 100644
  
    if (!off_file)
 diff --git a/grub-core/io/xzio.c b/grub-core/io/xzio.c
-index a3536ad73b1..42afeedcd64 100644
+index a3536ad73..42afeedcd 100644
 --- a/grub-core/io/xzio.c
 +++ b/grub-core/io/xzio.c
 @@ -169,12 +169,14 @@ ERROR:
@@ -792,7 +792,7 @@ index a3536ad73b1..42afeedcd64 100644
    if (!file)
      return 0;
 diff --git a/grub-core/kern/dl.c b/grub-core/kern/dl.c
-index 91105bc4677..d7a7c8f97b0 100644
+index 91105bc46..d7a7c8f97 100644
 --- a/grub-core/kern/dl.c
 +++ b/grub-core/kern/dl.c
 @@ -806,7 +806,7 @@ grub_dl_load_file (const char *filename)
@@ -805,7 +805,7 @@ index 91105bc4677..d7a7c8f97b0 100644
      return 0;
  
 diff --git a/grub-core/kern/elf.c b/grub-core/kern/elf.c
-index 4f282c9cf43..9d7149b3892 100644
+index 4f282c9cf..9d7149b38 100644
 --- a/grub-core/kern/elf.c
 +++ b/grub-core/kern/elf.c
 @@ -136,12 +136,12 @@ fail:
@@ -824,7 +824,7 @@ index 4f282c9cf43..9d7149b3892 100644
      return 0;
  
 diff --git a/grub-core/kern/file.c b/grub-core/kern/file.c
-index c2d9a550007..2efc31da94f 100644
+index c2d9a5500..2efc31da9 100644
 --- a/grub-core/kern/file.c
 +++ b/grub-core/kern/file.c
 @@ -28,8 +28,7 @@
@@ -884,7 +884,7 @@ index c2d9a550007..2efc31da94f 100644
  
    return 0;
 diff --git a/grub-core/lib/syslinux_parse.c b/grub-core/lib/syslinux_parse.c
-index 21ca040ada7..83e7bdb9161 100644
+index 21ca040ad..83e7bdb91 100644
 --- a/grub-core/lib/syslinux_parse.c
 +++ b/grub-core/lib/syslinux_parse.c
 @@ -696,7 +696,7 @@ syslinux_parse_real (struct syslinux_menu *menu)
@@ -897,7 +897,7 @@ index 21ca040ada7..83e7bdb9161 100644
      return grub_errno;
    while ((grub_free (buf), buf = grub_file_getline (file)))
 diff --git a/grub-core/loader/efi/chainloader.c b/grub-core/loader/efi/chainloader.c
-index a93edc975cd..29663f71801 100644
+index a93edc975..29663f718 100644
 --- a/grub-core/loader/efi/chainloader.c
 +++ b/grub-core/loader/efi/chainloader.c
 @@ -941,7 +941,7 @@ grub_cmd_chainloader (grub_command_t cmd __attribute__ ((unused)),
@@ -910,7 +910,7 @@ index a93edc975cd..29663f71801 100644
      goto fail;
  
 diff --git a/grub-core/loader/i386/bsd.c b/grub-core/loader/i386/bsd.c
-index 0f317632a3b..8306b415abd 100644
+index 0f317632a..8306b415a 100644
 --- a/grub-core/loader/i386/bsd.c
 +++ b/grub-core/loader/i386/bsd.c
 @@ -1464,7 +1464,7 @@ grub_bsd_load (int argc, char *argv[])
@@ -986,7 +986,7 @@ index 0f317632a3b..8306b415abd 100644
      return grub_errno;
  
 diff --git a/grub-core/loader/i386/coreboot/chainloader.c b/grub-core/loader/i386/coreboot/chainloader.c
-index 2cb78eee090..0a19ebb9c3e 100644
+index 2cb78eee0..0a19ebb9c 100644
 --- a/grub-core/loader/i386/coreboot/chainloader.c
 +++ b/grub-core/loader/i386/coreboot/chainloader.c
 @@ -439,7 +439,7 @@ grub_cmd_chain (grub_command_t cmd __attribute__ ((unused)),
@@ -999,7 +999,7 @@ index 2cb78eee090..0a19ebb9c3e 100644
      return grub_errno;
  
 diff --git a/grub-core/loader/i386/linux.c b/grub-core/loader/i386/linux.c
-index 191f1631e88..aa2cbc4e7eb 100644
+index 191f1631e..aa2cbc4e7 100644
 --- a/grub-core/loader/i386/linux.c
 +++ b/grub-core/loader/i386/linux.c
 @@ -709,7 +709,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
@@ -1012,7 +1012,7 @@ index 191f1631e88..aa2cbc4e7eb 100644
      goto fail;
  
 diff --git a/grub-core/loader/i386/pc/chainloader.c b/grub-core/loader/i386/pc/chainloader.c
-index ef3a322b78c..976fea73ab5 100644
+index ef3a322b7..976fea73a 100644
 --- a/grub-core/loader/i386/pc/chainloader.c
 +++ b/grub-core/loader/i386/pc/chainloader.c
 @@ -172,8 +172,8 @@ grub_chainloader_cmd (const char *filename, grub_chainloader_flags_t flags)
@@ -1027,7 +1027,7 @@ index ef3a322b78c..976fea73ab5 100644
      goto fail;
  
 diff --git a/grub-core/loader/i386/pc/freedos.c b/grub-core/loader/i386/pc/freedos.c
-index 478f3c5139d..aac6c9715f6 100644
+index 478f3c513..aac6c9715 100644
 --- a/grub-core/loader/i386/pc/freedos.c
 +++ b/grub-core/loader/i386/pc/freedos.c
 @@ -110,7 +110,7 @@ grub_cmd_freedos (grub_command_t cmd __attribute__ ((unused)),
@@ -1040,7 +1040,7 @@ index 478f3c5139d..aac6c9715f6 100644
      goto fail;
  
 diff --git a/grub-core/loader/i386/pc/linux.c b/grub-core/loader/i386/pc/linux.c
-index 63736fae950..b5c28c6580e 100644
+index 63736fae9..b5c28c658 100644
 --- a/grub-core/loader/i386/pc/linux.c
 +++ b/grub-core/loader/i386/pc/linux.c
 @@ -142,7 +142,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
@@ -1053,7 +1053,7 @@ index 63736fae950..b5c28c6580e 100644
      goto fail;
  
 diff --git a/grub-core/loader/i386/pc/ntldr.c b/grub-core/loader/i386/pc/ntldr.c
-index 1b88f40d871..f0d74145b38 100644
+index 1b88f40d8..f0d74145b 100644
 --- a/grub-core/loader/i386/pc/ntldr.c
 +++ b/grub-core/loader/i386/pc/ntldr.c
 @@ -90,7 +90,7 @@ grub_cmd_ntldr (grub_command_t cmd __attribute__ ((unused)),
@@ -1066,7 +1066,7 @@ index 1b88f40d871..f0d74145b38 100644
      goto fail;
  
 diff --git a/grub-core/loader/i386/pc/plan9.c b/grub-core/loader/i386/pc/plan9.c
-index 814a49d5071..0351090daf8 100644
+index 814a49d50..0351090da 100644
 --- a/grub-core/loader/i386/pc/plan9.c
 +++ b/grub-core/loader/i386/pc/plan9.c
 @@ -413,7 +413,7 @@ grub_cmd_plan9 (grub_extcmd_context_t ctxt, int argc, char *argv[])
@@ -1079,7 +1079,7 @@ index 814a49d5071..0351090daf8 100644
      goto fail;
  
 diff --git a/grub-core/loader/i386/pc/pxechainloader.c b/grub-core/loader/i386/pc/pxechainloader.c
-index e60c62b1bad..acb061169b9 100644
+index e60c62b1b..acb061169 100644
 --- a/grub-core/loader/i386/pc/pxechainloader.c
 +++ b/grub-core/loader/i386/pc/pxechainloader.c
 @@ -99,7 +99,7 @@ grub_cmd_pxechain (grub_command_t cmd __attribute__ ((unused)),
@@ -1092,7 +1092,7 @@ index e60c62b1bad..acb061169b9 100644
      goto fail;
  
 diff --git a/grub-core/loader/i386/pc/truecrypt.c b/grub-core/loader/i386/pc/truecrypt.c
-index 9ea4fde42a5..cbeeec7beae 100644
+index 9ea4fde42..cbeeec7be 100644
 --- a/grub-core/loader/i386/pc/truecrypt.c
 +++ b/grub-core/loader/i386/pc/truecrypt.c
 @@ -99,7 +99,7 @@ grub_cmd_truecrypt (grub_command_t cmd __attribute__ ((unused)),
@@ -1105,7 +1105,7 @@ index 9ea4fde42a5..cbeeec7beae 100644
      goto fail;
  
 diff --git a/grub-core/loader/i386/xen.c b/grub-core/loader/i386/xen.c
-index 85b93347b25..82350d3a178 100644
+index 85b93347b..82350d3a1 100644
 --- a/grub-core/loader/i386/xen.c
 +++ b/grub-core/loader/i386/xen.c
 @@ -650,7 +650,7 @@ grub_cmd_xen (grub_command_t cmd __attribute__ ((unused)),
@@ -1130,7 +1130,7 @@ index 85b93347b25..82350d3a178 100644
      return grub_errno;
    size = grub_file_size (file);
 diff --git a/grub-core/loader/i386/xen_file.c b/grub-core/loader/i386/xen_file.c
-index 77a93e7b228..9af5d66dfcd 100644
+index 77a93e7b2..9af5d66df 100644
 --- a/grub-core/loader/i386/xen_file.c
 +++ b/grub-core/loader/i386/xen_file.c
 @@ -78,7 +78,7 @@ grub_xen_file (grub_file_t file)
@@ -1143,7 +1143,7 @@ index 77a93e7b228..9af5d66dfcd 100644
    if (!off_file)
      goto fail;
 diff --git a/grub-core/loader/i386/xnu.c b/grub-core/loader/i386/xnu.c
-index 44f7ebfa2b6..a7009360732 100644
+index 44f7ebfa2..a70093607 100644
 --- a/grub-core/loader/i386/xnu.c
 +++ b/grub-core/loader/i386/xnu.c
 @@ -486,7 +486,7 @@ grub_cmd_devprop_load (grub_command_t cmd __attribute__ ((unused)),
@@ -1156,7 +1156,7 @@ index 44f7ebfa2b6..a7009360732 100644
      return grub_errno;
    size = grub_file_size (file);
 diff --git a/grub-core/loader/linux.c b/grub-core/loader/linux.c
-index 0953f6d3266..2b2f798e754 100644
+index 0953f6d32..2b2f798e7 100644
 --- a/grub-core/loader/linux.c
 +++ b/grub-core/loader/linux.c
 @@ -183,7 +183,6 @@ grub_initrd_init (int argc, char *argv[],
@@ -1180,7 +1180,7 @@ index 0953f6d3266..2b2f798e754 100644
  	{
  	  grub_initrd_close (initrd_ctx);
 diff --git a/grub-core/loader/macho.c b/grub-core/loader/macho.c
-index f61341af515..05710c48e06 100644
+index f61341af5..05710c48e 100644
 --- a/grub-core/loader/macho.c
 +++ b/grub-core/loader/macho.c
 @@ -188,12 +188,12 @@ fail:
@@ -1199,7 +1199,7 @@ index f61341af515..05710c48e06 100644
      return 0;
  
 diff --git a/grub-core/loader/mips/linux.c b/grub-core/loader/mips/linux.c
-index 27c1db84a44..10358854458 100644
+index 27c1db84a..103588544 100644
 --- a/grub-core/loader/mips/linux.c
 +++ b/grub-core/loader/mips/linux.c
 @@ -237,7 +237,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
@@ -1212,7 +1212,7 @@ index 27c1db84a44..10358854458 100644
      return grub_errno;
  
 diff --git a/grub-core/loader/multiboot.c b/grub-core/loader/multiboot.c
-index f455e803910..e8963d7cdb3 100644
+index f455e8039..e8963d7cd 100644
 --- a/grub-core/loader/multiboot.c
 +++ b/grub-core/loader/multiboot.c
 @@ -323,7 +323,7 @@ grub_cmd_multiboot (grub_command_t cmd __attribute__ ((unused)),
@@ -1238,7 +1238,7 @@ index f455e803910..e8963d7cdb3 100644
      return grub_errno;
  
 diff --git a/grub-core/loader/xnu.c b/grub-core/loader/xnu.c
-index 2bf02489bad..9f78abb05f9 100644
+index 2bf02489b..9f78abb05 100644
 --- a/grub-core/loader/xnu.c
 +++ b/grub-core/loader/xnu.c
 @@ -355,7 +355,7 @@ grub_cmd_xnu_kernel (grub_command_t cmd __attribute__ ((unused)),
@@ -1314,7 +1314,7 @@ index 2bf02489bad..9f78abb05f9 100644
  	    return grub_errno;
  	}
 diff --git a/grub-core/loader/xnu_resume.c b/grub-core/loader/xnu_resume.c
-index 99119558d21..d648ef0cd3a 100644
+index 99119558d..d648ef0cd 100644
 --- a/grub-core/loader/xnu_resume.c
 +++ b/grub-core/loader/xnu_resume.c
 @@ -53,8 +53,8 @@ grub_xnu_resume (char *imagename)
@@ -1329,7 +1329,7 @@ index 99119558d21..d648ef0cd3a 100644
      return 0;
  
 diff --git a/grub-core/normal/autofs.c b/grub-core/normal/autofs.c
-index 721b9c3256d..7a7cf2b0f7e 100644
+index 721b9c325..7a7cf2b0f 100644
 --- a/grub-core/normal/autofs.c
 +++ b/grub-core/normal/autofs.c
 @@ -33,12 +33,6 @@ autoload_fs_module (void)
@@ -1365,7 +1365,7 @@ index 721b9c3256d..7a7cf2b0f7e 100644
  	    {
  	      /* Override previous fs.lst.  */
 diff --git a/grub-core/normal/crypto.c b/grub-core/normal/crypto.c
-index e6d345f3345..d01e6f271e1 100644
+index e6d345f33..d01e6f271 100644
 --- a/grub-core/normal/crypto.c
 +++ b/grub-core/normal/crypto.c
 @@ -94,7 +94,7 @@ read_crypto_list (const char *prefix)
@@ -1378,7 +1378,7 @@ index e6d345f3345..d01e6f271e1 100644
    if (!file)
      {
 diff --git a/grub-core/normal/dyncmd.c b/grub-core/normal/dyncmd.c
-index 169c126f508..719ebf477f2 100644
+index 169c126f5..719ebf477 100644
 --- a/grub-core/normal/dyncmd.c
 +++ b/grub-core/normal/dyncmd.c
 @@ -106,7 +106,7 @@ read_command_list (const char *prefix)
@@ -1391,7 +1391,7 @@ index 169c126f508..719ebf477f2 100644
  	    {
  	      char *buf = NULL;
 diff --git a/grub-core/normal/main.c b/grub-core/normal/main.c
-index 59fd54eb0f1..cee71a4c2ab 100644
+index 59fd54eb0..cee71a4c2 100644
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
 @@ -127,7 +127,7 @@ read_config_file (const char *config)
@@ -1404,7 +1404,7 @@ index 59fd54eb0f1..cee71a4c2ab 100644
      return 0;
  
 diff --git a/grub-core/normal/term.c b/grub-core/normal/term.c
-index 93a3a0d912e..cc8c173b6e8 100644
+index 93a3a0d91..cc8c173b6 100644
 --- a/grub-core/normal/term.c
 +++ b/grub-core/normal/term.c
 @@ -331,7 +331,7 @@ read_terminal_list (const char *prefix)
@@ -1417,7 +1417,7 @@ index 93a3a0d912e..cc8c173b6e8 100644
    if (!file)
      {
 diff --git a/grub-core/video/readers/jpeg.c b/grub-core/video/readers/jpeg.c
-index 21b0d9ded67..31359a4c9c8 100644
+index 21b0d9ded..31359a4c9 100644
 --- a/grub-core/video/readers/jpeg.c
 +++ b/grub-core/video/readers/jpeg.c
 @@ -772,7 +772,7 @@ grub_video_reader_jpeg (struct grub_video_bitmap **bitmap,
@@ -1430,7 +1430,7 @@ index 21b0d9ded67..31359a4c9c8 100644
      return grub_errno;
  
 diff --git a/grub-core/video/readers/png.c b/grub-core/video/readers/png.c
-index 719e647e44f..0157ff7420b 100644
+index 719e647e4..0157ff742 100644
 --- a/grub-core/video/readers/png.c
 +++ b/grub-core/video/readers/png.c
 @@ -1095,7 +1095,7 @@ grub_video_reader_png (struct grub_video_bitmap **bitmap,
@@ -1443,7 +1443,7 @@ index 719e647e44f..0157ff7420b 100644
      return grub_errno;
  
 diff --git a/grub-core/video/readers/tga.c b/grub-core/video/readers/tga.c
-index c7a16fa9cc4..7cb9d1d2a0c 100644
+index c7a16fa9c..7cb9d1d2a 100644
 --- a/grub-core/video/readers/tga.c
 +++ b/grub-core/video/readers/tga.c
 @@ -297,7 +297,7 @@ grub_video_reader_tga (struct grub_video_bitmap **bitmap,
@@ -1456,7 +1456,7 @@ index c7a16fa9cc4..7cb9d1d2a0c 100644
      return grub_errno;
  
 diff --git a/util/grub-fstest.c b/util/grub-fstest.c
-index 793aefa02b1..fe5982220d0 100644
+index 793aefa02..fe5982220 100644
 --- a/util/grub-fstest.c
 +++ b/util/grub-fstest.c
 @@ -120,9 +120,9 @@ read_file (char *pathname, int (*hook) (grub_off_t ofs, char *buf, int len, void
@@ -1473,7 +1473,7 @@ index 793aefa02b1..fe5982220d0 100644
      {
        grub_util_error (_("cannot open `%s': %s"), pathname,
 diff --git a/util/grub-mount.c b/util/grub-mount.c
-index a25db8a7181..e32b502e7e4 100644
+index a25db8a71..e32b502e7 100644
 --- a/util/grub-mount.c
 +++ b/util/grub-mount.c
 @@ -208,7 +208,7 @@ fuse_getattr (const char *path, struct stat *st)
@@ -1504,7 +1504,7 @@ index a25db8a7181..e32b502e7e4 100644
        /* Symlink to directory.  */
        if (! file && grub_errno == GRUB_ERR_BAD_FILE_TYPE)
 diff --git a/include/grub/bufio.h b/include/grub/bufio.h
-index 77eb8ee5672..0ff72d1033c 100644
+index 77eb8ee56..0ff72d103 100644
 --- a/include/grub/bufio.h
 +++ b/include/grub/bufio.h
 @@ -23,6 +23,8 @@
@@ -1518,7 +1518,7 @@ index 77eb8ee5672..0ff72d1033c 100644
  
  #endif /* ! GRUB_BUFIO_H */
 diff --git a/include/grub/elfload.h b/include/grub/elfload.h
-index 9a7ae4ebb30..dbb609c9b20 100644
+index 9a7ae4ebb..dbb609c9b 100644
 --- a/include/grub/elfload.h
 +++ b/include/grub/elfload.h
 @@ -42,7 +42,7 @@ typedef int (*grub_elf32_phdr_iterate_hook_t)
@@ -1531,7 +1531,7 @@ index 9a7ae4ebb30..dbb609c9b20 100644
  grub_err_t grub_elf_close (grub_elf_t);
  
 diff --git a/include/grub/file.h b/include/grub/file.h
-index 739488cbe59..5b47c5f91f9 100644
+index 739488cbe..5b47c5f91 100644
 --- a/include/grub/file.h
 +++ b/include/grub/file.h
 @@ -25,6 +25,109 @@
@@ -1723,7 +1723,7 @@ index 739488cbe59..5b47c5f91f9 100644
  grub_file_offset_close (grub_file_t file);
  
 diff --git a/include/grub/machoload.h b/include/grub/machoload.h
-index 1eec118f15f..f1157f4105b 100644
+index 1eec118f1..f1157f410 100644
 --- a/include/grub/machoload.h
 +++ b/include/grub/machoload.h
 @@ -49,7 +49,8 @@ struct grub_macho_file

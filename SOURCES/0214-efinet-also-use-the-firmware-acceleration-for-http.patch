@@ -9,7 +9,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/net/efi/net.c b/grub-core/net/efi/net.c
-index 2bf15447fd5..f208d1b180c 100644
+index 2bf15447f..f208d1b18 100644
 --- a/grub-core/net/efi/net.c
 +++ b/grub-core/net/efi/net.c
 @@ -1324,7 +1324,9 @@ grub_efi_net_boot_from_https (void)

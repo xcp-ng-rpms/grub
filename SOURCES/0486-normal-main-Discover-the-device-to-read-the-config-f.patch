@@ -28,7 +28,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 51 insertions(+), 7 deletions(-)
 
 diff --git a/grub-core/normal/main.c b/grub-core/normal/main.c
-index 49141039f8f..93f33c16732 100644
+index 49141039f..93f33c167 100644
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
 @@ -333,16 +333,11 @@ grub_enter_normal_mode (const char *config)

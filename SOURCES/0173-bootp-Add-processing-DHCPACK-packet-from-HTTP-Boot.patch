@@ -22,7 +22,7 @@ Signed-off-by: Ken Lin <ken.lin@hpe.com>
  2 files changed, 67 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/net/bootp.c b/grub-core/net/bootp.c
-index 242cd1f4cbd..8b6fc9f2411 100644
+index 242cd1f4c..8b6fc9f24 100644
 --- a/grub-core/net/bootp.c
 +++ b/grub-core/net/bootp.c
 @@ -20,6 +20,7 @@
@@ -122,7 +122,7 @@ index 242cd1f4cbd..8b6fc9f2411 100644
    
    inter->dhcp_ack = grub_malloc (size);
 diff --git a/include/grub/net.h b/include/grub/net.h
-index 5f78b22e109..9cf6da68973 100644
+index 5f78b22e1..9cf6da689 100644
 --- a/include/grub/net.h
 +++ b/include/grub/net.h
 @@ -522,6 +522,7 @@ enum

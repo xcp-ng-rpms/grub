@@ -12,7 +12,7 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  1 file changed, 44 insertions(+), 21 deletions(-)
 
 diff --git a/grub-core/term/efi/console.c b/grub-core/term/efi/console.c
-index 4840cc59d3f..051633d71e9 100644
+index 4840cc59d..051633d71 100644
 --- a/grub-core/term/efi/console.c
 +++ b/grub-core/term/efi/console.c
 @@ -24,6 +24,11 @@

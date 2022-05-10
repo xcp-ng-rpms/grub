@@ -14,7 +14,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  2 files changed, 37 insertions(+), 10 deletions(-)
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 96ccb402125..e52d776887a 100644
+index 96ccb4021..e52d77688 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -777,6 +777,7 @@ module = {
@@ -26,7 +26,7 @@ index 96ccb402125..e52d776887a 100644
  
  module = {
 diff --git a/grub-core/commands/blscfg.c b/grub-core/commands/blscfg.c
-index 86796c8cd83..e0b65534af4 100644
+index 86796c8cd..e0b65534a 100644
 --- a/grub-core/commands/blscfg.c
 +++ b/grub-core/commands/blscfg.c
 @@ -37,7 +37,12 @@ GRUB_MOD_LICENSE ("GPLv3+");

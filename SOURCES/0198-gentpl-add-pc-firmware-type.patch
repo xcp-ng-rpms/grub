@@ -9,7 +9,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 1 insertion(+)
 
 diff --git a/gentpl.py b/gentpl.py
-index a8cd540550f..baac6a2af69 100644
+index a8cd54055..baac6a2af 100644
 --- a/gentpl.py
 +++ b/gentpl.py
 @@ -49,6 +49,7 @@ GROUPS["arm"]      = [ "arm_uboot", "arm_efi", "arm_coreboot" ]

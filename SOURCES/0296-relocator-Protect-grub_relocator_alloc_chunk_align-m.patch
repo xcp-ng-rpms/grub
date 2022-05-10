@@ -36,7 +36,7 @@ Upstream-commit-id: 10498c8ba17
  13 files changed, 69 insertions(+), 58 deletions(-)
 
 diff --git a/grub-core/lib/i386/relocator.c b/grub-core/lib/i386/relocator.c
-index 71dd4f0ab0c..34cbe834fa3 100644
+index 71dd4f0ab..34cbe834f 100644
 --- a/grub-core/lib/i386/relocator.c
 +++ b/grub-core/lib/i386/relocator.c
 @@ -83,11 +83,10 @@ grub_relocator32_boot (struct grub_relocator *rel,
@@ -89,7 +89,7 @@ index 71dd4f0ab0c..34cbe834fa3 100644
      return err;
  
 diff --git a/grub-core/lib/mips/relocator.c b/grub-core/lib/mips/relocator.c
-index 9d5f49cb93a..743b213e695 100644
+index 9d5f49cb9..743b213e6 100644
 --- a/grub-core/lib/mips/relocator.c
 +++ b/grub-core/lib/mips/relocator.c
 @@ -120,10 +120,8 @@ grub_relocator32_boot (struct grub_relocator *rel,
@@ -106,7 +106,7 @@ index 9d5f49cb93a..743b213e695 100644
    if (err)
      return err;
 diff --git a/grub-core/lib/powerpc/relocator.c b/grub-core/lib/powerpc/relocator.c
-index bdf2b111be7..8ffb8b68683 100644
+index bdf2b111b..8ffb8b686 100644
 --- a/grub-core/lib/powerpc/relocator.c
 +++ b/grub-core/lib/powerpc/relocator.c
 @@ -115,10 +115,8 @@ grub_relocator32_boot (struct grub_relocator *rel,
@@ -123,7 +123,7 @@ index bdf2b111be7..8ffb8b68683 100644
    if (err)
      return err;
 diff --git a/grub-core/lib/x86_64/efi/relocator.c b/grub-core/lib/x86_64/efi/relocator.c
-index 3caef7a4021..7d200a125ee 100644
+index 3caef7a40..7d200a125 100644
 --- a/grub-core/lib/x86_64/efi/relocator.c
 +++ b/grub-core/lib/x86_64/efi/relocator.c
 @@ -50,10 +50,9 @@ grub_relocator64_efi_boot (struct grub_relocator *rel,
@@ -141,7 +141,7 @@ index 3caef7a4021..7d200a125ee 100644
      return err;
  
 diff --git a/grub-core/loader/i386/linux.c b/grub-core/loader/i386/linux.c
-index b4a30f607fa..191f1631e88 100644
+index b4a30f607..191f1631e 100644
 --- a/grub-core/loader/i386/linux.c
 +++ b/grub-core/loader/i386/linux.c
 @@ -231,9 +231,8 @@ allocate_pages (grub_size_t prot_size, grub_size_t *align,
@@ -157,7 +157,7 @@ index b4a30f607fa..191f1631e88 100644
  						    GRUB_RELOCATOR_PREFERENCE_LOW,
  						    1);
 diff --git a/grub-core/loader/i386/multiboot_mbi.c b/grub-core/loader/i386/multiboot_mbi.c
-index ca85358f771..9d3466d6ace 100644
+index ca85358f7..9d3466d6a 100644
 --- a/grub-core/loader/i386/multiboot_mbi.c
 +++ b/grub-core/loader/i386/multiboot_mbi.c
 @@ -470,10 +470,9 @@ grub_multiboot_make_mbi (grub_uint32_t *target)
@@ -175,7 +175,7 @@ index ca85358f771..9d3466d6ace 100644
      return err;
    ptrorig = get_virtual_current_address (ch);
 diff --git a/grub-core/loader/i386/pc/linux.c b/grub-core/loader/i386/pc/linux.c
-index 540891371f9..63736fae950 100644
+index 540891371..63736fae9 100644
 --- a/grub-core/loader/i386/pc/linux.c
 +++ b/grub-core/loader/i386/pc/linux.c
 @@ -460,10 +460,8 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
@@ -192,7 +192,7 @@ index 540891371f9..63736fae950 100644
        return err;
      initrd_chunk = get_virtual_current_address (ch);
 diff --git a/grub-core/loader/mips/linux.c b/grub-core/loader/mips/linux.c
-index 5f383be3d07..27c1db84a44 100644
+index 5f383be3d..27c1db84a 100644
 --- a/grub-core/loader/mips/linux.c
 +++ b/grub-core/loader/mips/linux.c
 @@ -434,12 +434,9 @@ grub_cmd_initrd (grub_command_t cmd __attribute__ ((unused)),
@@ -212,7 +212,7 @@ index 5f383be3d07..27c1db84a44 100644
      if (err)
        goto fail;
 diff --git a/grub-core/loader/multiboot.c b/grub-core/loader/multiboot.c
-index 9a8dae5565b..f455e803910 100644
+index 9a8dae556..f455e8039 100644
 --- a/grub-core/loader/multiboot.c
 +++ b/grub-core/loader/multiboot.c
 @@ -407,7 +407,7 @@ grub_cmd_module (grub_command_t cmd __attribute__ ((unused)),
@@ -225,7 +225,7 @@ index 9a8dae5565b..f455e803910 100644
  					    GRUB_RELOCATOR_PREFERENCE_NONE, 1);
      if (err)
 diff --git a/grub-core/loader/multiboot_elfxx.c b/grub-core/loader/multiboot_elfxx.c
-index cc6853692a8..f2318e0d165 100644
+index cc6853692..f2318e0d1 100644
 --- a/grub-core/loader/multiboot_elfxx.c
 +++ b/grub-core/loader/multiboot_elfxx.c
 @@ -109,10 +109,10 @@ CONCAT(grub_multiboot_load_elf, XX) (mbi_load_data_t *mld)
@@ -253,7 +253,7 @@ index cc6853692a8..f2318e0d165 100644
  						  GRUB_RELOCATOR_PREFERENCE_NONE,
  						  mld->avoid_efi_boot_services);
 diff --git a/grub-core/loader/multiboot_mbi2.c b/grub-core/loader/multiboot_mbi2.c
-index 872dcd42e97..3cfb47650a0 100644
+index 872dcd42e..3cfb47650 100644
 --- a/grub-core/loader/multiboot_mbi2.c
 +++ b/grub-core/loader/multiboot_mbi2.c
 @@ -298,10 +298,10 @@ grub_multiboot2_load (grub_file_t file, const char *filename)
@@ -281,7 +281,7 @@ index 872dcd42e97..3cfb47650a0 100644
  					  GRUB_RELOCATOR_PREFERENCE_NONE, 1);
    if (err)
 diff --git a/grub-core/loader/xnu_resume.c b/grub-core/loader/xnu_resume.c
-index 534a74438b2..99119558d21 100644
+index 534a74438..99119558d 100644
 --- a/grub-core/loader/xnu_resume.c
 +++ b/grub-core/loader/xnu_resume.c
 @@ -129,7 +129,7 @@ grub_xnu_resume (char *imagename)
@@ -294,7 +294,7 @@ index 534a74438b2..99119558d21 100644
  					    GRUB_XNU_PAGESIZE,
  					    GRUB_RELOCATOR_PREFERENCE_NONE, 0);
 diff --git a/include/grub/relocator.h b/include/grub/relocator.h
-index 24d8672d22c..1b3bdd92ac6 100644
+index 24d8672d2..1b3bdd92a 100644
 --- a/include/grub/relocator.h
 +++ b/include/grub/relocator.h
 @@ -49,6 +49,35 @@ grub_relocator_alloc_chunk_align (struct grub_relocator *rel,

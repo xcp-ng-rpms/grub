@@ -8,7 +8,7 @@ Subject: [PATCH] grub2-btrfs-03-follow_default
  1 file changed, 76 insertions(+), 31 deletions(-)
 
 diff --git a/grub-core/fs/btrfs.c b/grub-core/fs/btrfs.c
-index 88d727d161f..a47d297567f 100644
+index 88d727d16..a47d29756 100644
 --- a/grub-core/fs/btrfs.c
 +++ b/grub-core/fs/btrfs.c
 @@ -920,6 +920,7 @@ grub_btrfs_mount (grub_device_t dev)

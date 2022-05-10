@@ -53,7 +53,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
 
 diff --git a/grub-core/lib/libtasn1/lib/coding.c b/grub-core/lib/libtasn1/lib/coding.c
 new file mode 100644
-index 00000000000..245ea64cf0a
+index 000000000..245ea64cf
 --- /dev/null
 +++ b/grub-core/lib/libtasn1/lib/coding.c
 @@ -0,0 +1,1415 @@
@@ -1474,7 +1474,7 @@ index 00000000000..245ea64cf0a
 +}
 diff --git a/grub-core/lib/libtasn1/lib/decoding.c b/grub-core/lib/libtasn1/lib/decoding.c
 new file mode 100644
-index 00000000000..ff04eb778cb
+index 000000000..ff04eb778
 --- /dev/null
 +++ b/grub-core/lib/libtasn1/lib/decoding.c
 @@ -0,0 +1,2478 @@
@@ -3958,7 +3958,7 @@ index 00000000000..ff04eb778cb
 +}
 diff --git a/grub-core/lib/libtasn1/lib/element.c b/grub-core/lib/libtasn1/lib/element.c
 new file mode 100644
-index 00000000000..997eb2725dc
+index 000000000..997eb2725
 --- /dev/null
 +++ b/grub-core/lib/libtasn1/lib/element.c
 @@ -0,0 +1,1111 @@
@@ -5075,7 +5075,7 @@ index 00000000000..997eb2725dc
 +}
 diff --git a/grub-core/lib/libtasn1/lib/errors.c b/grub-core/lib/libtasn1/lib/errors.c
 new file mode 100644
-index 00000000000..cee74daf795
+index 000000000..cee74daf7
 --- /dev/null
 +++ b/grub-core/lib/libtasn1/lib/errors.c
 @@ -0,0 +1,100 @@
@@ -5181,7 +5181,7 @@ index 00000000000..cee74daf795
 +}
 diff --git a/grub-core/lib/libtasn1/lib/gstr.c b/grub-core/lib/libtasn1/lib/gstr.c
 new file mode 100644
-index 00000000000..e91a3a151c0
+index 000000000..e91a3a151
 --- /dev/null
 +++ b/grub-core/lib/libtasn1/lib/gstr.c
 @@ -0,0 +1,74 @@
@@ -5261,7 +5261,7 @@ index 00000000000..e91a3a151c0
 +}
 diff --git a/grub-core/lib/libtasn1/lib/parser_aux.c b/grub-core/lib/libtasn1/lib/parser_aux.c
 new file mode 100644
-index 00000000000..d5dbbf8765d
+index 000000000..d5dbbf876
 --- /dev/null
 +++ b/grub-core/lib/libtasn1/lib/parser_aux.c
 @@ -0,0 +1,1173 @@
@@ -6440,7 +6440,7 @@ index 00000000000..d5dbbf8765d
 +}
 diff --git a/grub-core/lib/libtasn1/lib/structure.c b/grub-core/lib/libtasn1/lib/structure.c
 new file mode 100644
-index 00000000000..8189c56a4c9
+index 000000000..8189c56a4
 --- /dev/null
 +++ b/grub-core/lib/libtasn1/lib/structure.c
 @@ -0,0 +1,1220 @@
@@ -7666,7 +7666,7 @@ index 00000000000..8189c56a4c9
 +}
 diff --git a/grub-core/lib/libtasn1/lib/element.h b/grub-core/lib/libtasn1/lib/element.h
 new file mode 100644
-index 00000000000..440a33f4bb1
+index 000000000..440a33f4b
 --- /dev/null
 +++ b/grub-core/lib/libtasn1/lib/element.h
 @@ -0,0 +1,40 @@
@@ -7712,7 +7712,7 @@ index 00000000000..440a33f4bb1
 +#endif
 diff --git a/grub-core/lib/libtasn1/lib/gstr.h b/grub-core/lib/libtasn1/lib/gstr.h
 new file mode 100644
-index 00000000000..48229844ff3
+index 000000000..48229844f
 --- /dev/null
 +++ b/grub-core/lib/libtasn1/lib/gstr.h
 @@ -0,0 +1,47 @@
@@ -7765,7 +7765,7 @@ index 00000000000..48229844ff3
 +#endif /* GSTR_H */
 diff --git a/grub-core/lib/libtasn1/lib/int.h b/grub-core/lib/libtasn1/lib/int.h
 new file mode 100644
-index 00000000000..ea1625786c1
+index 000000000..ea1625786
 --- /dev/null
 +++ b/grub-core/lib/libtasn1/lib/int.h
 @@ -0,0 +1,221 @@
@@ -7992,7 +7992,7 @@ index 00000000000..ea1625786c1
 +#endif /* INT_H */
 diff --git a/grub-core/lib/libtasn1/lib/parser_aux.h b/grub-core/lib/libtasn1/lib/parser_aux.h
 new file mode 100644
-index 00000000000..598e684b355
+index 000000000..598e684b3
 --- /dev/null
 +++ b/grub-core/lib/libtasn1/lib/parser_aux.h
 @@ -0,0 +1,172 @@
@@ -8170,7 +8170,7 @@ index 00000000000..598e684b355
 +#endif
 diff --git a/grub-core/lib/libtasn1/lib/structure.h b/grub-core/lib/libtasn1/lib/structure.h
 new file mode 100644
-index 00000000000..99e685da07a
+index 000000000..99e685da0
 --- /dev/null
 +++ b/grub-core/lib/libtasn1/lib/structure.h
 @@ -0,0 +1,45 @@
@@ -8221,7 +8221,7 @@ index 00000000000..99e685da07a
 +#endif
 diff --git a/include/grub/libtasn1.h b/include/grub/libtasn1.h
 new file mode 100644
-index 00000000000..6fd7a30dc35
+index 000000000..6fd7a30dc
 --- /dev/null
 +++ b/include/grub/libtasn1.h
 @@ -0,0 +1,588 @@
@@ -8815,7 +8815,7 @@ index 00000000000..6fd7a30dc35
 +#endif				/* LIBTASN1_H */
 diff --git a/grub-core/lib/libtasn1/LICENSE b/grub-core/lib/libtasn1/LICENSE
 new file mode 100644
-index 00000000000..e8b3628db9b
+index 000000000..e8b3628db
 --- /dev/null
 +++ b/grub-core/lib/libtasn1/LICENSE
 @@ -0,0 +1,16 @@
@@ -8837,7 +8837,7 @@ index 00000000000..e8b3628db9b
 +note that the range specifies every single year in that closed interval.
 diff --git a/grub-core/lib/libtasn1/README.md b/grub-core/lib/libtasn1/README.md
 new file mode 100644
-index 00000000000..50a8642296c
+index 000000000..50a864229
 --- /dev/null
 +++ b/grub-core/lib/libtasn1/README.md
 @@ -0,0 +1,91 @@

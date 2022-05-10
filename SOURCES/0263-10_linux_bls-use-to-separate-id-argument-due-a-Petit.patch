@@ -19,7 +19,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/util/grub.d/10_linux_bls.in b/util/grub.d/10_linux_bls.in
-index 175bedd0763..8e07a79322b 100644
+index 175bedd07..8e07a7932 100644
 --- a/util/grub.d/10_linux_bls.in
 +++ b/util/grub.d/10_linux_bls.in
 @@ -180,7 +180,7 @@ populate_menu()

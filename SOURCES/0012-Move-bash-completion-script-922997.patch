@@ -10,7 +10,7 @@ Apparently these go in a new place now.
  2 files changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/configure.ac b/configure.ac
-index c7888e40f66..783118ccdcd 100644
+index c7888e40f..783118ccd 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -289,6 +289,14 @@ AC_SUBST(grubdirname)
@@ -39,7 +39,7 @@ index c7888e40f66..783118ccdcd 100644
  if test "x$target_alias" != x && test "x$host_alias" != "x$target_alias"; then
    tmp_ac_tool_prefix="$ac_tool_prefix"
 diff --git a/util/bash-completion.d/Makefile.am b/util/bash-completion.d/Makefile.am
-index 136287cf1bf..61108f05429 100644
+index 136287cf1..61108f054 100644
 --- a/util/bash-completion.d/Makefile.am
 +++ b/util/bash-completion.d/Makefile.am
 @@ -6,7 +6,6 @@ EXTRA_DIST = $(bash_completion_source)

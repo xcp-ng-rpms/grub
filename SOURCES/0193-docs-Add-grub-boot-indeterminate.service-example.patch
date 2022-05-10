@@ -16,7 +16,7 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 
 diff --git a/docs/grub-boot-indeterminate.service b/docs/grub-boot-indeterminate.service
 new file mode 100644
-index 00000000000..6c8dcb186b6
+index 000000000..6c8dcb186
 --- /dev/null
 +++ b/docs/grub-boot-indeterminate.service
 @@ -0,0 +1,11 @@

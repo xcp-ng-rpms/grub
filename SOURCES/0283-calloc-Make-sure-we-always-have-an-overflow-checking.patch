@@ -23,7 +23,7 @@ Upstream-commit-id: 79e51ab7a9a
  7 files changed, 85 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/kern/emu/misc.c b/grub-core/kern/emu/misc.c
-index 3d3a4a4a975..b4072767391 100644
+index 3d3a4a4a9..b40727673 100644
 --- a/grub-core/kern/emu/misc.c
 +++ b/grub-core/kern/emu/misc.c
 @@ -84,6 +84,18 @@ grub_util_error (const char *fmt, ...)
@@ -46,7 +46,7 @@ index 3d3a4a4a975..b4072767391 100644
  xmalloc (grub_size_t size)
  {
 diff --git a/grub-core/kern/emu/mm.c b/grub-core/kern/emu/mm.c
-index f262e95e388..145b01d3719 100644
+index f262e95e3..145b01d37 100644
 --- a/grub-core/kern/emu/mm.c
 +++ b/grub-core/kern/emu/mm.c
 @@ -25,6 +25,16 @@
@@ -67,7 +67,7 @@ index f262e95e388..145b01d3719 100644
  grub_malloc (grub_size_t size)
  {
 diff --git a/grub-core/kern/mm.c b/grub-core/kern/mm.c
-index 002cbfa4f3d..80d0720d005 100644
+index 002cbfa4f..80d0720d0 100644
 --- a/grub-core/kern/mm.c
 +++ b/grub-core/kern/mm.c
 @@ -67,8 +67,10 @@
@@ -134,7 +134,7 @@ index 002cbfa4f3d..80d0720d005 100644
  grub_debug_malloc (const char *file, int line, grub_size_t size)
  {
 diff --git a/grub-core/lib/libgcrypt_wrap/mem.c b/grub-core/lib/libgcrypt_wrap/mem.c
-index beeb661a3c8..74c6eafe525 100644
+index beeb661a3..74c6eafe5 100644
 --- a/grub-core/lib/libgcrypt_wrap/mem.c
 +++ b/grub-core/lib/libgcrypt_wrap/mem.c
 @@ -4,6 +4,7 @@
@@ -170,7 +170,7 @@ index beeb661a3c8..74c6eafe525 100644
      grub_fatal ("gcry_xcalloc failed");
    return ret;
 diff --git a/grub-core/lib/posix_wrap/stdlib.h b/grub-core/lib/posix_wrap/stdlib.h
-index 3b46f47ff50..7a8d385e973 100644
+index 3b46f47ff..7a8d385e9 100644
 --- a/grub-core/lib/posix_wrap/stdlib.h
 +++ b/grub-core/lib/posix_wrap/stdlib.h
 @@ -21,6 +21,7 @@
@@ -196,7 +196,7 @@ index 3b46f47ff50..7a8d385e973 100644
  
  static inline void *
 diff --git a/include/grub/emu/misc.h b/include/grub/emu/misc.h
-index a653132e36a..09e1f1065f6 100644
+index a653132e3..09e1f1065 100644
 --- a/include/grub/emu/misc.h
 +++ b/include/grub/emu/misc.h
 @@ -51,6 +51,7 @@ grub_util_device_is_mapped (const char *dev);
@@ -208,7 +208,7 @@ index a653132e36a..09e1f1065f6 100644
  void * EXPORT_FUNC(xrealloc) (void *ptr, grub_size_t size) WARN_UNUSED_RESULT;
  char * EXPORT_FUNC(xstrdup) (const char *str) WARN_UNUSED_RESULT;
 diff --git a/include/grub/mm.h b/include/grub/mm.h
-index 28e2e53eb32..9c38dd3ca5d 100644
+index 28e2e53eb..9c38dd3ca 100644
 --- a/include/grub/mm.h
 +++ b/include/grub/mm.h
 @@ -29,6 +29,7 @@

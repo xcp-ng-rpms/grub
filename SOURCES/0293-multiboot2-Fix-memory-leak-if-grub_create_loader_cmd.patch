@@ -14,7 +14,7 @@ Upstream-commit-id: cd6760b6289
  1 file changed, 9 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/loader/multiboot_mbi2.c b/grub-core/loader/multiboot_mbi2.c
-index 54078455e2f..872dcd42e97 100644
+index 54078455e..872dcd42e 100644
 --- a/grub-core/loader/multiboot_mbi2.c
 +++ b/grub-core/loader/multiboot_mbi2.c
 @@ -1089,6 +1089,7 @@ grub_multiboot2_add_module (grub_addr_t start, grub_size_t size,

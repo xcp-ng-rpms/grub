@@ -52,7 +52,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/osdep/unix/platform.c b/grub-core/osdep/unix/platform.c
-index ca448bc11a0..55b8f401624 100644
+index ca448bc11..55b8f4016 100644
 --- a/grub-core/osdep/unix/platform.c
 +++ b/grub-core/osdep/unix/platform.c
 @@ -85,7 +85,7 @@ grub_install_remove_efi_entries_by_distributor (const char *efi_distributor)

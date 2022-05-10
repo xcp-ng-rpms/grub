@@ -15,7 +15,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 3 insertions(+)
 
 diff --git a/grub-core/lib/libgcrypt/mpi/mpicoder.c b/grub-core/lib/libgcrypt/mpi/mpicoder.c
-index 7ecad27b23a..6fe38916532 100644
+index 7ecad27b2..6fe389165 100644
 --- a/grub-core/lib/libgcrypt/mpi/mpicoder.c
 +++ b/grub-core/lib/libgcrypt/mpi/mpicoder.c
 @@ -379,6 +379,9 @@ gcry_mpi_scan (struct gcry_mpi **ret_mpi, enum gcry_mpi_format format,

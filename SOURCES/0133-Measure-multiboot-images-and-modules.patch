@@ -10,7 +10,7 @@ Subject: [PATCH] Measure multiboot images and modules
  3 files changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/loader/i386/multiboot_mbi.c b/grub-core/loader/i386/multiboot_mbi.c
-index dc98dbcae25..1c5b0ac25ce 100644
+index dc98dbcae..1c5b0ac25 100644
 --- a/grub-core/loader/i386/multiboot_mbi.c
 +++ b/grub-core/loader/i386/multiboot_mbi.c
 @@ -36,6 +36,7 @@
@@ -31,7 +31,7 @@ index dc98dbcae25..1c5b0ac25ce 100644
  
    if (header == 0)
 diff --git a/grub-core/loader/multiboot.c b/grub-core/loader/multiboot.c
-index 26df46a4161..93e026c53db 100644
+index 26df46a41..93e026c53 100644
 --- a/grub-core/loader/multiboot.c
 +++ b/grub-core/loader/multiboot.c
 @@ -51,6 +51,7 @@
@@ -51,7 +51,7 @@ index 26df46a4161..93e026c53db 100644
  }
  
 diff --git a/grub-core/loader/multiboot_mbi2.c b/grub-core/loader/multiboot_mbi2.c
-index 4df6595954d..d5ad02a33a1 100644
+index 4df659595..d5ad02a33 100644
 --- a/grub-core/loader/multiboot_mbi2.c
 +++ b/grub-core/loader/multiboot_mbi2.c
 @@ -36,6 +36,7 @@

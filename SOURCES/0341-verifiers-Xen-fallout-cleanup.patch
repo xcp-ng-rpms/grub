@@ -13,7 +13,7 @@ Reviewed-by: Ross Philipson <ross.philipson@oracle.com>
  1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/grub-core/loader/i386/xen.c b/grub-core/loader/i386/xen.c
-index 07a4837c532..071b530d744 100644
+index 07a4837c5..071b530d7 100644
 --- a/grub-core/loader/i386/xen.c
 +++ b/grub-core/loader/i386/xen.c
 @@ -647,10 +647,10 @@ grub_cmd_xen (grub_command_t cmd __attribute__ ((unused)),

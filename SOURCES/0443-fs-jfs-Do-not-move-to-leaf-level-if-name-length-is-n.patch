@@ -16,7 +16,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/fs/jfs.c b/grub-core/fs/jfs.c
-index aab3e8c7b7d..1819899bdec 100644
+index aab3e8c7b..1819899bd 100644
 --- a/grub-core/fs/jfs.c
 +++ b/grub-core/fs/jfs.c
 @@ -563,7 +563,7 @@ grub_jfs_getent (struct grub_jfs_diropen *diro)

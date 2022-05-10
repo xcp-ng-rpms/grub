@@ -14,7 +14,7 @@ Upstream-commit-id: 8da62d8183c
  1 file changed, 13 insertions(+), 4 deletions(-)
 
 diff --git a/grub-core/fs/udf.c b/grub-core/fs/udf.c
-index be41b48f913..6670beb5665 100644
+index be41b48f9..6670beb56 100644
 --- a/grub-core/fs/udf.c
 +++ b/grub-core/fs/udf.c
 @@ -965,8 +965,10 @@ grub_udf_iterate_dir (grub_fshelp_node_t dir,

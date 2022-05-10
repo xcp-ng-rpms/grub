@@ -18,7 +18,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  create mode 100644 include/grub/buffer.h
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 02fbecd4b81..612df2e9c40 100644
+index 02fbecd4b..612df2e9c 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -112,6 +112,7 @@ kernel = {
@@ -31,7 +31,7 @@ index 02fbecd4b81..612df2e9c40 100644
    common = kern/device.c;
 diff --git a/grub-core/kern/buffer.c b/grub-core/kern/buffer.c
 new file mode 100644
-index 00000000000..9f5f8b86705
+index 000000000..9f5f8b867
 --- /dev/null
 +++ b/grub-core/kern/buffer.c
 @@ -0,0 +1,117 @@
@@ -154,7 +154,7 @@ index 00000000000..9f5f8b86705
 +}
 diff --git a/include/grub/buffer.h b/include/grub/buffer.h
 new file mode 100644
-index 00000000000..f4b10cf2810
+index 000000000..f4b10cf28
 --- /dev/null
 +++ b/include/grub/buffer.h
 @@ -0,0 +1,144 @@

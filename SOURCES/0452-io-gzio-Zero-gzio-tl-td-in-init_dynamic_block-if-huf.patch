@@ -17,7 +17,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 2 insertions(+)
 
 diff --git a/grub-core/io/gzio.c b/grub-core/io/gzio.c
-index f85dbae237d..e9f332fbcd9 100644
+index f85dbae23..e9f332fbc 100644
 --- a/grub-core/io/gzio.c
 +++ b/grub-core/io/gzio.c
 @@ -1010,6 +1010,7 @@ init_dynamic_block (grub_gzio_t gzio)

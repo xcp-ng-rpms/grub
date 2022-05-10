@@ -51,7 +51,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  2 files changed, 16 insertions(+)
 
 diff --git a/grub-core/fs/hfsplus.c b/grub-core/fs/hfsplus.c
-index 423f4b956ba..8c0c804735d 100644
+index 423f4b956..8c0c80473 100644
 --- a/grub-core/fs/hfsplus.c
 +++ b/grub-core/fs/hfsplus.c
 @@ -177,6 +177,17 @@ grub_hfsplus_read_block (grub_fshelp_node_t node, grub_disk_addr_t fileblock)
@@ -90,7 +90,7 @@ index 423f4b956ba..8c0c804735d 100644
  			      sizeof (struct grub_hfsplus_btnode),
  			      sizeof (header), (char *) &header) <= 0)
 diff --git a/include/grub/hfsplus.h b/include/grub/hfsplus.h
-index 117740ae269..e14dd31ff54 100644
+index 117740ae2..e14dd31ff 100644
 --- a/include/grub/hfsplus.h
 +++ b/include/grub/hfsplus.h
 @@ -113,6 +113,8 @@ struct grub_hfsplus_data

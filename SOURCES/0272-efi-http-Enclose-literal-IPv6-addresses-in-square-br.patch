@@ -43,7 +43,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 28 insertions(+), 9 deletions(-)
 
 diff --git a/grub-core/net/efi/http.c b/grub-core/net/efi/http.c
-index 755b7a6d054..fc8cb25ae0a 100644
+index 755b7a6d0..fc8cb25ae 100644
 --- a/grub-core/net/efi/http.c
 +++ b/grub-core/net/efi/http.c
 @@ -158,13 +158,7 @@ efihttp_request (grub_efi_http_t *http, char *server, char *name, int use_https,

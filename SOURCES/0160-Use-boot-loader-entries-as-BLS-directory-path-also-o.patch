@@ -19,7 +19,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  2 files changed, 38 insertions(+), 14 deletions(-)
 
 diff --git a/grub-core/commands/blscfg.c b/grub-core/commands/blscfg.c
-index 831cdcaccdf..70939a81826 100644
+index 831cdcacc..70939a818 100644
 --- a/grub-core/commands/blscfg.c
 +++ b/grub-core/commands/blscfg.c
 @@ -381,9 +381,14 @@ static int bls_cmp(const void *p0, const void *p1, void *state UNUSED)
@@ -131,7 +131,7 @@ index 831cdcaccdf..70939a81826 100644
  
    grub_free (entries);
 diff --git a/util/grub-switch-to-blscfg.in b/util/grub-switch-to-blscfg.in
-index 884cf45b1e1..2f37a1f740b 100644
+index 884cf45b1..2f37a1f74 100644
 --- a/util/grub-switch-to-blscfg.in
 +++ b/util/grub-switch-to-blscfg.in
 @@ -44,13 +44,13 @@ EFIDIR=$(grep ^ID= /etc/os-release | sed -e 's/^ID=//' -e 's/rhel/redhat/')

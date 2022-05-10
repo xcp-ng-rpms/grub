@@ -22,7 +22,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/include/grub/efi/api.h b/include/grub/efi/api.h
-index b337e1a193d..6c440c61316 100644
+index b337e1a19..6c440c613 100644
 --- a/include/grub/efi/api.h
 +++ b/include/grub/efi/api.h
 @@ -539,11 +539,16 @@ typedef grub_uint16_t grub_efi_char16_t;

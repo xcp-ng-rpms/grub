@@ -14,7 +14,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  create mode 100644 util/grub-switch-to-blscfg.in
 
 diff --git a/Makefile.util.def b/Makefile.util.def
-index 879e8eb98a4..f4fbd250630 100644
+index 879e8eb98..f4fbd2506 100644
 --- a/Makefile.util.def
 +++ b/Makefile.util.def
 @@ -1348,6 +1348,13 @@ program = {
@@ -32,7 +32,7 @@ index 879e8eb98a4..f4fbd250630 100644
    name = grub-glue-efi;
    mansection = 1;
 diff --git a/.gitignore b/.gitignore
-index 54795fa60be..42475592123 100644
+index 54795fa60..424755921 100644
 --- a/.gitignore
 +++ b/.gitignore
 @@ -121,6 +121,8 @@ grub-*.tar.*
@@ -46,7 +46,7 @@ index 54795fa60be..42475592123 100644
  /grub_fstest_init.lst
 diff --git a/util/grub-switch-to-blscfg.8 b/util/grub-switch-to-blscfg.8
 new file mode 100644
-index 00000000000..134dfc62a7b
+index 000000000..134dfc62a
 --- /dev/null
 +++ b/util/grub-switch-to-blscfg.8
 @@ -0,0 +1,25 @@
@@ -77,7 +77,7 @@ index 00000000000..134dfc62a7b
 +.BR "info grub"
 diff --git a/util/grub-switch-to-blscfg.in b/util/grub-switch-to-blscfg.in
 new file mode 100644
-index 00000000000..3ae5e4ea8d0
+index 000000000..3ae5e4ea8
 --- /dev/null
 +++ b/util/grub-switch-to-blscfg.in
 @@ -0,0 +1,262 @@

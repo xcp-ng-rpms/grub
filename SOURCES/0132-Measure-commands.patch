@@ -10,7 +10,7 @@ Measure each command executed by grub, which includes script execution.
  2 files changed, 24 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/script/execute.c b/grub-core/script/execute.c
-index cf6cd6601d6..9ae04a05160 100644
+index cf6cd6601..9ae04a051 100644
 --- a/grub-core/script/execute.c
 +++ b/grub-core/script/execute.c
 @@ -30,6 +30,7 @@
@@ -60,7 +60,7 @@ index cf6cd6601d6..9ae04a05160 100644
    argc = argv.argc - 1;
    args = argv.args + 1;
 diff --git a/include/grub/tpm.h b/include/grub/tpm.h
-index 40d3cf65ba6..7fc9d77d277 100644
+index 40d3cf65b..7fc9d77d2 100644
 --- a/include/grub/tpm.h
 +++ b/include/grub/tpm.h
 @@ -30,6 +30,7 @@

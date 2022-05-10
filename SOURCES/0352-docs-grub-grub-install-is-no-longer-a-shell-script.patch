@@ -14,7 +14,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  1 file changed, 7 deletions(-)
 
 diff --git a/docs/grub.texi b/docs/grub.texi
-index 61c92a1e03d..34517e67439 100644
+index 61c92a1e0..34517e674 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
 @@ -695,13 +695,6 @@ floppy instead of exposing the USB drive as a hard disk (they call it

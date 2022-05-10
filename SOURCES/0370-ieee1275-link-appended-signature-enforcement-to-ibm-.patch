@@ -16,7 +16,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  2 files changed, 60 insertions(+), 10 deletions(-)
 
 diff --git a/grub-core/commands/appendedsig/appendedsig.c b/grub-core/commands/appendedsig/appendedsig.c
-index 5d8897be5c8..4ef2ec2893c 100644
+index 5d8897be5..4ef2ec289 100644
 --- a/grub-core/commands/appendedsig/appendedsig.c
 +++ b/grub-core/commands/appendedsig/appendedsig.c
 @@ -95,10 +95,24 @@ static char *
@@ -92,7 +92,7 @@ index 5d8897be5c8..4ef2ec2893c 100644
    cmd_trust =
      grub_register_command ("trust_certificate", grub_cmd_trust,
 diff --git a/grub-core/kern/ieee1275/init.c b/grub-core/kern/ieee1275/init.c
-index e731a57a47b..22dc3013d86 100644
+index e731a57a4..22dc3013d 100644
 --- a/grub-core/kern/ieee1275/init.c
 +++ b/grub-core/kern/ieee1275/init.c
 @@ -268,6 +268,30 @@ grub_parse_cmdline (void)

@@ -111,7 +111,7 @@
 
 
 %ifarch %{efi_arch}
-%global efi_modules " efi_netfs efifwsetup efinet lsefi lsefimmap "
+%global efi_modules " efi_netfs efifwsetup efinet lsefi lsefimmap connectefi "
 %endif
 
 %ifarch x86_64 %{ix86}

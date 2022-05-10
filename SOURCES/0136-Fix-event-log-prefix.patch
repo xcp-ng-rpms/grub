@@ -12,7 +12,7 @@ Fix that.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/kern/tpm.c b/grub-core/kern/tpm.c
-index cb5a812035d..e5e8fced624 100644
+index cb5a81203..e5e8fced6 100644
 --- a/grub-core/kern/tpm.c
 +++ b/grub-core/kern/tpm.c
 @@ -13,7 +13,7 @@ grub_tpm_measure (unsigned char *buf, grub_size_t size, grub_uint8_t pcr,

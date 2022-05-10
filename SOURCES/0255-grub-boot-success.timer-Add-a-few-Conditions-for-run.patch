@@ -15,18 +15,20 @@ since then it will just lead to a bunch of errors without doing anything:
 https://bugzilla.redhat.com/show_bug.cgi?id=1619445
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+[rharwood: rebase fuzz around boot-succes timer commit]
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
 ---
- docs/grub-boot-success.timer | 2 ++
- 1 file changed, 2 insertions(+)
+ docs/grub-boot-success.timer | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/docs/grub-boot-success.timer b/docs/grub-boot-success.timer
-index 221b532781b..67bd829b795 100644
+index 406f17200..51d1eb238 100644
 --- a/docs/grub-boot-success.timer
 +++ b/docs/grub-boot-success.timer
-@@ -1,5 +1,7 @@
- [Unit]
+@@ -2,6 +2,7 @@
  Description=Mark boot as successful after the user session has run 2 minutes
-+ConditionUser=!@system
+ ConditionUser=!@system
+ ConditionVirtualization=!container
 +ConditionPathExists=/usr/bin/pkexec
  
  [Timer]

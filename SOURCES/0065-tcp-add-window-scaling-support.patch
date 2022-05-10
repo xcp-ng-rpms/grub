@@ -17,7 +17,7 @@ Signed-off-by: Josef Bacik <jbacik@fb.com>
  1 file changed, 29 insertions(+), 13 deletions(-)
 
 diff --git a/grub-core/net/tcp.c b/grub-core/net/tcp.c
-index e8ad34b84d4..7d4b822626d 100644
+index e8ad34b84..7d4b82262 100644
 --- a/grub-core/net/tcp.c
 +++ b/grub-core/net/tcp.c
 @@ -106,6 +106,18 @@ struct tcphdr

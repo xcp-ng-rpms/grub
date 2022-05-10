@@ -20,7 +20,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/grub-core/normal/completion.c b/grub-core/normal/completion.c
-index 93aa0d8eda8..5036bcf2d98 100644
+index 93aa0d8ed..5036bcf2d 100644
 --- a/grub-core/normal/completion.c
 +++ b/grub-core/normal/completion.c
 @@ -401,8 +401,8 @@ char *

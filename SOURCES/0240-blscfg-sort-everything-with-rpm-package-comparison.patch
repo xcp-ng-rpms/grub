@@ -14,7 +14,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 108 insertions(+), 10 deletions(-)
 
 diff --git a/grub-core/commands/blscfg.c b/grub-core/commands/blscfg.c
-index 3847572dabd..347128c9ddd 100644
+index 3847572da..347128c9d 100644
 --- a/grub-core/commands/blscfg.c
 +++ b/grub-core/commands/blscfg.c
 @@ -206,7 +206,7 @@ static int vercmp(const char * a, const char * b)

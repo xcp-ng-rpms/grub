@@ -24,7 +24,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/commands/blscfg.c b/grub-core/commands/blscfg.c
-index 42892cbfd55..c432c6ba27a 100644
+index 42892cbfd..c432c6ba2 100644
 --- a/grub-core/commands/blscfg.c
 +++ b/grub-core/commands/blscfg.c
 @@ -704,7 +704,7 @@ static void create_entry (struct bls_entry *entry)

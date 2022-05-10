@@ -18,7 +18,7 @@ to the kexec command line tool, to allow booting the selected menu entry.
  create mode 100644 grub-core/loader/emu/linux.c
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index e52d776887a..067b97a4221 100644
+index e52d77688..067b97a42 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -1710,7 +1710,6 @@ module = {
@@ -30,7 +30,7 @@ index e52d776887a..067b97a4221 100644
    efi = loader/efi/linux.c;
  };
 diff --git a/grub-core/kern/emu/main.c b/grub-core/kern/emu/main.c
-index 55ea5a11ccd..846fe9715ec 100644
+index 55ea5a11c..846fe9715 100644
 --- a/grub-core/kern/emu/main.c
 +++ b/grub-core/kern/emu/main.c
 @@ -107,6 +107,7 @@ static struct argp_option options[] = {
@@ -52,7 +52,7 @@ index 55ea5a11ccd..846fe9715ec 100644
      case ARGP_KEY_ARG:
        {
 diff --git a/grub-core/kern/emu/misc.c b/grub-core/kern/emu/misc.c
-index 82012a72fcb..3d3a4a4a975 100644
+index 82012a72f..3d3a4a4a9 100644
 --- a/grub-core/kern/emu/misc.c
 +++ b/grub-core/kern/emu/misc.c
 @@ -37,6 +37,7 @@
@@ -100,7 +100,7 @@ index 82012a72fcb..3d3a4a4a975 100644
 +}
 diff --git a/grub-core/loader/emu/linux.c b/grub-core/loader/emu/linux.c
 new file mode 100644
-index 00000000000..fda9e00d24c
+index 000000000..fda9e00d2
 --- /dev/null
 +++ b/grub-core/loader/emu/linux.c
 @@ -0,0 +1,172 @@
@@ -277,7 +277,7 @@ index 00000000000..fda9e00d24c
 +  grub_unregister_command (cmd_initrd);
 +}
 diff --git a/include/grub/emu/exec.h b/include/grub/emu/exec.h
-index d1073ef86af..1b61b4a2e5d 100644
+index d1073ef86..1b61b4a2e 100644
 --- a/include/grub/emu/exec.h
 +++ b/include/grub/emu/exec.h
 @@ -23,6 +23,8 @@
@@ -299,7 +299,7 @@ index d1073ef86af..1b61b4a2e5d 100644
  grub_util_exec_redirect (const char *const *argv, const char *stdin_file,
  			 const char *stdout_file);
 diff --git a/include/grub/emu/hostfile.h b/include/grub/emu/hostfile.h
-index 8e37d5acb42..12c937a1af9 100644
+index 8e37d5acb..12c937a1a 100644
 --- a/include/grub/emu/hostfile.h
 +++ b/include/grub/emu/hostfile.h
 @@ -22,6 +22,7 @@
@@ -320,7 +320,7 @@ index 8e37d5acb42..12c937a1af9 100644
  char *
  grub_util_path_concat (size_t n, ...);
 diff --git a/include/grub/emu/misc.h b/include/grub/emu/misc.h
-index df6085bcb7c..a653132e36a 100644
+index df6085bcb..a653132e3 100644
 --- a/include/grub/emu/misc.h
 +++ b/include/grub/emu/misc.h
 @@ -60,6 +60,9 @@ void EXPORT_FUNC(grub_util_warn) (const char *fmt, ...) __attribute__ ((format (
@@ -334,7 +334,7 @@ index df6085bcb7c..a653132e36a 100644
  
  #ifdef HAVE_DEVICE_MAPPER
 diff --git a/grub-core/Makefile.am b/grub-core/Makefile.am
-index 9c69aa88626..0108c0d4233 100644
+index 9c69aa886..0108c0d42 100644
 --- a/grub-core/Makefile.am
 +++ b/grub-core/Makefile.am
 @@ -274,6 +274,7 @@ KERNEL_HEADER_FILES += $(top_srcdir)/include/grub/emu/net.h

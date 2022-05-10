@@ -27,7 +27,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  4 files changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/util/grub-mkconfig.8 b/util/grub-mkconfig.8
-index a2d1f577b9b..434fa4deda4 100644
+index a2d1f577b..434fa4ded 100644
 --- a/util/grub-mkconfig.8
 +++ b/util/grub-mkconfig.8
 @@ -13,5 +13,9 @@
@@ -41,7 +41,7 @@ index a2d1f577b9b..434fa4deda4 100644
  .SH SEE ALSO
  .BR "info grub"
 diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
-index c20171919d9..5e643e16973 100644
+index c20171919..5e643e169 100644
 --- a/util/grub-mkconfig.in
 +++ b/util/grub-mkconfig.in
 @@ -50,6 +50,8 @@ grub_get_kernel_settings="${sbindir}/@grub_get_kernel_settings@"
@@ -72,7 +72,7 @@ index c20171919d9..5e643e16973 100644
  	gettext_printf "Unrecognized option \`%s'\n" "$option" 1>&2
  	usage
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index b54d2774a7d..da2992ac9f1 100644
+index b54d2774a..da2992ac9 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -165,7 +165,7 @@ if [ -s \$prefix/grubenv ]; then
@@ -85,7 +85,7 @@ index b54d2774a7d..da2992ac9f1 100644
      fi
  
 diff --git a/util/grub.d/10_linux_bls.in b/util/grub.d/10_linux_bls.in
-index 8cff4c58ab5..175bedd0763 100644
+index 8cff4c58a..175bedd07 100644
 --- a/util/grub.d/10_linux_bls.in
 +++ b/util/grub.d/10_linux_bls.in
 @@ -225,7 +225,7 @@ linux_entry ()

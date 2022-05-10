@@ -14,7 +14,7 @@ Reviewed-by: Ross Philipson <ross.philipson@oracle.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/loader/powerpc/ieee1275/linux.c b/grub-core/loader/powerpc/ieee1275/linux.c
-index c114e7df4fb..818b2a86d1a 100644
+index c114e7df4..818b2a86d 100644
 --- a/grub-core/loader/powerpc/ieee1275/linux.c
 +++ b/grub-core/loader/powerpc/ieee1275/linux.c
 @@ -270,7 +270,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),

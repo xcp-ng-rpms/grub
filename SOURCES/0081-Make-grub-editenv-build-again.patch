@@ -13,7 +13,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 2 insertions(+)
 
 diff --git a/Makefile.util.def b/Makefile.util.def
-index 2d032643de7..879e8eb98a4 100644
+index 2d032643d..879e8eb98 100644
 --- a/Makefile.util.def
 +++ b/Makefile.util.def
 @@ -237,6 +237,8 @@ program = {

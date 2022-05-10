@@ -27,7 +27,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  create mode 100644 include/grub/verify.h
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index c8a50b4fcfa..29c3bf6cd66 100644
+index c8a50b4fc..29c3bf6cd 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -921,6 +921,11 @@ module = {
@@ -44,7 +44,7 @@ index c8a50b4fcfa..29c3bf6cd66 100644
    common = commands/hdparm.c;
 diff --git a/grub-core/commands/verifiers.c b/grub-core/commands/verifiers.c
 new file mode 100644
-index 00000000000..fde88318d4c
+index 000000000..fde88318d
 --- /dev/null
 +++ b/grub-core/commands/verifiers.c
 @@ -0,0 +1,197 @@
@@ -246,7 +246,7 @@ index 00000000000..fde88318d4c
 +  grub_file_filter_unregister (GRUB_FILE_FILTER_VERIFY);
 +}
 diff --git a/grub-core/commands/verify.c b/grub-core/commands/verify.c
-index f0dfeceebd4..29e74a64004 100644
+index f0dfeceeb..29e74a640 100644
 --- a/grub-core/commands/verify.c
 +++ b/grub-core/commands/verify.c
 @@ -30,16 +30,10 @@
@@ -929,7 +929,7 @@ index f0dfeceebd4..29e74a64004 100644
    grub_unregister_extcmd (cmd_trust);
    grub_unregister_command (cmd_list);
 diff --git a/include/grub/file.h b/include/grub/file.h
-index 5b47c5f91f9..19dda67f68b 100644
+index 5b47c5f91..19dda67f6 100644
 --- a/include/grub/file.h
 +++ b/include/grub/file.h
 @@ -171,7 +171,7 @@ extern grub_disk_read_hook_t EXPORT_VAR(grub_file_progress_hook);
@@ -942,7 +942,7 @@ index 5b47c5f91f9..19dda67f68b 100644
      GRUB_FILE_FILTER_XZIO,
      GRUB_FILE_FILTER_LZOPIO,
 diff --git a/include/grub/list.h b/include/grub/list.h
-index d170ff6da02..b13acb96243 100644
+index d170ff6da..b13acb962 100644
 --- a/include/grub/list.h
 +++ b/include/grub/list.h
 @@ -35,6 +35,7 @@ void EXPORT_FUNC(grub_list_push) (grub_list_t *head, grub_list_t item);
@@ -955,7 +955,7 @@ index d170ff6da02..b13acb96243 100644
  static inline void *
 diff --git a/include/grub/verify.h b/include/grub/verify.h
 new file mode 100644
-index 00000000000..298120f5776
+index 000000000..298120f57
 --- /dev/null
 +++ b/include/grub/verify.h
 @@ -0,0 +1,65 @@

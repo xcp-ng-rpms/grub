@@ -13,7 +13,7 @@ Reviewed-by: Ross Philipson <ross.philipson@oracle.com>
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/grub-core/loader/ia64/efi/linux.c b/grub-core/loader/ia64/efi/linux.c
-index 2ad0b0c0407..cfeb2c145bb 100644
+index 2ad0b0c04..cfeb2c145 100644
 --- a/grub-core/loader/ia64/efi/linux.c
 +++ b/grub-core/loader/ia64/efi/linux.c
 @@ -547,8 +547,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),

@@ -28,7 +28,7 @@ Upstream-commit-id: 98dfa546777
  1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/term/terminfo.c b/grub-core/term/terminfo.c
-index 537a5c0cb0b..44d0b3b19fb 100644
+index 537a5c0cb..44d0b3b19 100644
 --- a/grub-core/term/terminfo.c
 +++ b/grub-core/term/terminfo.c
 @@ -398,7 +398,7 @@ grub_terminfo_getwh (struct grub_term_output *term)

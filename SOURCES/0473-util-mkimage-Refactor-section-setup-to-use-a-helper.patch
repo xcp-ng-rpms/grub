@@ -14,7 +14,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 76 insertions(+), 65 deletions(-)
 
 diff --git a/util/mkimage.c b/util/mkimage.c
-index f22b398d973..0f5ae2a76f2 100644
+index f22b398d9..0f5ae2a76 100644
 --- a/util/mkimage.c
 +++ b/util/mkimage.c
 @@ -771,6 +771,38 @@ grub_install_get_image_targets_string (void)

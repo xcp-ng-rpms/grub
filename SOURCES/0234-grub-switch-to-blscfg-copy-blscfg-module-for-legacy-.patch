@@ -16,7 +16,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/util/grub-switch-to-blscfg.in b/util/grub-switch-to-blscfg.in
-index 9cf64f8e725..1c6bd1882a7 100644
+index 9cf64f8e7..1c6bd1882 100644
 --- a/util/grub-switch-to-blscfg.in
 +++ b/util/grub-switch-to-blscfg.in
 @@ -53,6 +53,8 @@ blsdir=`echo "/@bootdirname@/loader/entries" | sed 's,//*,/,g'`

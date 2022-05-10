@@ -15,7 +15,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/term/terminfo.c b/grub-core/term/terminfo.c
-index d317efa368d..29df35e6d20 100644
+index d317efa36..29df35e6d 100644
 --- a/grub-core/term/terminfo.c
 +++ b/grub-core/term/terminfo.c
 @@ -151,7 +151,7 @@ grub_terminfo_set_current (struct grub_term_output *term,

@@ -20,7 +20,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/script/execute.c b/grub-core/script/execute.c
-index 2e47c046741..17f4dcab2c6 100644
+index 2e47c0467..17f4dcab2 100644
 --- a/grub-core/script/execute.c
 +++ b/grub-core/script/execute.c
 @@ -519,7 +519,7 @@ gettext_putvar (const char *str, grub_size_t len,

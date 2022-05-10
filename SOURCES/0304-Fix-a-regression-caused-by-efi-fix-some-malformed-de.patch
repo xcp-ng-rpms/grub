@@ -21,7 +21,7 @@ Remove the bogus check, and also propagate errors from copy_file_path.
  1 file changed, 14 insertions(+), 12 deletions(-)
 
 diff --git a/grub-core/loader/efi/chainloader.c b/grub-core/loader/efi/chainloader.c
-index c2411b6dab2..8b99cf23e9d 100644
+index c2411b6da..8b99cf23e 100644
 --- a/grub-core/loader/efi/chainloader.c
 +++ b/grub-core/loader/efi/chainloader.c
 @@ -115,7 +115,7 @@ grub_chainloader_boot (void)

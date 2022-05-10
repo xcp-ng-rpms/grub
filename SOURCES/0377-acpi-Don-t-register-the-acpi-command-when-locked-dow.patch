@@ -22,7 +22,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  2 files changed, 13 insertions(+), 7 deletions(-)
 
 diff --git a/grub-core/commands/acpi.c b/grub-core/commands/acpi.c
-index 5a1499aa0e3..1215f2a62ef 100644
+index 5a1499aa0..1215f2a62 100644
 --- a/grub-core/commands/acpi.c
 +++ b/grub-core/commands/acpi.c
 @@ -27,6 +27,7 @@
@@ -55,7 +55,7 @@ index 5a1499aa0e3..1215f2a62ef 100644
  
  GRUB_MOD_FINI(acpi)
 diff --git a/docs/grub.texi b/docs/grub.texi
-index 755de88d7d8..01acf672b80 100644
+index 755de88d7..01acf672b 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
 @@ -4038,6 +4038,11 @@ Normally, this command will replace the Root System Description Pointer

@@ -14,7 +14,7 @@ This reverts commit 147daeab22db793978f952b6f0d832919a1b0081.
  1 file changed, 39 deletions(-)
 
 diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
-index d15a799f29a..5388f952ba9 100644
+index d15a799f2..5388f952b 100644
 --- a/grub-core/net/drivers/efi/efinet.c
 +++ b/grub-core/net/drivers/efi/efinet.c
 @@ -383,45 +383,6 @@ grub_efi_net_config_real (grub_efi_handle_t hnd, char **device,

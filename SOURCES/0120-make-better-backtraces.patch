@@ -38,7 +38,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  delete mode 100644 grub-core/lib/i386/backtrace.c
 
 diff --git a/Makefile.util.def b/Makefile.util.def
-index f4fbd250630..cbd661d6348 100644
+index f4fbd2506..cbd661d63 100644
 --- a/Makefile.util.def
 +++ b/Makefile.util.def
 @@ -49,6 +49,12 @@ library = {
@@ -55,7 +55,7 @@ index f4fbd250630..cbd661d6348 100644
  
  library = {
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index 067b97a4221..cb24f92a431 100644
+index 067b97a42..cb24f92a4 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -130,6 +130,12 @@ kernel = {
@@ -101,7 +101,7 @@ diff --git a/grub-core/lib/backtrace.c b/grub-core/commands/backtrace.c
 similarity index 98%
 rename from grub-core/lib/backtrace.c
 rename to grub-core/commands/backtrace.c
-index c0ad6ab8be1..8b5ec3913b5 100644
+index c0ad6ab8b..8b5ec3913 100644
 --- a/grub-core/lib/backtrace.c
 +++ b/grub-core/commands/backtrace.c
 @@ -54,7 +54,7 @@ grub_cmd_backtrace (grub_command_t cmd __attribute__ ((unused)),
@@ -114,7 +114,7 @@ index c0ad6ab8be1..8b5ec3913b5 100644
  }
  
 diff --git a/grub-core/gdb/cstub.c b/grub-core/gdb/cstub.c
-index b64acd70fee..99281472d36 100644
+index b64acd70f..99281472d 100644
 --- a/grub-core/gdb/cstub.c
 +++ b/grub-core/gdb/cstub.c
 @@ -215,7 +215,6 @@ grub_gdb_trap (int trap_no)
@@ -127,7 +127,7 @@ index b64acd70fee..99281472d36 100644
  
 diff --git a/grub-core/kern/arm64/backtrace.c b/grub-core/kern/arm64/backtrace.c
 new file mode 100644
-index 00000000000..019c6fdfef2
+index 000000000..019c6fdfe
 --- /dev/null
 +++ b/grub-core/kern/arm64/backtrace.c
 @@ -0,0 +1,94 @@
@@ -227,7 +227,7 @@ index 00000000000..019c6fdfef2
 +}
 diff --git a/grub-core/kern/backtrace.c b/grub-core/kern/backtrace.c
 new file mode 100644
-index 00000000000..4a82e865cc6
+index 000000000..4a82e865c
 --- /dev/null
 +++ b/grub-core/kern/backtrace.c
 @@ -0,0 +1,97 @@
@@ -329,7 +329,7 @@ index 00000000000..4a82e865cc6
 +    grub_backtrace (skip + 1);
 +}
 diff --git a/grub-core/kern/dl.c b/grub-core/kern/dl.c
-index 621070918d4..5028d157c46 100644
+index 621070918..5028d157c 100644
 --- a/grub-core/kern/dl.c
 +++ b/grub-core/kern/dl.c
 @@ -124,6 +124,50 @@ grub_dl_resolve_symbol (const char *name)
@@ -393,7 +393,7 @@ index 621070918d4..5028d157c46 100644
         i++, s = (Elf_Shdr *) ((char *) s + e->e_shentsize))
 diff --git a/grub-core/kern/i386/backtrace.c b/grub-core/kern/i386/backtrace.c
 new file mode 100644
-index 00000000000..2413f9a57db
+index 000000000..2413f9a57
 --- /dev/null
 +++ b/grub-core/kern/i386/backtrace.c
 @@ -0,0 +1,125 @@
@@ -523,7 +523,7 @@ index 00000000000..2413f9a57db
 +#endif
 +}
 diff --git a/grub-core/kern/i386/pc/init.c b/grub-core/kern/i386/pc/init.c
-index 27bc68b8a53..b51d0abfa6e 100644
+index 27bc68b8a..b51d0abfa 100644
 --- a/grub-core/kern/i386/pc/init.c
 +++ b/grub-core/kern/i386/pc/init.c
 @@ -153,7 +153,7 @@ compact_mem_regions (void)
@@ -545,7 +545,7 @@ index 27bc68b8a53..b51d0abfa6e 100644
    /* Initialize the console as early as possible.  */
    grub_console_init ();
 diff --git a/grub-core/kern/ieee1275/init.c b/grub-core/kern/ieee1275/init.c
-index e01bc6eab19..e731a57a47b 100644
+index e01bc6eab..e731a57a4 100644
 --- a/grub-core/kern/ieee1275/init.c
 +++ b/grub-core/kern/ieee1275/init.c
 @@ -60,7 +60,6 @@
@@ -557,7 +557,7 @@ index e01bc6eab19..e731a57a47b 100644
  
  #ifdef __sparc__
 diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
-index e758ab3416d..5c2d2039d0b 100644
+index e758ab341..5c2d2039d 100644
 --- a/grub-core/kern/misc.c
 +++ b/grub-core/kern/misc.c
 @@ -1110,15 +1110,15 @@ grub_xasprintf (const char *fmt, ...)
@@ -591,7 +591,7 @@ index e758ab3416d..5c2d2039d0b 100644
    grub_vprintf (_(fmt), ap);
    va_end (ap);
 diff --git a/grub-core/kern/mm.c b/grub-core/kern/mm.c
-index ee88ff61187..002cbfa4f3d 100644
+index ee88ff611..002cbfa4f 100644
 --- a/grub-core/kern/mm.c
 +++ b/grub-core/kern/mm.c
 @@ -95,13 +95,13 @@ get_header_from_pointer (void *ptr, grub_mm_header_t *p, grub_mm_region_t *r)
@@ -613,7 +613,7 @@ index ee88ff61187..002cbfa4f3d 100644
  
 diff --git a/grub-core/lib/arm64/backtrace.c b/grub-core/lib/arm64/backtrace.c
 deleted file mode 100644
-index 1079b5380e1..00000000000
+index 1079b5380..000000000
 --- a/grub-core/lib/arm64/backtrace.c
 +++ /dev/null
 @@ -1,62 +0,0 @@
@@ -681,7 +681,7 @@ index 1079b5380e1..00000000000
 -
 diff --git a/grub-core/lib/i386/backtrace.c b/grub-core/lib/i386/backtrace.c
 deleted file mode 100644
-index c67273db3ae..00000000000
+index c67273db3..000000000
 --- a/grub-core/lib/i386/backtrace.c
 +++ /dev/null
 @@ -1,78 +0,0 @@
@@ -764,7 +764,7 @@ index c67273db3ae..00000000000
 -}
 -
 diff --git a/include/grub/backtrace.h b/include/grub/backtrace.h
-index 395519762f0..275cf85e2d3 100644
+index 395519762..275cf85e2 100644
 --- a/include/grub/backtrace.h
 +++ b/include/grub/backtrace.h
 @@ -19,8 +19,14 @@
@@ -785,7 +785,7 @@ index 395519762f0..275cf85e2d3 100644
  
  #endif
 diff --git a/include/grub/dl.h b/include/grub/dl.h
-index b1ed3c33317..7b5bfb07ce6 100644
+index b1ed3c333..7b5bfb07c 100644
 --- a/include/grub/dl.h
 +++ b/include/grub/dl.h
 @@ -244,6 +244,8 @@ grub_dl_get (const char *name)
@@ -798,7 +798,7 @@ index b1ed3c33317..7b5bfb07ce6 100644
  				    int isfunc, grub_dl_t mod);
  
 diff --git a/include/grub/kernel.h b/include/grub/kernel.h
-index ecd88ca72c6..ae69218af20 100644
+index ecd88ca72..ae69218af 100644
 --- a/include/grub/kernel.h
 +++ b/include/grub/kernel.h
 @@ -108,6 +108,9 @@ grub_addr_t grub_modules_get_end (void);
@@ -812,7 +812,7 @@ index ecd88ca72c6..ae69218af20 100644
  void grub_main (void) __attribute__ ((noreturn));
  
 diff --git a/grub-core/kern/arm/efi/startup.S b/grub-core/kern/arm/efi/startup.S
-index 9f8265315a9..f3bc41f9d0f 100644
+index 9f8265315..f3bc41f9d 100644
 --- a/grub-core/kern/arm/efi/startup.S
 +++ b/grub-core/kern/arm/efi/startup.S
 @@ -23,6 +23,8 @@
@@ -825,7 +825,7 @@ index 9f8265315a9..f3bc41f9d0f 100644
  	/*
  	 *  EFI_SYSTEM_TABLE and EFI_HANDLE are passed in r1/r0.
 diff --git a/grub-core/kern/arm/startup.S b/grub-core/kern/arm/startup.S
-index 3946fe8e183..5679a1d00ad 100644
+index 3946fe8e1..5679a1d00 100644
 --- a/grub-core/kern/arm/startup.S
 +++ b/grub-core/kern/arm/startup.S
 @@ -48,6 +48,8 @@
@@ -838,7 +838,7 @@ index 3946fe8e183..5679a1d00ad 100644
  	b	codestart
  	
 diff --git a/grub-core/kern/arm64/efi/startup.S b/grub-core/kern/arm64/efi/startup.S
-index 666a7ee3c92..41676bdb2b8 100644
+index 666a7ee3c..41676bdb2 100644
 --- a/grub-core/kern/arm64/efi/startup.S
 +++ b/grub-core/kern/arm64/efi/startup.S
 @@ -19,7 +19,9 @@
@@ -852,7 +852,7 @@ index 666a7ee3c92..41676bdb2b8 100644
  	/*
  	 *  EFI_SYSTEM_TABLE and EFI_HANDLE are passed in x1/x0.
 diff --git a/grub-core/kern/i386/qemu/startup.S b/grub-core/kern/i386/qemu/startup.S
-index 0d89858d9b3..939f182fc74 100644
+index 0d89858d9..939f182fc 100644
 --- a/grub-core/kern/i386/qemu/startup.S
 +++ b/grub-core/kern/i386/qemu/startup.S
 @@ -24,7 +24,8 @@
@@ -866,7 +866,7 @@ index 0d89858d9b3..939f182fc74 100644
  	jmp	codestart
  
 diff --git a/grub-core/kern/ia64/efi/startup.S b/grub-core/kern/ia64/efi/startup.S
-index d75c6d7cc74..8f2a593e529 100644
+index d75c6d7cc..8f2a593e5 100644
 --- a/grub-core/kern/ia64/efi/startup.S
 +++ b/grub-core/kern/ia64/efi/startup.S
 @@ -24,8 +24,9 @@
@@ -881,7 +881,7 @@ index d75c6d7cc74..8f2a593e529 100644
  	alloc loc0=ar.pfs,2,4,0,0
  	mov loc1=rp
 diff --git a/grub-core/kern/sparc64/ieee1275/crt0.S b/grub-core/kern/sparc64/ieee1275/crt0.S
-index 03b916f0534..701bf63abcf 100644
+index 03b916f05..701bf63ab 100644
 --- a/grub-core/kern/sparc64/ieee1275/crt0.S
 +++ b/grub-core/kern/sparc64/ieee1275/crt0.S
 @@ -22,7 +22,8 @@
@@ -895,7 +895,7 @@ index 03b916f0534..701bf63abcf 100644
  	ba	codestart
  	 mov  %o4, %o0
 diff --git a/grub-core/Makefile.am b/grub-core/Makefile.am
-index 0108c0d4233..f36200bd688 100644
+index 0108c0d42..f36200bd6 100644
 --- a/grub-core/Makefile.am
 +++ b/grub-core/Makefile.am
 @@ -66,6 +66,7 @@ CLEANFILES += grub_script.yy.c grub_script.yy.h

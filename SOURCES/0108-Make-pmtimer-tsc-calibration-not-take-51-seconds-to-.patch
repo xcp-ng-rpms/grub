@@ -63,7 +63,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 89 insertions(+), 20 deletions(-)
 
 diff --git a/grub-core/kern/i386/tsc_pmtimer.c b/grub-core/kern/i386/tsc_pmtimer.c
-index c9c36169978..ca15c3aacd7 100644
+index c9c361699..ca15c3aac 100644
 --- a/grub-core/kern/i386/tsc_pmtimer.c
 +++ b/grub-core/kern/i386/tsc_pmtimer.c
 @@ -28,40 +28,101 @@

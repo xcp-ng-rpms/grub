@@ -14,7 +14,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 17 insertions(+), 14 deletions(-)
 
 diff --git a/grub-core/loader/xnu.c b/grub-core/loader/xnu.c
-index 5944dc5eafc..b33a384321c 100644
+index 5944dc5ea..b33a38432 100644
 --- a/grub-core/loader/xnu.c
 +++ b/grub-core/loader/xnu.c
 @@ -1489,20 +1489,23 @@ GRUB_MOD_INIT(xnu)

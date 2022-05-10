@@ -17,7 +17,7 @@ Signed-off-by: Andrzej Kacprowski <andrzej.kacprowski@intel.com>
  3 files changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/net/bootp.c b/grub-core/net/bootp.c
-index da3e454466b..2869482fe06 100644
+index da3e45446..2869482fe 100644
 --- a/grub-core/net/bootp.c
 +++ b/grub-core/net/bootp.c
 @@ -777,7 +777,8 @@ grub_cmd_bootp (struct grub_command *cmd __attribute__ ((unused)),
@@ -31,7 +31,7 @@ index da3e454466b..2869482fe06 100644
  
  	  grub_memcpy (&pack->mac_addr, &ifaces[j].hwaddress.mac, 6); 
 diff --git a/grub-core/net/ip.c b/grub-core/net/ip.c
-index 7c95cc7464a..8411e0ecca3 100644
+index 7c95cc746..8411e0ecc 100644
 --- a/grub-core/net/ip.c
 +++ b/grub-core/net/ip.c
 @@ -275,6 +275,7 @@ handle_dgram (struct grub_net_buff *nb,
@@ -43,7 +43,7 @@ index 7c95cc7464a..8411e0ecca3 100644
  	      && grub_memcmp (inf->hwaddress.mac, &bootp->mac_addr,
  			      sizeof (inf->hwaddress.mac)) == 0)
 diff --git a/include/grub/net.h b/include/grub/net.h
-index f8f3ec13acc..de51894cbbf 100644
+index f8f3ec13a..de51894cb 100644
 --- a/include/grub/net.h
 +++ b/include/grub/net.h
 @@ -292,6 +292,7 @@ struct grub_net_network_level_interface

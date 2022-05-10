@@ -17,7 +17,7 @@ Signed-off-by: Diego Domingos <diegodo@br.ibm.com>
  1 file changed, 63 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/osdep/linux/ofpath.c b/grub-core/osdep/linux/ofpath.c
-index 0f5d54e9f2d..cc849d9c94c 100644
+index 0f5d54e9f..cc849d9c9 100644
 --- a/grub-core/osdep/linux/ofpath.c
 +++ b/grub-core/osdep/linux/ofpath.c
 @@ -37,6 +37,7 @@

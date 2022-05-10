@@ -14,7 +14,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 46 insertions(+), 28 deletions(-)
 
 diff --git a/grub-core/kern/parser.c b/grub-core/kern/parser.c
-index 39e4df65b86..0d3582bd874 100644
+index 39e4df65b..0d3582bd8 100644
 --- a/grub-core/kern/parser.c
 +++ b/grub-core/kern/parser.c
 @@ -1,7 +1,7 @@

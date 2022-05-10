@@ -11,7 +11,7 @@ snippets into the /boot directory. But the right location is
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/util/grub-switch-to-blscfg.in b/util/grub-switch-to-blscfg.in
-index 3ae5e4ea8d0..f740b8f4d03 100644
+index 3ae5e4ea8..f740b8f4d 100644
 --- a/util/grub-switch-to-blscfg.in
 +++ b/util/grub-switch-to-blscfg.in
 @@ -44,7 +44,7 @@ if [ -d /sys/firmware/efi/efivars/ ]; then

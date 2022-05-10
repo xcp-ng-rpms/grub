@@ -48,7 +48,7 @@ Patch-cc: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/lib/envblk.c b/grub-core/lib/envblk.c
-index 230e0e9d9ab..2e4e78b132d 100644
+index 230e0e9d9..2e4e78b13 100644
 --- a/grub-core/lib/envblk.c
 +++ b/grub-core/lib/envblk.c
 @@ -143,7 +143,7 @@ grub_envblk_set (grub_envblk_t envblk, const char *name, const char *value)

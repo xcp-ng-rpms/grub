@@ -27,7 +27,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  rename grub-core/{kern/qsort.c => commands/bls_qsort.h} (93%)
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index fb0a1e0babb..3346d1be658 100644
+index fb0a1e0ba..3346d1be6 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -129,7 +129,6 @@ kernel = {
@@ -47,7 +47,7 @@ index fb0a1e0babb..3346d1be658 100644
    enable = efi;
    enable = i386_pc;
 diff --git a/grub-core/commands/blscfg.c b/grub-core/commands/blscfg.c
-index abd6f00d0de..bec5a9ffe3e 100644
+index abd6f00d0..bec5a9ffe 100644
 --- a/grub-core/commands/blscfg.c
 +++ b/grub-core/commands/blscfg.c
 @@ -36,6 +36,7 @@
@@ -71,7 +71,7 @@ diff --git a/grub-core/kern/qsort.c b/grub-core/commands/bls_qsort.h
 similarity index 93%
 rename from grub-core/kern/qsort.c
 rename to grub-core/commands/bls_qsort.h
-index 7f3fc9ffdae..572765fa3f2 100644
+index 7f3fc9ffd..572765fa3 100644
 --- a/grub-core/kern/qsort.c
 +++ b/grub-core/commands/bls_qsort.h
 @@ -64,6 +64,7 @@ typedef struct
@@ -123,7 +123,7 @@ index 7f3fc9ffdae..572765fa3f2 100644
 -  return NULL;
 -}
 diff --git a/include/grub/misc.h b/include/grub/misc.h
-index 5f1c1c1be4e..de9016ab709 100644
+index 5f1c1c1be..de9016ab7 100644
 --- a/include/grub/misc.h
 +++ b/include/grub/misc.h
 @@ -510,19 +510,4 @@ void EXPORT_FUNC(grub_real_boot_time) (const char *file,

@@ -15,7 +15,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  3 files changed, 36 insertions(+), 32 deletions(-)
 
 diff --git a/util/grub-module-verifier.c b/util/grub-module-verifier.c
-index a79271f6631..03ba1ab437a 100644
+index a79271f66..03ba1ab43 100644
 --- a/util/grub-module-verifier.c
 +++ b/util/grub-module-verifier.c
 @@ -157,7 +157,7 @@ main (int argc, char **argv)
@@ -39,7 +39,7 @@ index a79271f6631..03ba1ab437a 100644
    return 0;
  }
 diff --git a/util/grub-module-verifierXX.c b/util/grub-module-verifierXX.c
-index 597ded14362..a98e2f9b1ac 100644
+index 597ded143..a98e2f9b1 100644
 --- a/util/grub-module-verifierXX.c
 +++ b/util/grub-module-verifierXX.c
 @@ -160,14 +160,15 @@ find_section (const struct grub_module_verifier_arch *arch, Elf_Ehdr *e, const c
@@ -237,7 +237,7 @@ index 597ded14362..a98e2f9b1ac 100644
 +  check_relocations(modname, arch, e);
  }
 diff --git a/include/grub/module_verifier.h b/include/grub/module_verifier.h
-index f4870cb9c2d..ba21c75e2eb 100644
+index f4870cb9c..ba21c75e2 100644
 --- a/include/grub/module_verifier.h
 +++ b/include/grub/module_verifier.h
 @@ -16,5 +16,5 @@ struct grub_module_verifier_arch {

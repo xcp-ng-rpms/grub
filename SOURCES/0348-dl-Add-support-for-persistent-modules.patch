@@ -19,7 +19,7 @@ Reviewed-by: Ross Philipson <ross.philipson@oracle.com>
  2 files changed, 16 insertions(+)
 
 diff --git a/grub-core/commands/minicmd.c b/grub-core/commands/minicmd.c
-index 46bf135e8f0..6d66b7c453a 100644
+index 46bf135e8..6d66b7c45 100644
 --- a/grub-core/commands/minicmd.c
 +++ b/grub-core/commands/minicmd.c
 @@ -137,6 +137,9 @@ grub_mini_cmd_rmmod (struct grub_command *cmd __attribute__ ((unused)),
@@ -33,7 +33,7 @@ index 46bf135e8f0..6d66b7c453a 100644
      grub_dl_unload (mod);
  
 diff --git a/include/grub/dl.h b/include/grub/dl.h
-index 7b5bfb07ce6..f7cfe64823c 100644
+index 7b5bfb07c..f7cfe6482 100644
 --- a/include/grub/dl.h
 +++ b/include/grub/dl.h
 @@ -177,6 +177,7 @@ struct grub_dl

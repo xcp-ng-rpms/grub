@@ -26,7 +26,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 2 insertions(+)
 
 diff --git a/include/grub/kernel.h b/include/grub/kernel.h
-index ae69218af20..9548d552aad 100644
+index ae69218af..9548d552a 100644
 --- a/include/grub/kernel.h
 +++ b/include/grub/kernel.h
 @@ -108,8 +108,10 @@ grub_addr_t grub_modules_get_end (void);

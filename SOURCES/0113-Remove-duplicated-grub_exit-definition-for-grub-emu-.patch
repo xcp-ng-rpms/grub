@@ -15,7 +15,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 6 deletions(-)
 
 diff --git a/grub-core/kern/emu/main.c b/grub-core/kern/emu/main.c
-index 7e47ec81263..55ea5a11ccd 100644
+index 7e47ec812..55ea5a11c 100644
 --- a/grub-core/kern/emu/main.c
 +++ b/grub-core/kern/emu/main.c
 @@ -72,12 +72,6 @@ grub_exit (int retval __attribute__((unused)))

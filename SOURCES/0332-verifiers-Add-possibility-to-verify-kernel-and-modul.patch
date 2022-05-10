@@ -31,7 +31,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  18 files changed, 131 insertions(+), 35 deletions(-)
 
 diff --git a/grub-core/commands/verifiers.c b/grub-core/commands/verifiers.c
-index fde88318d4c..59ea418a2d9 100644
+index fde88318d..59ea418a2 100644
 --- a/grub-core/commands/verifiers.c
 +++ b/grub-core/commands/verifiers.c
 @@ -186,6 +186,20 @@ grub_verifiers_open (grub_file_t io, enum grub_file_type type)
@@ -56,7 +56,7 @@ index fde88318d4c..59ea418a2d9 100644
  {
    grub_file_filter_register (GRUB_FILE_FILTER_VERIFY, grub_verifiers_open);
 diff --git a/grub-core/lib/cmdline.c b/grub-core/lib/cmdline.c
-index d5c12957cad..463c3c65c79 100644
+index d5c12957c..463c3c65c 100644
 --- a/grub-core/lib/cmdline.c
 +++ b/grub-core/lib/cmdline.c
 @@ -75,8 +75,9 @@ unsigned int grub_loader_cmdline_size (int argc, char *argv[])
@@ -79,7 +79,7 @@ index d5c12957cad..463c3c65c79 100644
 +  return grub_verify_string (orig, type);
  }
 diff --git a/grub-core/loader/arm/linux.c b/grub-core/loader/arm/linux.c
-index ea29d7a724a..beceda52030 100644
+index ea29d7a72..beceda520 100644
 --- a/grub-core/loader/arm/linux.c
 +++ b/grub-core/loader/arm/linux.c
 @@ -28,6 +28,7 @@
@@ -105,7 +105,7 @@ index ea29d7a724a..beceda52030 100644
    return GRUB_ERR_NONE;
  
 diff --git a/grub-core/loader/arm64/linux.c b/grub-core/loader/arm64/linux.c
-index 7a076c13171..48ea66596ad 100644
+index 7a076c131..48ea66596 100644
 --- a/grub-core/loader/arm64/linux.c
 +++ b/grub-core/loader/arm64/linux.c
 @@ -33,6 +33,7 @@
@@ -133,7 +133,7 @@ index 7a076c13171..48ea66596ad 100644
    if (grub_errno == GRUB_ERR_NONE)
      {
 diff --git a/grub-core/loader/i386/bsd.c b/grub-core/loader/i386/bsd.c
-index 8306b415abd..45a71509956 100644
+index 8306b415a..45a715099 100644
 --- a/grub-core/loader/i386/bsd.c
 +++ b/grub-core/loader/i386/bsd.c
 @@ -36,6 +36,7 @@
@@ -164,7 +164,7 @@ index 8306b415abd..45a71509956 100644
      }
  
 diff --git a/grub-core/loader/i386/linux.c b/grub-core/loader/i386/linux.c
-index aa2cbc4e7eb..ef8fcb9e1b6 100644
+index aa2cbc4e7..ef8fcb9e1 100644
 --- a/grub-core/loader/i386/linux.c
 +++ b/grub-core/loader/i386/linux.c
 @@ -1039,11 +1039,17 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
@@ -191,7 +191,7 @@ index aa2cbc4e7eb..ef8fcb9e1b6 100644
    len = prot_file_size;
    grub_memcpy (prot_mode_mem, kernel + kernel_offset, len);
 diff --git a/grub-core/loader/i386/multiboot_mbi.c b/grub-core/loader/i386/multiboot_mbi.c
-index 9d3466d6ace..525446b5687 100644
+index 9d3466d6a..525446b56 100644
 --- a/grub-core/loader/i386/multiboot_mbi.c
 +++ b/grub-core/loader/i386/multiboot_mbi.c
 @@ -676,10 +676,8 @@ grub_multiboot_init_mbi (int argc, char *argv[])
@@ -232,7 +232,7 @@ index 9d3466d6ace..525446b5687 100644
    if (modules_last)
      modules_last->next = newmod;
 diff --git a/grub-core/loader/i386/pc/linux.c b/grub-core/loader/i386/pc/linux.c
-index b5c28c6580e..f631225f59b 100644
+index b5c28c658..f631225f5 100644
 --- a/grub-core/loader/i386/pc/linux.c
 +++ b/grub-core/loader/i386/pc/linux.c
 @@ -348,11 +348,14 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
@@ -256,7 +256,7 @@ index b5c28c6580e..f631225f59b 100644
    if (grub_linux_is_bzimage)
      grub_linux_prot_target = GRUB_LINUX_BZIMAGE_ADDR;
 diff --git a/grub-core/loader/i386/pc/plan9.c b/grub-core/loader/i386/pc/plan9.c
-index 0351090daf8..37550155df7 100644
+index 0351090da..37550155d 100644
 --- a/grub-core/loader/i386/pc/plan9.c
 +++ b/grub-core/loader/i386/pc/plan9.c
 @@ -33,6 +33,7 @@
@@ -292,7 +292,7 @@ index 0351090daf8..37550155df7 100644
  
    {
 diff --git a/grub-core/loader/i386/xen.c b/grub-core/loader/i386/xen.c
-index 82350d3a178..07a4837c532 100644
+index 82350d3a1..07a4837c5 100644
 --- a/grub-core/loader/i386/xen.c
 +++ b/grub-core/loader/i386/xen.c
 @@ -41,6 +41,7 @@
@@ -324,7 +324,7 @@ index 82350d3a178..07a4837c532 100644
    xen_state.module_info_page[xen_state.n_modules].cmdline =
      xen_state.max_addr - xen_state.modules_target_start;
 diff --git a/grub-core/loader/ia64/efi/linux.c b/grub-core/loader/ia64/efi/linux.c
-index 750330d4572..e325fe0ee83 100644
+index 750330d45..e325fe0ee 100644
 --- a/grub-core/loader/ia64/efi/linux.c
 +++ b/grub-core/loader/ia64/efi/linux.c
 @@ -33,6 +33,7 @@
@@ -349,7 +349,7 @@ index 750330d4572..e325fe0ee83 100644
    boot_param->command_line = (grub_uint64_t) cmdline;
    boot_param->efi_systab = (grub_uint64_t) grub_efi_system_table;
 diff --git a/grub-core/loader/mips/linux.c b/grub-core/loader/mips/linux.c
-index 10358854458..20135ce253d 100644
+index 103588544..20135ce25 100644
 --- a/grub-core/loader/mips/linux.c
 +++ b/grub-core/loader/mips/linux.c
 @@ -327,6 +327,8 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
@@ -375,7 +375,7 @@ index 10358854458..20135ce253d 100644
    rd_addr_arg_off = (grub_uint8_t *) linux_args - (grub_uint8_t *) playground;
    linux_args += ALIGN_UP (sizeof ("rd_start=0xXXXXXXXXXXXXXXXX"), 4);
 diff --git a/grub-core/loader/multiboot_mbi2.c b/grub-core/loader/multiboot_mbi2.c
-index 3cfb47650a0..f64a857e394 100644
+index 3cfb47650..f64a857e3 100644
 --- a/grub-core/loader/multiboot_mbi2.c
 +++ b/grub-core/loader/multiboot_mbi2.c
 @@ -1077,10 +1077,8 @@ grub_multiboot2_init_mbi (int argc, char *argv[])
@@ -401,7 +401,7 @@ index 3cfb47650a0..f64a857e394 100644
      {
        grub_free (newmod->cmdline);
 diff --git a/grub-core/loader/powerpc/ieee1275/linux.c b/grub-core/loader/powerpc/ieee1275/linux.c
-index 6e814649f31..c114e7df4fb 100644
+index 6e814649f..c114e7df4 100644
 --- a/grub-core/loader/powerpc/ieee1275/linux.c
 +++ b/grub-core/loader/powerpc/ieee1275/linux.c
 @@ -302,8 +302,9 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
@@ -417,7 +417,7 @@ index 6e814649f31..c114e7df4fb 100644
  out:
  
 diff --git a/grub-core/loader/sparc64/ieee1275/linux.c b/grub-core/loader/sparc64/ieee1275/linux.c
-index 67ef0488324..abe46faa012 100644
+index 67ef04883..abe46faa0 100644
 --- a/grub-core/loader/sparc64/ieee1275/linux.c
 +++ b/grub-core/loader/sparc64/ieee1275/linux.c
 @@ -340,8 +340,9 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
@@ -433,7 +433,7 @@ index 67ef0488324..abe46faa012 100644
  out:
    if (elf)
 diff --git a/grub-core/loader/xnu.c b/grub-core/loader/xnu.c
-index 9f78abb05f9..5944dc5eafc 100644
+index 9f78abb05..5944dc5ea 100644
 --- a/grub-core/loader/xnu.c
 +++ b/grub-core/loader/xnu.c
 @@ -35,6 +35,7 @@
@@ -467,7 +467,7 @@ index 9f78abb05f9..5944dc5eafc 100644
    err = grub_efiemu_autocore ();
    if (err)
 diff --git a/include/grub/lib/cmdline.h b/include/grub/lib/cmdline.h
-index 1fe8d017971..cdca09b7a16 100644
+index 1fe8d0179..cdca09b7a 100644
 --- a/include/grub/lib/cmdline.h
 +++ b/include/grub/lib/cmdline.h
 @@ -21,11 +21,12 @@
@@ -486,7 +486,7 @@ index 1fe8d017971..cdca09b7a16 100644
  
  #endif /* ! GRUB_CMDLINE_HEADER */
 diff --git a/include/grub/verify.h b/include/grub/verify.h
-index 298120f5776..9f892d8fedb 100644
+index 298120f57..9f892d8fe 100644
 --- a/include/grub/verify.h
 +++ b/include/grub/verify.h
 @@ -25,6 +25,12 @@ enum grub_verify_flags

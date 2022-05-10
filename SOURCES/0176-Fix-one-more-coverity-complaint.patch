@@ -12,7 +12,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/normal/completion.c b/grub-core/normal/completion.c
-index 2c9b9e9312a..93aa0d8eda8 100644
+index 2c9b9e931..93aa0d8ed 100644
 --- a/grub-core/normal/completion.c
 +++ b/grub-core/normal/completion.c
 @@ -284,7 +284,8 @@ complete_file (void)

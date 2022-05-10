@@ -14,7 +14,7 @@ Reviewed-by: Jan Setje-Eilers <jan.setjeeilers@oracle.com>
  1 file changed, 54 insertions(+), 20 deletions(-)
 
 diff --git a/grub-core/loader/linux.c b/grub-core/loader/linux.c
-index 61a2e144db0..0953f6d3266 100644
+index 61a2e144d..0953f6d32 100644
 --- a/grub-core/loader/linux.c
 +++ b/grub-core/loader/linux.c
 @@ -5,6 +5,7 @@

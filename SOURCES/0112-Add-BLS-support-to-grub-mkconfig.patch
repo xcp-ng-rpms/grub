@@ -14,7 +14,7 @@ files are parsed by blscfg command and the entries created dynamically.
  3 files changed, 56 insertions(+), 13 deletions(-)
 
 diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
-index 4248b9341ab..c20171919d9 100644
+index 4248b9341..c20171919 100644
 --- a/util/grub-mkconfig.in
 +++ b/util/grub-mkconfig.in
 @@ -259,7 +259,8 @@ export GRUB_DEFAULT \
@@ -28,7 +28,7 @@ index 4248b9341ab..c20171919d9 100644
  if test "x${grub_cfg}" != "x"; then
    rm -f "${grub_cfg}.new"
 diff --git a/util/grub-mkconfig_lib.in b/util/grub-mkconfig_lib.in
-index b3aae534ddc..1acc1d01c39 100644
+index b3aae534d..1acc1d01c 100644
 --- a/util/grub-mkconfig_lib.in
 +++ b/util/grub-mkconfig_lib.in
 @@ -30,6 +30,9 @@ fi
@@ -104,7 +104,7 @@ index b3aae534ddc..1acc1d01c39 100644
    fi
    IFS="$old_ifs"
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index d9a05937e46..839f1fdb655 100644
+index d9a05937e..839f1fdb6 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -121,6 +121,34 @@ linux_entry ()

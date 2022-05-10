@@ -13,7 +13,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  4 files changed, 22 insertions(+), 14 deletions(-)
 
 diff --git a/grub-core/commands/blscfg.c b/grub-core/commands/blscfg.c
-index 347128c9ddd..42892cbfd55 100644
+index 347128c9d..42892cbfd 100644
 --- a/grub-core/commands/blscfg.c
 +++ b/grub-core/commands/blscfg.c
 @@ -46,8 +46,6 @@ GRUB_MOD_LICENSE ("GPLv3+");
@@ -71,7 +71,7 @@ index 347128c9ddd..42892cbfd55 100644
  finish:
    grub_free (initrd);
 diff --git a/grub-core/commands/legacycfg.c b/grub-core/commands/legacycfg.c
-index b32f3c74cb1..f9d7627bdc3 100644
+index b32f3c74c..f9d7627bd 100644
 --- a/grub-core/commands/legacycfg.c
 +++ b/grub-core/commands/legacycfg.c
 @@ -133,7 +133,7 @@ legacy_file (const char *filename)
@@ -93,7 +93,7 @@ index b32f3c74cb1..f9d7627bdc3 100644
      }
  
 diff --git a/grub-core/commands/menuentry.c b/grub-core/commands/menuentry.c
-index 2c5363da7f5..8d242b0187e 100644
+index 2c5363da7..8d242b018 100644
 --- a/grub-core/commands/menuentry.c
 +++ b/grub-core/commands/menuentry.c
 @@ -78,7 +78,7 @@ grub_normal_add_menu_entry (int argc, const char **args,
@@ -161,7 +161,7 @@ index 2c5363da7f5..8d242b0187e 100644
    src[len - 1] = ch;
    args[argc - 1] = src;
 diff --git a/include/grub/normal.h b/include/grub/normal.h
-index 218cbabccaf..cb9901f41b3 100644
+index 218cbabcc..cb9901f41 100644
 --- a/include/grub/normal.h
 +++ b/include/grub/normal.h
 @@ -145,7 +145,7 @@ grub_normal_add_menu_entry (int argc, const char **args, char **classes,

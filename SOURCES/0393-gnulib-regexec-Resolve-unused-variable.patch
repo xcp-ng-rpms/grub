@@ -24,7 +24,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  create mode 100644 grub-core/gnulib-fix-unused-value.patch
 
 diff --git a/grub-core/gnulib/regexec.c b/grub-core/gnulib/regexec.c
-index a7776f088f2..9264f262893 100644
+index a7776f088..9264f2628 100644
 --- a/grub-core/gnulib/regexec.c
 +++ b/grub-core/gnulib/regexec.c
 @@ -879,7 +879,11 @@ re_search_internal (const regex_t *preg,
@@ -40,7 +40,7 @@ index a7776f088f2..9264f262893 100644
  	      else
  		break; /* We found a match.  */
 diff --git a/conf/Makefile.extra-dist b/conf/Makefile.extra-dist
-index 5946ec24a65..b53fe6dfdcc 100644
+index 5946ec24a..b53fe6dfd 100644
 --- a/conf/Makefile.extra-dist
 +++ b/conf/Makefile.extra-dist
 @@ -31,6 +31,7 @@ EXTRA_DIST += grub-core/genemuinit.sh
@@ -53,7 +53,7 @@ index 5946ec24a65..b53fe6dfdcc 100644
  EXTRA_DIST += grub-core/gnulib-no-gets.diff
 diff --git a/grub-core/gnulib-fix-unused-value.patch b/grub-core/gnulib-fix-unused-value.patch
 new file mode 100644
-index 00000000000..452a8732922
+index 000000000..452a87329
 --- /dev/null
 +++ b/grub-core/gnulib-fix-unused-value.patch
 @@ -0,0 +1,14 @@

@@ -13,7 +13,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 10 insertions(+)
 
 diff --git a/util/grub-get-kernel-settings.in b/util/grub-get-kernel-settings.in
-index 12046219878..7e87dfccc0e 100644
+index 120462198..7e87dfccc 100644
 --- a/util/grub-get-kernel-settings.in
 +++ b/util/grub-get-kernel-settings.in
 @@ -76,3 +76,13 @@ if [ "$MAKEDEBUG" = "yes" ]; then

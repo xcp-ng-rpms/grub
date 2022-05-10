@@ -16,7 +16,7 @@ Signed-off-by: Diego Domingos <diegodo@br.ibm.com>
  2 files changed, 28 insertions(+), 5 deletions(-)
 
 diff --git a/grub-core/disk/ieee1275/ofdisk.c b/grub-core/disk/ieee1275/ofdisk.c
-index f3a6ecd797f..98325ca982f 100644
+index f3a6ecd79..98325ca98 100644
 --- a/grub-core/disk/ieee1275/ofdisk.c
 +++ b/grub-core/disk/ieee1275/ofdisk.c
 @@ -225,7 +225,9 @@ dev_iterate (const struct grub_ieee1275_devalias *alias)
@@ -85,7 +85,7 @@ index f3a6ecd797f..98325ca982f 100644
  }
  
 diff --git a/include/grub/ieee1275/ofdisk.h b/include/grub/ieee1275/ofdisk.h
-index 2f69e3f191d..7d2d5409305 100644
+index 2f69e3f19..7d2d54093 100644
 --- a/include/grub/ieee1275/ofdisk.h
 +++ b/include/grub/ieee1275/ofdisk.h
 @@ -22,4 +22,12 @@

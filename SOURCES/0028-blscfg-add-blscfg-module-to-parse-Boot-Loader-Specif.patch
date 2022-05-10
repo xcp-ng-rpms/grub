@@ -21,7 +21,7 @@ Signed-off-by: Peter Jones <grub2-owner@fedoraproject.org>
  create mode 100644 grub-core/commands/blscfg.c
 
 diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
-index f8065388213..cd0902b46b8 100644
+index f80653882..cd0902b46 100644
 --- a/grub-core/Makefile.core.def
 +++ b/grub-core/Makefile.core.def
 @@ -768,6 +768,14 @@ module = {
@@ -41,7 +41,7 @@ index f8065388213..cd0902b46b8 100644
    common = commands/boot.c;
 diff --git a/grub-core/commands/blscfg.c b/grub-core/commands/blscfg.c
 new file mode 100644
-index 00000000000..4274aca5a9d
+index 000000000..4274aca5a
 --- /dev/null
 +++ b/grub-core/commands/blscfg.c
 @@ -0,0 +1,201 @@

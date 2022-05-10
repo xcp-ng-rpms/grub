@@ -9,7 +9,7 @@ Make use of terminology consistent. Remove jargon.
  1 file changed, 9 insertions(+), 12 deletions(-)
 
 diff --git a/grub-core/normal/menu_text.c b/grub-core/normal/menu_text.c
-index a3d1f23f68f..64a83862f66 100644
+index a3d1f23f6..64a83862f 100644
 --- a/grub-core/normal/menu_text.c
 +++ b/grub-core/normal/menu_text.c
 @@ -157,9 +157,8 @@ print_message (int nested, int edit, struct grub_term_output *term, int dry_run)

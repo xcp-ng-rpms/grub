@@ -21,7 +21,7 @@ Resolves rhbz#1124074
  create mode 100644 util/grub-rpm-sort.8
 
 diff --git a/configure.ac b/configure.ac
-index d5db2803ec4..056df1cbaf9 100644
+index d5db2803e..056df1cba 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -65,6 +65,7 @@ grub_TRANSFORM([grub-mkrelpath])
@@ -75,7 +75,7 @@ index d5db2803ec4..056df1cbaf9 100644
  if test x$host_kernel = xkfreebsd; then
    AC_CHECK_LIB([geom], [geom_gettree], [],
 diff --git a/Makefile.util.def b/Makefile.util.def
-index d08713b5500..406d96861b6 100644
+index d08713b55..406d96861 100644
 --- a/Makefile.util.def
 +++ b/Makefile.util.def
 @@ -685,6 +685,22 @@ program = {
@@ -103,7 +103,7 @@ index d08713b5500..406d96861b6 100644
    common = util/grub-mkconfig.in;
 diff --git a/util/grub-rpm-sort.c b/util/grub-rpm-sort.c
 new file mode 100644
-index 00000000000..f33bd1ed568
+index 000000000..f33bd1ed5
 --- /dev/null
 +++ b/util/grub-rpm-sort.c
 @@ -0,0 +1,281 @@
@@ -389,7 +389,7 @@ index 00000000000..f33bd1ed568
 +  return 0;
 +}
 diff --git a/.gitignore b/.gitignore
-index 43f04d47277..fa2e5b609b1 100644
+index 43f04d472..fa2e5b609 100644
 --- a/.gitignore
 +++ b/.gitignore
 @@ -105,6 +105,8 @@ grub-*.tar.*
@@ -402,7 +402,7 @@ index 43f04d47277..fa2e5b609b1 100644
  /grub*-script-check.1
  /grub*-set-default
 diff --git a/util/grub-mkconfig_lib.in b/util/grub-mkconfig_lib.in
-index 1a4a57898f9..7fe3598435c 100644
+index 1a4a57898..7fe359843 100644
 --- a/util/grub-mkconfig_lib.in
 +++ b/util/grub-mkconfig_lib.in
 @@ -214,6 +214,12 @@ version_sort ()
@@ -429,7 +429,7 @@ index 1a4a57898f9..7fe3598435c 100644
      return 1
 diff --git a/util/grub-rpm-sort.8 b/util/grub-rpm-sort.8
 new file mode 100644
-index 00000000000..8ce21488448
+index 000000000..8ce214884
 --- /dev/null
 +++ b/util/grub-rpm-sort.8
 @@ -0,0 +1,12 @@

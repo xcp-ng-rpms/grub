@@ -12,7 +12,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/grub-core/loader/xnu.c b/grub-core/loader/xnu.c
-index af885a648c6..49641b8bbc2 100644
+index af885a648..49641b8bb 100644
 --- a/grub-core/loader/xnu.c
 +++ b/grub-core/loader/xnu.c
 @@ -671,6 +671,9 @@ grub_xnu_load_driver (char *infoplistname, grub_file_t binaryfile,

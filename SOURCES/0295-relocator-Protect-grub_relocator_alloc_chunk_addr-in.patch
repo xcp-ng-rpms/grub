@@ -20,7 +20,7 @@ Upstream-commit-id: ebb15735f10
  4 files changed, 31 insertions(+), 10 deletions(-)
 
 diff --git a/grub-core/loader/i386/linux.c b/grub-core/loader/i386/linux.c
-index 76304f05700..b4a30f607fa 100644
+index 76304f057..b4a30f607 100644
 --- a/grub-core/loader/i386/linux.c
 +++ b/grub-core/loader/i386/linux.c
 @@ -37,6 +37,7 @@
@@ -48,7 +48,7 @@ index 76304f05700..b4a30f607fa 100644
       return err;
      real_mode_mem = get_virtual_current_address (ch);
 diff --git a/grub-core/loader/i386/pc/linux.c b/grub-core/loader/i386/pc/linux.c
-index 783a3cd93bc..540891371f9 100644
+index 783a3cd93..540891371 100644
 --- a/grub-core/loader/i386/pc/linux.c
 +++ b/grub-core/loader/i386/pc/linux.c
 @@ -36,6 +36,7 @@
@@ -75,7 +75,7 @@ index 783a3cd93bc..540891371f9 100644
    if (! grub_linux_is_bzimage
        && GRUB_LINUX_ZIMAGE_ADDR + grub_linux16_prot_size
 diff --git a/grub-core/loader/i386/xen.c b/grub-core/loader/i386/xen.c
-index 3073f64d5e5..85b93347b25 100644
+index 3073f64d5..85b93347b 100644
 --- a/grub-core/loader/i386/xen.c
 +++ b/grub-core/loader/i386/xen.c
 @@ -40,6 +40,7 @@
@@ -112,7 +112,7 @@ index 3073f64d5e5..85b93347b25 100644
      goto fail;
    kern_chunk_src = get_virtual_current_address (ch);
 diff --git a/grub-core/loader/xnu.c b/grub-core/loader/xnu.c
-index dc7d5409e1e..2bf02489bad 100644
+index dc7d5409e..2bf02489b 100644
 --- a/grub-core/loader/xnu.c
 +++ b/grub-core/loader/xnu.c
 @@ -34,6 +34,7 @@

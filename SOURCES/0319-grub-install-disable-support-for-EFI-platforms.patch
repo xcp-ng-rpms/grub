@@ -26,7 +26,7 @@ Signed-off-by: Jan Hlavac <jhlavac@redhat.com>
  3 files changed, 26 insertions(+), 20 deletions(-)
 
 diff --git a/util/grub-install.c b/util/grub-install.c
-index 3bf0e063a86..65bb2f99ef1 100644
+index 3bf0e063a..65bb2f99e 100644
 --- a/util/grub-install.c
 +++ b/util/grub-install.c
 @@ -888,6 +888,22 @@ main (int argc, char *argv[])
@@ -80,7 +80,7 @@ index 3bf0e063a86..65bb2f99ef1 100644
      {
        grub_fs_t fs;
 diff --git a/docs/grub.texi b/docs/grub.texi
-index c54bee31679..fa11cc0aff7 100644
+index c54bee316..fa11cc0af 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
 @@ -6185,6 +6185,13 @@ grub2-install @var{install_device}
@@ -98,7 +98,7 @@ index c54bee31679..fa11cc0aff7 100644
  
  @table @option
 diff --git a/util/grub-install.8 b/util/grub-install.8
-index 76272a39d2e..02371930fa1 100644
+index 76272a39d..02371930f 100644
 --- a/util/grub-install.8
 +++ b/util/grub-install.8
 @@ -1,4 +1,4 @@

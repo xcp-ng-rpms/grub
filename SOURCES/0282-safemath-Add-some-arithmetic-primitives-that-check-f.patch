@@ -27,7 +27,7 @@ Upstream-commit-id: de1c315841a
  create mode 100644 include/grub/safemath.h
 
 diff --git a/include/grub/compiler.h b/include/grub/compiler.h
-index 9859ff4cc79..ebafec68957 100644
+index 9859ff4cc..ebafec689 100644
 --- a/include/grub/compiler.h
 +++ b/include/grub/compiler.h
 @@ -48,6 +48,14 @@
@@ -47,7 +47,7 @@ index 9859ff4cc79..ebafec68957 100644
  #endif /* ! GRUB_COMPILER_HEADER */
 diff --git a/include/grub/safemath.h b/include/grub/safemath.h
 new file mode 100644
-index 00000000000..c17b89bba17
+index 000000000..c17b89bba
 --- /dev/null
 +++ b/include/grub/safemath.h
 @@ -0,0 +1,37 @@
@@ -89,7 +89,7 @@ index 00000000000..c17b89bba17
 +
 +#endif /* GRUB_SAFEMATH_H */
 diff --git a/INSTALL b/INSTALL
-index f3c20edc844..f8bd9116480 100644
+index f3c20edc8..f8bd91164 100644
 --- a/INSTALL
 +++ b/INSTALL
 @@ -11,27 +11,9 @@ GRUB depends on some software packages installed into your system. If

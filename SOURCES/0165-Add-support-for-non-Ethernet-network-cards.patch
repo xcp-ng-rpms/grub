@@ -39,7 +39,7 @@ Conflicts:
  12 files changed, 216 insertions(+), 152 deletions(-)
 
 diff --git a/grub-core/net/arp.c b/grub-core/net/arp.c
-index 54306e3b16d..67b409a8acc 100644
+index 54306e3b1..67b409a8a 100644
 --- a/grub-core/net/arp.c
 +++ b/grub-core/net/arp.c
 @@ -31,22 +31,12 @@ enum
@@ -272,7 +272,7 @@ index 54306e3b16d..67b409a8acc 100644
  	/* Change operation to REPLY and send packet */
  	send_ethernet_packet (inf, &nb_reply, target, GRUB_NET_ETHERTYPE_ARP);
 diff --git a/grub-core/net/bootp.c b/grub-core/net/bootp.c
-index 2869482fe06..4e55adc557b 100644
+index 2869482fe..4e55adc55 100644
 --- a/grub-core/net/bootp.c
 +++ b/grub-core/net/bootp.c
 @@ -219,7 +219,6 @@ grub_net_configure_by_dhcp_ack (const char *name,
@@ -318,7 +318,7 @@ index 2869482fe06..4e55adc557b 100644
  	  grub_netbuff_push (nb, sizeof (*udph));
  
 diff --git a/grub-core/net/drivers/efi/efinet.c b/grub-core/net/drivers/efi/efinet.c
-index a4daaa460bd..cd6dba79f63 100644
+index a4daaa460..cd6dba79f 100644
 --- a/grub-core/net/drivers/efi/efinet.c
 +++ b/grub-core/net/drivers/efi/efinet.c
 @@ -280,6 +280,9 @@ grub_efinet_findcards (void)
@@ -346,7 +346,7 @@ index a4daaa460bd..cd6dba79f63 100644
        card->efi_handle = *handle;
  
 diff --git a/grub-core/net/drivers/emu/emunet.c b/grub-core/net/drivers/emu/emunet.c
-index b194920861f..5b6c5e16a6d 100644
+index b19492086..5b6c5e16a 100644
 --- a/grub-core/net/drivers/emu/emunet.c
 +++ b/grub-core/net/drivers/emu/emunet.c
 @@ -46,6 +46,7 @@ static struct grub_net_card emucard =
@@ -358,7 +358,7 @@ index b194920861f..5b6c5e16a6d 100644
  		       },
      .flags = 0
 diff --git a/grub-core/net/drivers/i386/pc/pxe.c b/grub-core/net/drivers/i386/pc/pxe.c
-index 3f4152d036c..9f8fb4b6d2b 100644
+index 3f4152d03..9f8fb4b6d 100644
 --- a/grub-core/net/drivers/i386/pc/pxe.c
 +++ b/grub-core/net/drivers/i386/pc/pxe.c
 @@ -386,20 +386,21 @@ GRUB_MOD_INIT(pxe)
@@ -390,7 +390,7 @@ index 3f4152d036c..9f8fb4b6d2b 100644
  
    grub_pxe_card.default_address.type = GRUB_NET_LINK_LEVEL_PROTOCOL_ETHERNET;
 diff --git a/grub-core/net/drivers/ieee1275/ofnet.c b/grub-core/net/drivers/ieee1275/ofnet.c
-index 3df75357a70..ba50415f5f6 100644
+index 3df75357a..ba50415f5 100644
 --- a/grub-core/net/drivers/ieee1275/ofnet.c
 +++ b/grub-core/net/drivers/ieee1275/ofnet.c
 @@ -160,6 +160,7 @@ grub_ieee1275_parse_bootpath (const char *devpath, char *bootpath,
@@ -410,7 +410,7 @@ index 3df75357a70..ba50415f5f6 100644
  
    card->txbufsize = ALIGN_UP (card->mtu, 64) + 256;
 diff --git a/grub-core/net/drivers/uboot/ubootnet.c b/grub-core/net/drivers/uboot/ubootnet.c
-index 056052e40d5..22ebcbf211e 100644
+index 056052e40..22ebcbf21 100644
 --- a/grub-core/net/drivers/uboot/ubootnet.c
 +++ b/grub-core/net/drivers/uboot/ubootnet.c
 @@ -131,6 +131,7 @@ GRUB_MOD_INIT (ubootnet)
@@ -422,7 +422,7 @@ index 056052e40d5..22ebcbf211e 100644
        card->txbufsize = ALIGN_UP (card->mtu, 64) + 256;
        card->txbuf = grub_zalloc (card->txbufsize);
 diff --git a/grub-core/net/ethernet.c b/grub-core/net/ethernet.c
-index 4d7ceed6f93..9aae83a5eb4 100644
+index 4d7ceed6f..9aae83a5e 100644
 --- a/grub-core/net/ethernet.c
 +++ b/grub-core/net/ethernet.c
 @@ -29,13 +29,6 @@
@@ -572,7 +572,7 @@ index 4d7ceed6f93..9aae83a5eb4 100644
      {
        /* ARP packet. */
 diff --git a/grub-core/net/icmp6.c b/grub-core/net/icmp6.c
-index 2cbd95dce25..56a3ec5c8e8 100644
+index 2cbd95dce..56a3ec5c8 100644
 --- a/grub-core/net/icmp6.c
 +++ b/grub-core/net/icmp6.c
 @@ -231,8 +231,9 @@ grub_net_recv_icmp6_packet (struct grub_net_buff *nb,
@@ -612,7 +612,7 @@ index 2cbd95dce25..56a3ec5c8e8 100644
  	      }
  	    if (ohdr->type == OPTION_PREFIX && ohdr->len == 4)
 diff --git a/grub-core/net/ip.c b/grub-core/net/ip.c
-index 8411e0ecca3..b2ca74b6eb1 100644
+index 8411e0ecc..b2ca74b6e 100644
 --- a/grub-core/net/ip.c
 +++ b/grub-core/net/ip.c
 @@ -277,8 +277,8 @@ handle_dgram (struct grub_net_buff *nb,
@@ -627,7 +627,7 @@ index 8411e0ecca3..b2ca74b6eb1 100644
  	      grub_net_process_dhcp (nb, inf->card);
  	      grub_netbuff_free (nb);
 diff --git a/grub-core/net/net.c b/grub-core/net/net.c
-index fa3e2912643..9b8944292c7 100644
+index fa3e29126..9b8944292 100644
 --- a/grub-core/net/net.c
 +++ b/grub-core/net/net.c
 @@ -128,8 +128,9 @@ grub_net_link_layer_resolve (struct grub_net_network_level_interface *inf,
@@ -711,7 +711,7 @@ index fa3e2912643..9b8944292c7 100644
  
  int
 diff --git a/include/grub/net.h b/include/grub/net.h
-index de51894cbbf..e9ebc6a1b4f 100644
+index de51894cb..e9ebc6a1b 100644
 --- a/include/grub/net.h
 +++ b/include/grub/net.h
 @@ -29,7 +29,8 @@

@@ -18,7 +18,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  2 files changed, 22 insertions(+), 2 deletions(-)
 
 diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index 9682e97b7f5..01e66e5fc74 100644
+index 9682e97b7..01e66e5fc 100644
 --- a/util/grub.d/10_linux.in
 +++ b/util/grub.d/10_linux.in
 @@ -82,6 +82,20 @@ case x"$GRUB_FS" in
@@ -63,7 +63,7 @@ index 9682e97b7f5..01e66e5fc74 100644
      exit 0
    fi
 diff --git a/util/grub.d/10_linux_bls.in b/util/grub.d/10_linux_bls.in
-index 3cc7803c6a1..8a3379578bd 100644
+index 3cc7803c6..8a3379578 100644
 --- a/util/grub.d/10_linux_bls.in
 +++ b/util/grub.d/10_linux_bls.in
 @@ -201,7 +201,9 @@ linux_entry ()

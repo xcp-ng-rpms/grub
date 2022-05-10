@@ -16,7 +16,7 @@ Upstream-commit-id: 96bb109e658
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/grub-core/kern/emu/mm.c b/grub-core/kern/emu/mm.c
-index 145b01d3719..4d1046a219e 100644
+index 145b01d37..4d1046a21 100644
 --- a/grub-core/kern/emu/mm.c
 +++ b/grub-core/kern/emu/mm.c
 @@ -60,7 +60,8 @@ grub_zalloc (grub_size_t size)

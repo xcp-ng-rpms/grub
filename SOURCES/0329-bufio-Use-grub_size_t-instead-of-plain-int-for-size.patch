@@ -14,7 +14,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  2 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/grub-core/io/bufio.c b/grub-core/io/bufio.c
-index 6118bade50d..2781afe0515 100644
+index 6118bade5..2781afe05 100644
 --- a/grub-core/io/bufio.c
 +++ b/grub-core/io/bufio.c
 @@ -43,7 +43,7 @@ typedef struct grub_bufio *grub_bufio_t;
@@ -45,7 +45,7 @@ index 6118bade50d..2781afe0515 100644
    grub_file_t io, file;
  
 diff --git a/include/grub/bufio.h b/include/grub/bufio.h
-index acdd0c882c6..77eb8ee5672 100644
+index acdd0c882..77eb8ee56 100644
 --- a/include/grub/bufio.h
 +++ b/include/grub/bufio.h
 @@ -22,7 +22,7 @@

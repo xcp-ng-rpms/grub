@@ -18,7 +18,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/fs/jfs.c b/grub-core/fs/jfs.c
-index 1819899bdec..6e81f37da6c 100644
+index 1819899bd..6e81f37da 100644
 --- a/grub-core/fs/jfs.c
 +++ b/grub-core/fs/jfs.c
 @@ -261,13 +261,15 @@ static grub_err_t grub_jfs_lookup_symlink (struct grub_jfs_data *data, grub_uint

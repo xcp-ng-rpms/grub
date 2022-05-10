@@ -9,7 +9,7 @@ Subject: [PATCH] tpm: fix warnings when compiling for platforms other than pc
  1 file changed, 11 insertions(+), 6 deletions(-)
 
 diff --git a/include/grub/tpm.h b/include/grub/tpm.h
-index ecb2d09ff5d..972a5edc836 100644
+index ecb2d09ff..972a5edc8 100644
 --- a/include/grub/tpm.h
 +++ b/include/grub/tpm.h
 @@ -75,12 +75,17 @@ grub_err_t grub_tpm_execute(PassThroughToTPM_InputParamBlock *inbuf,

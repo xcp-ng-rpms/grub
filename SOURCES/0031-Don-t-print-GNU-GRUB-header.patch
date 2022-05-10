@@ -9,7 +9,7 @@ No one cares.
  1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/normal/main.c b/grub-core/normal/main.c
-index b2654ef62e8..f57b7508a76 100644
+index b2654ef62..f57b7508a 100644
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
 @@ -202,15 +202,16 @@ read_config_file (const char *config)

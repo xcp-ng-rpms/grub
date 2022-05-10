@@ -26,7 +26,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 13 insertions(+)
 
 diff --git a/grub-core/lib/arg.c b/grub-core/lib/arg.c
-index 3288609a5e1..537c5e94b83 100644
+index 3288609a5..537c5e94b 100644
 --- a/grub-core/lib/arg.c
 +++ b/grub-core/lib/arg.c
 @@ -299,6 +299,19 @@ grub_arg_parse (grub_extcmd_t cmd, int argc, char **argv,

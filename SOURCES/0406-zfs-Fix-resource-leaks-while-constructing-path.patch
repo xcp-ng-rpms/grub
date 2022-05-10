@@ -28,7 +28,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 21 insertions(+), 9 deletions(-)
 
 diff --git a/grub-core/fs/zfs/zfs.c b/grub-core/fs/zfs/zfs.c
-index 3dfde080750..44d8bde6b33 100644
+index 3dfde0807..44d8bde6b 100644
 --- a/grub-core/fs/zfs/zfs.c
 +++ b/grub-core/fs/zfs/zfs.c
 @@ -2836,8 +2836,8 @@ dnode_get_path (struct subvolume *subvol, const char *path_in, dnode_end_t *dn,

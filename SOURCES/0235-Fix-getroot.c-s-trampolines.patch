@@ -14,7 +14,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 7 insertions(+), 9 deletions(-)
 
 diff --git a/grub-core/osdep/linux/getroot.c b/grub-core/osdep/linux/getroot.c
-index 4c5a13022dc..388a0f70638 100644
+index 4c5a13022..388a0f706 100644
 --- a/grub-core/osdep/linux/getroot.c
 +++ b/grub-core/osdep/linux/getroot.c
 @@ -1264,22 +1264,20 @@ grub_util_get_grub_dev_os (const char *os_dev)

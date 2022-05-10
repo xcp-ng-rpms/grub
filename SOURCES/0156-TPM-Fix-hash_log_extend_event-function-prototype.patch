@@ -23,7 +23,7 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/kern/efi/tpm.c b/grub-core/kern/efi/tpm.c
-index c9fb3c133f3..36e1f69df16 100644
+index c9fb3c133..36e1f69df 100644
 --- a/grub-core/kern/efi/tpm.c
 +++ b/grub-core/kern/efi/tpm.c
 @@ -245,7 +245,7 @@ grub_tpm2_log_event(grub_efi_handle_t tpm_handle, unsigned char *buf,
@@ -36,7 +36,7 @@ index c9fb3c133f3..36e1f69df16 100644
  
    switch (status) {
 diff --git a/include/grub/efi/tpm.h b/include/grub/efi/tpm.h
-index e2aff4a3c22..63d8a0fe714 100644
+index e2aff4a3c..63d8a0fe7 100644
 --- a/include/grub/efi/tpm.h
 +++ b/include/grub/efi/tpm.h
 @@ -129,7 +129,7 @@ struct grub_efi_tpm2_protocol

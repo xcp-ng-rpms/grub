@@ -15,7 +15,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/kern/mm.c b/grub-core/kern/mm.c
-index 80d0720d005..d8c8377578b 100644
+index 80d0720d0..d8c837757 100644
 --- a/grub-core/kern/mm.c
 +++ b/grub-core/kern/mm.c
 @@ -594,7 +594,7 @@ grub_debug_calloc (const char *file, int line, grub_size_t nmemb, grub_size_t si

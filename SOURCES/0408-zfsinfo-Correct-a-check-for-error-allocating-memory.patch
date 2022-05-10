@@ -16,7 +16,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/fs/zfs/zfsinfo.c b/grub-core/fs/zfs/zfsinfo.c
-index c8a28acf52b..bf2918018e7 100644
+index c8a28acf5..bf2918018 100644
 --- a/grub-core/fs/zfs/zfsinfo.c
 +++ b/grub-core/fs/zfs/zfsinfo.c
 @@ -358,8 +358,8 @@ grub_cmd_zfs_bootfs (grub_command_t cmd __attribute__ ((unused)), int argc,

@@ -12,7 +12,7 @@ without popping the registers back onto the stack. Fix that.
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/boot/i386/pc/boot.S b/grub-core/boot/i386/pc/boot.S
-index c1df86dec0b..acab37369ae 100644
+index c1df86dec..acab37369 100644
 --- a/grub-core/boot/i386/pc/boot.S
 +++ b/grub-core/boot/i386/pc/boot.S
 @@ -473,9 +473,9 @@ LOCAL(copy_buffer):

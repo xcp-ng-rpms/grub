@@ -29,7 +29,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/grub-core/commands/menuentry.c b/grub-core/commands/menuentry.c
-index 4b5fcf2ce9a..7a533b9741b 100644
+index 4b5fcf2ce..7a533b974 100644
 --- a/grub-core/commands/menuentry.c
 +++ b/grub-core/commands/menuentry.c
 @@ -239,7 +239,7 @@ setparams_prefix (int argc, char **args)

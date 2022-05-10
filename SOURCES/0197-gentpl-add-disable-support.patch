@@ -9,7 +9,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/gentpl.py b/gentpl.py
-index bf8439fa743..a8cd540550f 100644
+index bf8439fa7..a8cd54055 100644
 --- a/gentpl.py
 +++ b/gentpl.py
 @@ -589,11 +589,21 @@ def platform_conditional(platform, closure):

@@ -14,7 +14,7 @@ Signed-off-by: Jonathan Lebon <jlebon@redhat.com>
  1 file changed, 14 insertions(+), 2 deletions(-)
 
 diff --git a/util/editenv.c b/util/editenv.c
-index d8d1dad6ab9..41bc7cb1c9a 100644
+index d8d1dad6a..41bc7cb1c 100644
 --- a/util/editenv.c
 +++ b/util/editenv.c
 @@ -28,6 +28,7 @@

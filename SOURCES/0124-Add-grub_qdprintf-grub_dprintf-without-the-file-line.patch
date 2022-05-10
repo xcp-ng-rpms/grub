@@ -13,7 +13,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  2 files changed, 20 insertions(+)
 
 diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
-index 5c2d2039d0b..0e89c483d5e 100644
+index 5c2d2039d..0e89c483d 100644
 --- a/grub-core/kern/misc.c
 +++ b/grub-core/kern/misc.c
 @@ -190,6 +190,24 @@ grub_real_dprintf (const char *file, const int line, const char *condition,
@@ -42,7 +42,7 @@ index 5c2d2039d0b..0e89c483d5e 100644
  
  int
 diff --git a/include/grub/misc.h b/include/grub/misc.h
-index f7473c154f0..5f1c1c1be4e 100644
+index f7473c154..5f1c1c1be 100644
 --- a/include/grub/misc.h
 +++ b/include/grub/misc.h
 @@ -372,6 +372,8 @@ void EXPORT_FUNC(grub_real_dprintf) (const char *file,

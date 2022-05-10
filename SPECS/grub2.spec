@@ -7,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	106%{?dist}
+Release:	123%{?dist}
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -232,18 +232,6 @@ rm -vf ${RPM_BUILD_ROOT}/%{_sbindir}/%{name}-macbless
 
 %find_lang grub
 
-# Make selinux happy with exec stack binaries.
-mkdir ${RPM_BUILD_ROOT}%{_sysconfdir}/prelink.conf.d/
-cat << EOF > ${RPM_BUILD_ROOT}%{_sysconfdir}/prelink.conf.d/grub2.conf
-# these have execstack, and break under selinux
--b /usr/bin/grub2-script-check
--b /usr/bin/grub2-mkrelpath
--b /usr/bin/grub2-fstest
--b /usr/sbin/grub2-bios-setup
--b /usr/sbin/grub2-probe
--b /usr/sbin/grub2-sparc64-setup
-EOF
-
 # Install kernel-install scripts
 install -d -m 0755 %{buildroot}%{_prefix}/lib/kernel/install.d/
 install -D -m 0755 -t %{buildroot}%{_prefix}/lib/kernel/install.d/ %{SOURCE9}
@@ -385,7 +373,6 @@ fi
 %doc docs/font_char_metrics.png
 
 %files tools-minimal
-%{_sysconfdir}/prelink.conf.d/grub2.conf
 %{_sbindir}/%{name}-get-kernel-settings
 %attr(4755, root, root) %{_sbindir}/%{name}-set-bootflag
 %{_sbindir}/%{name}-set-default
@@ -523,6 +510,75 @@ fi
 %endif
 
 %changelog
+* Mon Mar 28 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-123
+- Bump for signing
+- Resolves: #2061252
+
+* Wed Mar 09 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-122
+- Fix initialization on efidisk patch
+- Resolves: #2061252
+
+* Tue Mar 08 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-121
+- Backport support for loading initrd above 4GB
+- Resolves: #2048433
+
+* Mon Feb 28 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-120
+- Bump signing
+- Resolves: #2032294
+
+* Mon Feb 28 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-119
+- Enable connectefi module
+- Resolves: #2032294
+
+* Fri Feb 25 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-118
+- Fix check on blscfg conditional (mlewando)
+- Resolves: #1899903
+
+* Thu Feb 24 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-117
+- Once more, for signing
+- Resolves: #2048904
+
+* Thu Feb 24 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-116
+- Add efidisk/connectefi patches
+- Resolves: #2048904
+- Resolves: #2032294
+
+* Fri Feb 18 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-115
+- Re-arm GRUB_ENABLE_BLSCFG=false
+- Resolves: #1899903
+
+* Mon Feb 14 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-114
+- Fix behavior of GRUB_TERMINAL_INPUT=at_keyboard
+- Resolves: #2020927
+
+* Wed Feb 09 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-113
+- Bump to fix target
+- Resolves: #1809246
+
+* Wed Feb 09 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-112
+- Fix DHCP proxy efi booting
+- Resolves: #1809246
+
+* Mon Feb 07 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-111
+- Bump to fix target
+- Resolves: #1914575
+
+* Mon Feb 07 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-110
+- Don't run grub-boot-success.timer in a nspawn container
+- Resolves: #1914575
+
+* Mon Feb 07 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-109
+- Drop prelink snippet
+- Resolves: #2016269
+
+* Wed Feb 02 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-108
+- Bump version to fix build target
+- Resolves: #2030359
+
+* Wed Feb 02 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-107
+- CVE-2021-3981 (Incorrect read permission in grub.cfg)
+- Resolves: #2030359
+
 * Thu Aug 19 2021 Javier Martinez Canillas <javierm@redhat.com> - 2.02-106
 - Fix device discoverability on PowerVM when the prefix is not set (dja)
   Related: rhbz#1899864

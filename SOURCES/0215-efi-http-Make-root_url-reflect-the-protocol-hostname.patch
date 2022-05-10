@@ -12,7 +12,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  1 file changed, 19 insertions(+)
 
 diff --git a/grub-core/net/efi/http.c b/grub-core/net/efi/http.c
-index 3f61fd2fa5b..243acbaa35b 100644
+index 3f61fd2fa..243acbaa3 100644
 --- a/grub-core/net/efi/http.c
 +++ b/grub-core/net/efi/http.c
 @@ -4,6 +4,7 @@

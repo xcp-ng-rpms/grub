@@ -32,7 +32,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  1 file changed, 17 deletions(-)
 
 diff --git a/grub-core/kern/ieee1275/init.c b/grub-core/kern/ieee1275/init.c
-index 22dc3013d86..ee97d761d1e 100644
+index 22dc3013d..ee97d761d 100644
 --- a/grub-core/kern/ieee1275/init.c
 +++ b/grub-core/kern/ieee1275/init.c
 @@ -42,9 +42,6 @@

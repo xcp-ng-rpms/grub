@@ -27,7 +27,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 9 insertions(+)
 
 diff --git a/grub-core/term/gfxterm.c b/grub-core/term/gfxterm.c
-index af7c090a3e7..b40fcce9151 100644
+index af7c090a3..b40fcce91 100644
 --- a/grub-core/term/gfxterm.c
 +++ b/grub-core/term/gfxterm.c
 @@ -232,6 +232,15 @@ grub_virtual_screen_setup (unsigned int x, unsigned int y,

@@ -15,7 +15,7 @@ Signed-off-by: Renaud Métrich <rmetrich@redhat.com>
  3 files changed, 39 insertions(+)
 
 diff --git a/configure.ac b/configure.ac
-index 9323c125469..0059b938a3a 100644
+index 9323c1254..0059b938a 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -1514,6 +1514,17 @@ else
@@ -58,7 +58,7 @@ index 9323c125469..0059b938a3a 100644
  echo efiemu runtime: Yes
  else
 diff --git a/grub-core/kern/misc.c b/grub-core/kern/misc.c
-index c034f49f97c..11f2974fce5 100644
+index c034f49f9..11f2974fc 100644
 --- a/grub-core/kern/misc.c
 +++ b/grub-core/kern/misc.c
 @@ -25,6 +25,9 @@
@@ -99,7 +99,7 @@ index c034f49f97c..11f2974fce5 100644
        va_start (args, fmt);
        grub_vprintf (fmt, args);
 diff --git a/config.h.in b/config.h.in
-index 9e8f9911b18..d15480b4163 100644
+index 9e8f9911b..d15480b41 100644
 --- a/config.h.in
 +++ b/config.h.in
 @@ -12,6 +12,7 @@

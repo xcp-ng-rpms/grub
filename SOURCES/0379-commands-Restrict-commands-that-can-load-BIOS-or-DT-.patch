@@ -27,7 +27,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  4 files changed, 16 insertions(+), 14 deletions(-)
 
 diff --git a/grub-core/commands/efi/loadbios.c b/grub-core/commands/efi/loadbios.c
-index d41d521a4ae..5c7725f8bd8 100644
+index d41d521a4..5c7725f8b 100644
 --- a/grub-core/commands/efi/loadbios.c
 +++ b/grub-core/commands/efi/loadbios.c
 @@ -205,14 +205,14 @@ static grub_command_t cmd_fakebios, cmd_loadbios;
@@ -53,7 +53,7 @@ index d41d521a4ae..5c7725f8bd8 100644
  
  GRUB_MOD_FINI(loadbios)
 diff --git a/grub-core/loader/arm/linux.c b/grub-core/loader/arm/linux.c
-index 1e944a2b671..653f2e07692 100644
+index 1e944a2b6..653f2e076 100644
 --- a/grub-core/loader/arm/linux.c
 +++ b/grub-core/loader/arm/linux.c
 @@ -493,9 +493,9 @@ GRUB_MOD_INIT (linux)
@@ -70,7 +70,7 @@ index 1e944a2b671..653f2e07692 100644
    current_fdt = (const void *) grub_arm_firmware_get_boot_data ();
    machine_type = grub_arm_firmware_get_machine_type ();
 diff --git a/grub-core/loader/efi/fdt.c b/grub-core/loader/efi/fdt.c
-index e3ee3ad79d6..64c560f5610 100644
+index e3ee3ad79..64c560f56 100644
 --- a/grub-core/loader/efi/fdt.c
 +++ b/grub-core/loader/efi/fdt.c
 @@ -167,8 +167,8 @@ static grub_command_t cmd_devicetree;
@@ -85,7 +85,7 @@ index e3ee3ad79d6..64c560f5610 100644
  
  GRUB_MOD_FINI (fdt)
 diff --git a/docs/grub.texi b/docs/grub.texi
-index f1675b6140c..c55452307dc 100644
+index f1675b614..c55452307 100644
 --- a/docs/grub.texi
 +++ b/docs/grub.texi
 @@ -4281,13 +4281,15 @@ hour, minute, and second unchanged.

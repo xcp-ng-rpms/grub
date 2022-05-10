@@ -23,7 +23,7 @@ Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/grub-core/commands/menuentry.c b/grub-core/commands/menuentry.c
-index 8d242b0187e..7004e08ce78 100644
+index 8d242b018..7004e08ce 100644
 --- a/grub-core/commands/menuentry.c
 +++ b/grub-core/commands/menuentry.c
 @@ -29,7 +29,7 @@ static const struct grub_arg_option options[] =

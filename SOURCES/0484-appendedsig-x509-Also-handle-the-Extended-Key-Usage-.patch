@@ -23,7 +23,7 @@ Signed-off-by: Daniel Axtens <dja@axtens.net>
  3 files changed, 201 insertions(+), 3 deletions(-)
 
 diff --git a/grub-core/commands/appendedsig/x509.c b/grub-core/commands/appendedsig/x509.c
-index 652e4f16870..34a2070a7c9 100644
+index 652e4f168..34a2070a7 100644
 --- a/grub-core/commands/appendedsig/x509.c
 +++ b/grub-core/commands/appendedsig/x509.c
 @@ -47,6 +47,12 @@ const char *keyUsage_oid = "2.5.29.15";
@@ -156,7 +156,7 @@ index 652e4f16870..34a2070a7c9 100644
  
  cleanup_value:
 diff --git a/grub-core/tests/appended_signature_test.c b/grub-core/tests/appended_signature_test.c
-index 88a485200d8..dbba0616621 100644
+index 88a485200..dbba06166 100644
 --- a/grub-core/tests/appended_signature_test.c
 +++ b/grub-core/tests/appended_signature_test.c
 @@ -111,6 +111,22 @@ static struct grub_procfs_entry certificate_printable_der_entry = {
@@ -225,7 +225,7 @@ index 88a485200d8..dbba0616621 100644
  
  GRUB_FUNCTIONAL_TEST (appended_signature_test, appended_signature_test);
 diff --git a/grub-core/tests/appended_signatures.h b/grub-core/tests/appended_signatures.h
-index aa3dc6278e3..2e5ebd7d8bd 100644
+index aa3dc6278..2e5ebd7d8 100644
 --- a/grub-core/tests/appended_signatures.h
 +++ b/grub-core/tests/appended_signatures.h
 @@ -555,3 +555,84 @@ unsigned char certificate_printable_der[] = {

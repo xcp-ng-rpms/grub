@@ -13,7 +13,7 @@ Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/grub-core/commands/setpci.c b/grub-core/commands/setpci.c
-index d5bc97d60b2..fa2ba7d8919 100644
+index d5bc97d60..fa2ba7d89 100644
 --- a/grub-core/commands/setpci.c
 +++ b/grub-core/commands/setpci.c
 @@ -329,10 +329,10 @@ static grub_extcmd_t cmd;
