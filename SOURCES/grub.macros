@@ -379,11 +379,11 @@ for x in grub-mkimage ; do					\\\
 done								\
 %{nil}
 
-%global grub_modules " all_video boot blscfg btrfs		\\\
+%global grub_modules " all_video boot blscfg 			\\\
 		cat configfile cryptodisk echo ext2		\\\
 		fat font gcry_rijndael gcry_rsa gcry_serpent	\\\
 		gcry_sha256 gcry_twofish gcry_whirlpool		\\\
-		gfxmenu gfxterm gzio halt hfsplus http		\\\
+		gfxmenu gfxterm gzio halt  http			\\\
 		increment iso9660 jpeg loadenv loopback linux	\\\
 		lvm luks mdraid09 mdraid1x minicmd net		\\\
 		normal part_apple part_msdos part_gpt		\\\
