@@ -1,3 +1,9 @@
+%global package_speccommit df392c013db5a8c6e9409b91ff37e1f93e6c57ab
+%global usver 2.06
+%global xsver 4.0.1
+%global xsrel %{xsver}%{?xscount}%{?xshash}
+%global package_srccommit grub-2.06
+
 # Modules always contain just 32-bit code
 %define _libdir %{_exec_prefix}/lib
 
@@ -35,26 +41,25 @@
 
 %undefine _missing_build_ids_terminate_build
 
+# submodule gnulib
+%define gnulib_cset d271f868a8df9bbec29049d01e056481b7a1a263
+%define gnulib_path gnulib
+
 Name:           grub
 Epoch:          1
-Version:        2.02
-Release:        3.1.0
+Version:        2.06
+Release:        %{?xsrel}%{?dist}
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
 License:        GPLv3+
 URL:            http://www.gnu.org/software/grub/
 Obsoletes:      grub < 1:0.98
+Source0: grub-2.06.tar.gz
+Source1: gnulib.tar.gz
+Patch0: wait-before-drain.patch
 
-Source0: https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz
-
-Patch0: 0001-tsc-Change-default-tsc-calibration-method-to-pmtimer.patch
-Patch1: wait-before-drain.patch
-
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz) = e54c99aaff5e5f6f5d3b06028506c57e66d8ef77
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/grub.pg/archive?format=tar&at=v3.1.0#/grub.patches.tar) = d168972f8dea5e143ef33798e45b92a5ee010061
-
-
+BuildRequires:  devtoolset-10-gcc
 BuildRequires:  flex bison binutils python
 BuildRequires:  ncurses-devel xz-devel
 BuildRequires:  freetype-devel libusb-devel
@@ -69,6 +74,7 @@ BuildRequires:  autoconf automake autogen device-mapper-devel
 BuildRequires:  freetype-devel gettext-devel git
 BuildRequires:  texinfo
 BuildRequires:  help2man
+%{?_cov_buildrequires}
 
 Requires:       gettext os-prober which file
 Requires:       %{name}-tools = %{epoch}:%{version}-%{release}
@@ -86,8 +92,6 @@ provides support for PC BIOS systems.
 
 %ifarch %{efiarchs}
 %package efi
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz) = e54c99aaff5e5f6f5d3b06028506c57e66d8ef77
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/grub.pg/archive?format=tar&at=v3.1.0#/grub.patches.tar) = d168972f8dea5e143ef33798e45b92a5ee010061
 Summary:        GRUB for EFI systems.
 Group:          System Environment/Base
 Requires:       %{name}-tools = %{epoch}:%{version}-%{release}
@@ -101,8 +105,6 @@ provides support for EFI systems.
 %endif
 
 %package tools
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz) = e54c99aaff5e5f6f5d3b06028506c57e66d8ef77
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/grub.pg/archive?format=tar&at=v3.1.0#/grub.patches.tar) = d168972f8dea5e143ef33798e45b92a5ee010061
 Summary:        Support tools for GRUB.
 Group:          System Environment/Base
 Requires:       gettext os-prober which file system-logos
@@ -115,13 +117,17 @@ provides tools for support of all platforms.
 
 %prep
 %autosetup -p1
+tar -zxf %{SOURCE1}
 mkdir ../%{name}-efi-%{version}
 cp -a . ../%{name}-efi-%{version}
+%{?_cov_prepare}
 
 %build
+. /opt/rh/devtoolset-10/enable
+
 %ifarch %{efiarchs}
 pushd ../%{name}-efi-%{version}
-./autogen.sh
+./bootstrap
 %configure \
     CFLAGS="$(echo $RPM_OPT_FLAGS | sed \
         -e 's/-O.//g' \
@@ -141,7 +147,7 @@ pushd ../%{name}-efi-%{version}
         --program-transform-name=s,grub,%{name}, \
     --disable-grub-mount \
     --disable-werror
-make %{?_smp_mflags}
+%{?_cov_wrap} make %{?_smp_mflags}
 
 GRUB_MODULES="all_video boot btrfs cat chain configfile echo efifwsetup \
         efinet ext2 fat font gfxmenu gfxterm gzio halt hfsplus http iso9660 \
@@ -156,7 +162,7 @@ GRUB_MODULES="all_video boot btrfs cat chain configfile echo efifwsetup \
 popd
 %endif
 
-./autogen.sh
+./bootstrap
 # -static is needed so that autoconf script is able to link
 # test that looks for _start symbol on 64 bit platforms
 %ifarch %{sparc} ppc ppc64
@@ -183,7 +189,7 @@ popd
     --enable-man-pages \
     --disable-grub-mount \
     --disable-werror
-make %{?_smp_mflags}
+%{?_cov_wrap} make %{?_smp_mflags}
 
 sed -i -e 's,(grub),(%{name}),g' \
     -e 's,grub.info,%{name}.info,g' \
@@ -278,7 +284,9 @@ cat << EOF > ${RPM_BUILD_ROOT}%{_sysconfdir}/prelink.conf.d/grub2.conf
 -b /usr/sbin/grub2-sparc64-setup
 EOF
 
-%clean    
+%{?_cov_install}
+
+%clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
@@ -389,12 +397,20 @@ fi
 %exclude %{_mandir}/man1/*syslinux2cfg.1*
 %{_mandir}/man8/*
 
+%{?_cov_results_package}
+
 %changelog
-* Thu Sep 9 2021 Igor Druzhinin <igor.druzhinin@citrix.com> - 2.02-3.1.0
-- CP-37219: Fix a boot hang due to i8254 clock gating on RKL
+* Mon Feb 21 2022 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.06-4.0.1
+- CP-38416: Enable static analysis
+
+* Fri Jul 02 2021 Igor Druzhinin <igor.druzhinin@citrix.com> - 2.06-4.0.0
+- CP-37232: Updated Grub to 2.06
 
 * Tue Jun 29 2021 Benjamin Reis <benjamin.reis@vates.fr> - 2.02-3.0.2
 - Add EFI fallback file (`EFI/BOOT/BOOTX64.EFI`) for when all boot entries fail
+
+* Fri Dec 04 2020 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.02-3.0.1
+- CP-35517: Rebuild for koji
 
 * Mon Sep 23 2019 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.02-3.0.0
 - CA-322681: ns8250: Wait a short while before draining the input buffer
