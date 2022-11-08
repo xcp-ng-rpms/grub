@@ -1,0 +1,53 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Glenn Washburn <development@efficientek.com>
+Date: Thu, 4 Mar 2021 18:22:32 -0600
+Subject: [PATCH] misc: Format string for grub_error() should be a literal
+
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+(cherry-picked from commit 60875f4e15d704b875969b415501802b531c4db3)
+---
+ grub-core/loader/efi/chainloader.c | 2 +-
+ grub-core/net/tftp.c               | 2 +-
+ grub-core/script/lexer.c           | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/grub-core/loader/efi/chainloader.c b/grub-core/loader/efi/chainloader.c
+index 720f6181e5..8e658f713e 100644
+--- a/grub-core/loader/efi/chainloader.c
++++ b/grub-core/loader/efi/chainloader.c
+@@ -79,7 +79,7 @@ grub_start_image (grub_efi_handle_t handle)
+ 	      *grub_utf16_to_utf8 ((grub_uint8_t *) buf,
+ 				   exit_data, exit_data_size) = 0;
+ 
+-	      grub_error (GRUB_ERR_BAD_OS, buf);
++	      grub_error (GRUB_ERR_BAD_OS, "%s", buf);
+ 	      grub_free (buf);
+ 	    }
+ 	}
+diff --git a/grub-core/net/tftp.c b/grub-core/net/tftp.c
+index 85be965470..69a9ba6979 100644
+--- a/grub-core/net/tftp.c
++++ b/grub-core/net/tftp.c
+@@ -253,7 +253,7 @@ tftp_receive (grub_net_udp_socket_t sock __attribute__ ((unused)),
+     case TFTP_ERROR:
+       data->have_oack = 1;
+       grub_netbuff_free (nb);
+-      grub_error (GRUB_ERR_IO, (char *) tftph->u.err.errmsg);
++      grub_error (GRUB_ERR_IO, "%s", tftph->u.err.errmsg);
+       grub_error_save (&data->save_err);
+       return GRUB_ERR_NONE;
+     default:
+diff --git a/grub-core/script/lexer.c b/grub-core/script/lexer.c
+index 5fb0cbd0bc..27daad791c 100644
+--- a/grub-core/script/lexer.c
++++ b/grub-core/script/lexer.c
+@@ -349,7 +349,7 @@ void
+ grub_script_yyerror (struct grub_parser_param *state, char const *err)
+ {
+   if (err)
+-    grub_error (GRUB_ERR_INVALID_COMMAND, err);
++    grub_error (GRUB_ERR_INVALID_COMMAND, "%s", err);
+ 
+   grub_print_error ();
+   state->err++;

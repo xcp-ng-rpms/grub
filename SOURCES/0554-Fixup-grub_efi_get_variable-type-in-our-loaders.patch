@@ -1,0 +1,51 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Wed, 11 May 2022 16:37:14 -0400
+Subject: [PATCH] Fixup grub_efi_get_variable() type in our loaders
+
+Has a new type now that we have 04ae030d0eea8668d4417702d88bf2cf04713d80
+("efi: Return grub_efi_status_t from grub_efi_get_variable()").
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+---
+ grub-core/kern/efi/init.c | 4 ++--
+ grub-core/kern/efi/sb.c   | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/grub-core/kern/efi/init.c b/grub-core/kern/efi/init.c
+index 501608f743..565ce541f5 100644
+--- a/grub-core/kern/efi/init.c
++++ b/grub-core/kern/efi/init.c
+@@ -104,8 +104,8 @@ grub_efi_env_init (void)
+   struct grub_envblk envblk_s = { NULL, 0 };
+   grub_envblk_t envblk = &envblk_s;
+ 
+-  envblk_s.buf = grub_efi_get_variable ("GRUB_ENV", &efi_grub_guid,
+-					&envblk_s.size);
++  grub_efi_get_variable ("GRUB_ENV", &efi_grub_guid, &envblk_s.size,
++                         &envblk_s.buf);
+   if (!envblk_s.buf || envblk_s.size < 1)
+     return;
+ 
+diff --git a/grub-core/kern/efi/sb.c b/grub-core/kern/efi/sb.c
+index d74778b0ca..f84d7d3080 100644
+--- a/grub-core/kern/efi/sb.c
++++ b/grub-core/kern/efi/sb.c
+@@ -35,7 +35,7 @@ grub_efi_secure_boot (void)
+   char *setup_mode = NULL;
+   grub_efi_boolean_t ret = 0;
+ 
+-  secure_boot = grub_efi_get_variable("SecureBoot", &efi_var_guid, &datasize);
++  grub_efi_get_variable("SecureBoot", &efi_var_guid, &datasize, &secure_boot);
+   if (datasize != 1 || !secure_boot)
+     {
+       grub_dprintf ("secureboot", "No SecureBoot variable\n");
+@@ -43,7 +43,7 @@ grub_efi_secure_boot (void)
+     }
+   grub_dprintf ("secureboot", "SecureBoot: %d\n", *secure_boot);
+ 
+-  setup_mode = grub_efi_get_variable("SetupMode", &efi_var_guid, &datasize);
++  grub_efi_get_variable("SetupMode", &efi_var_guid, &datasize, &setup_mode);
+   if (datasize != 1 || !setup_mode)
+     {
+       grub_dprintf ("secureboot", "No SetupMode variable\n");

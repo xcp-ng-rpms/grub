@@ -1,0 +1,94 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Stefan Berger <stefanb@linux.vnet.ibm.com>
+Date: Fri, 11 Feb 2022 16:34:23 -0500
+Subject: [PATCH] ibmvtpm: Backport ibmvtpm support to grub 2.02
+
+Backport ibmvtpm support to grub 2.02 by making as few changes to the
+source as possible and building it into the core.
+
+Since ibmvtpm support is built into grub 2.02 do not print the error
+message we would typically print if it was a module and the user had
+a choice to not use vTPM support if there was no vTPM by avoiding
+to use the module.
+
+Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+---
+ grub-core/Makefile.core.def           |  8 +-------
+ grub-core/commands/ieee1275/ibmvtpm.c | 13 ++++++++++---
+ include/grub/tpm.h                    |  2 +-
+ 3 files changed, 12 insertions(+), 11 deletions(-)
+
+diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
+index b11f74e6b2..637d7203e3 100644
+--- a/grub-core/Makefile.core.def
++++ b/grub-core/Makefile.core.def
+@@ -298,6 +298,7 @@ kernel = {
+   powerpc_ieee1275 = kern/powerpc/cache.S;
+   powerpc_ieee1275 = kern/powerpc/dl.c;
+   powerpc_ieee1275 = kern/powerpc/compiler-rt.S;
++  powerpc_ieee1275 = commands/ieee1275/ibmvtpm.c;
+ 
+   sparc64_ieee1275 = kern/sparc64/cache.S;
+   sparc64_ieee1275 = kern/sparc64/dl.c;
+@@ -1104,13 +1105,6 @@ module = {
+   enable = powerpc_ieee1275;
+ };
+ 
+-module = {
+-  name = tpm;
+-  common = commands/tpm.c;
+-  ieee1275 = commands/ieee1275/ibmvtpm.c;
+-  enable = powerpc_ieee1275;
+-};
+-
+ module = {
+   name = terminal;
+   common = commands/terminal.c;
+diff --git a/grub-core/commands/ieee1275/ibmvtpm.c b/grub-core/commands/ieee1275/ibmvtpm.c
+index e68b8448bc..728b2cbdcd 100644
+--- a/grub-core/commands/ieee1275/ibmvtpm.c
++++ b/grub-core/commands/ieee1275/ibmvtpm.c
+@@ -115,7 +115,8 @@ tpm2_log_event (unsigned char *buf,
+ 		grub_size_t size, grub_uint8_t pcr,
+ 		const char *description)
+ {
+-  static int error_displayed = 0;
++  /* Do not print error since vTPM support is built-in */
++  static int error_displayed = 1;
+   int err;
+ 
+   err = ibmvtpm_2hash_ext_log (pcr, EV_IPL,
+@@ -132,8 +133,8 @@ tpm2_log_event (unsigned char *buf,
+   return GRUB_ERR_NONE;
+ }
+ 
+-grub_err_t
+-grub_tpm_measure (unsigned char *buf, grub_size_t size, grub_uint8_t pcr,
++static grub_err_t
++_grub_tpm_measure (unsigned char *buf, grub_size_t size, grub_uint8_t pcr,
+ 		  const char *description)
+ {
+   grub_err_t err = tpm_init();
+@@ -150,3 +151,9 @@ grub_tpm_measure (unsigned char *buf, grub_size_t size, grub_uint8_t pcr,
+ 
+   return GRUB_ERR_NONE;
+ }
++
++grub_err_t grub_tpm_log_event(unsigned char *buf, grub_size_t size,
++			      grub_uint8_t pcr, const char *description)
++{
++   return _grub_tpm_measure(buf, size, pcr, description);
++}
+diff --git a/include/grub/tpm.h b/include/grub/tpm.h
+index ce52be4ff7..52af2b8448 100644
+--- a/include/grub/tpm.h
++++ b/include/grub/tpm.h
+@@ -69,7 +69,7 @@ typedef struct {
+ grub_err_t EXPORT_FUNC(grub_tpm_measure) (unsigned char *buf, grub_size_t size,
+ 					  grub_uint8_t pcr, const char *kind,
+ 					  const char *description);
+-#if defined (GRUB_MACHINE_EFI)
++#if defined (GRUB_MACHINE_EFI) || defined (GRUB_MACHINE_IEEE1275)
+ grub_err_t grub_tpm_execute(PassThroughToTPM_InputParamBlock *inbuf,
+ 			    PassThroughToTPM_OutputParamBlock *outbuf);
+ grub_err_t grub_tpm_log_event(unsigned char *buf, grub_size_t size,

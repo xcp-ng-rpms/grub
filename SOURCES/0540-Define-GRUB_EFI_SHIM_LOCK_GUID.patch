@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Wed, 11 May 2022 16:20:52 -0400
+Subject: [PATCH] Define GRUB_EFI_SHIM_LOCK_GUID
+
+Added in f76a27996c34900f2c369a8a0d6ac72ae2faa988 ("efi: Make shim_lock
+GUID and protocol type public"), but that commit also manipulates the
+lock protocol definition and some other guids we don't care about right
+now.
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+---
+ include/grub/efi/api.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/include/grub/efi/api.h b/include/grub/efi/api.h
+index 37e7b16287..2a243fd290 100644
+--- a/include/grub/efi/api.h
++++ b/include/grub/efi/api.h
+@@ -349,6 +349,11 @@
+     { 0x86, 0x2e, 0xc0, 0x1c, 0xdc, 0x29, 0x1f, 0x44 } \
+   }
+ 
++#define GRUB_EFI_SHIM_LOCK_GUID \
++  { 0x605dab50, 0xe046, 0x4300, \
++    { 0xab, 0xb6, 0x3d, 0xd8, 0x10, 0xdd, 0x8b, 0x23 } \
++   }
++
+ struct grub_efi_sal_system_table
+ {
+   grub_uint32_t signature;

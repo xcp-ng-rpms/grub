@@ -379,11 +379,11 @@ for x in grub-mkimage ; do					\\\
 done								\
 %{nil}
 
-%global grub_modules " all_video boot blscfg 			\\\
+%global grub_modules " all_video boot blscfg			\\\
 		cat configfile cryptodisk echo ext2		\\\
 		fat font gcry_rijndael gcry_rsa gcry_serpent	\\\
 		gcry_sha256 gcry_twofish gcry_whirlpool		\\\
-		gfxmenu gfxterm gzio halt  http			\\\
+		gfxmenu gfxterm gzio halt http			\\\
 		increment iso9660 jpeg loadenv loopback linux	\\\
 		lvm luks mdraid09 mdraid1x minicmd net		\\\
 		normal part_apple part_msdos part_gpt		\\\
@@ -596,7 +596,7 @@ touch ${RPM_BUILD_ROOT}/boot/%{name}/grub.cfg			\
 %{expand:%%files %{1}}						\
 %defattr(-,root,root,-)						\
 %config(noreplace) %{_sysconfdir}/%{name}.cfg			\
-%ghost %config(noreplace) /boot/%{name}/grub.cfg		\
+%ghost %config(noreplace) %attr(0700,root,root)/boot/%{name}/grub.cfg	\
 %dir %attr(0700,root,root)/boot/loader/entries			\
 %ifarch ppc64le						\
 %dir %{_libdir}/grub/%{2}/					\

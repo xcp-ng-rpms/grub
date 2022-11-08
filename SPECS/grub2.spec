@@ -7,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	123%{?dist}.8
+Release:	142%{?dist}
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -28,8 +28,8 @@ Source13:	redhatsecurebootca3.cer
 Source14:	redhatsecureboot301.cer
 Source15:	redhatsecurebootca5.cer
 Source16:	redhatsecureboot502.cer
-Source17:	redhatsecureboot303.cer
-Source18:	redhatsecureboot601.cer
+Source17:	redhatsecureboot601.cer
+Source18:	redhatsecureboot701.cer
 Source19:	sbat.csv.in
 
 %include %{SOURCE1}
@@ -46,7 +46,7 @@ Source19:	sbat.csv.in
 %ifarch ppc64le
 %define old_sb_cer	%{SOURCE17}
 %define sb_cer		%{SOURCE18}
-%define sb_key		redhatsecureboot602
+%define sb_key		redhatsecureboot702
 %endif
 
 # generate with do-rebase
@@ -510,23 +510,58 @@ fi
 %endif
 
 %changelog
-* Fri Jun 03 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-123.el8_6.8
+* Thu Sep 08 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-142
+- Drop the arena size changes
+- Resolves: #2118896
+
+* Thu Aug 25 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-141
+- Implement vec5 for cas negotiation
+- Resolves: #2117914
+
+* Wed Aug 24 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-140
+- Or two, because I forgot the debug patch
+- Resolves: #2118896
+
+* Thu Aug 18 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-139
+- Kernel allocator fixups (in one pass)
+- Resolves: #2118896
+
+* Wed Jul 20 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-138
+- Rotate signing keys on ppc64le
+- Resolves: #2074762
+
+* Fri Jun 03 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-137
 - CVE fixes for 2022-06-07
 - CVE-2022-28736 CVE-2022-28735 CVE-2022-28734 CVE-2022-28733
 - CVE-2021-3697 CVE-2021-3696 CVE-2021-3695
-- Resolves: #2031899
+- Resolves: #2070687
+
+* Mon May 16 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-129
+- ppc64le: Slow boot after LPM
+- Resolves: #2070347
+
+* Wed May 04 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-127
+- ppc64le: CAS improvements, prefix detection, and vTPM support
+- Resolves: #2076795
+- Resolves: #2026568
+- Resolves: #2051331
+
+* Wed May 04 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-126
+- Fix rpm verification error on grub.cfg permissions
+- Resolves: #2071643
+
+* Wed Apr 20 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-125
+- RHEL 8.6.0 import; no code changes
+- Resolves: #2062892
 
 * Mon Mar 28 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-123
 - Bump for signing
-- Resolves: #2061252
 
 * Wed Mar 09 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-122
 - Fix initialization on efidisk patch
-- Resolves: #2061252
 
 * Tue Mar 08 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-121
 - Backport support for loading initrd above 4GB
-- Resolves: #2048433
 
 * Mon Feb 28 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-120
 - Bump signing
