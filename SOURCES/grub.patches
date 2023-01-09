@@ -557,3 +557,17 @@ Patch0556: 0556-efi-use-enumerated-array-positions-for-our-allocatio.patch
 Patch0557: 0557-efi-split-allocation-policy-for-kernel-vs-initrd-mem.patch
 Patch0558: 0558-efi-use-EFI_LOADER_-CODE-DATA-for-kernel-and-initrd-.patch
 Patch0559: 0559-ieee1275-implement-vec5-for-cas-negotiation.patch
+Patch0560: 0560-x86-efi-Fix-an-incorrect-array-size-in-kernel-alloca.patch
+Patch0561: 0561-switch-to-blscfg-don-t-assume-newline-at-end-of-cfg.patch
+Patch0562: 0562-font-Reject-glyphs-exceeds-font-max_glyph_width-or-f.patch
+Patch0563: 0563-font-Fix-size-overflow-in-grub_font_get_glyph_intern.patch
+Patch0564: 0564-font-Fix-several-integer-overflows-in-grub_font_cons.patch
+Patch0565: 0565-font-Remove-grub_font_dup_glyph.patch
+Patch0566: 0566-font-Fix-integer-overflow-in-ensure_comb_space.patch
+Patch0567: 0567-font-Fix-integer-overflow-in-BMP-index.patch
+Patch0568: 0568-font-Fix-integer-underflow-in-binary-search-of-char-.patch
+Patch0569: 0569-fbutil-Fix-integer-overflow.patch
+Patch0570: 0570-font-Fix-an-integer-underflow-in-blit_comb.patch
+Patch0571: 0571-font-Harden-grub_font_blit_glyph-and-grub_font_blit_.patch
+Patch0572: 0572-font-Assign-null_font-to-glyphs-in-ascii_font_glyph.patch
+Patch0573: 0573-normal-charset-Fix-an-integer-overflow-in-grub_unico.patch

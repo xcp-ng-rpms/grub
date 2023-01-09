@@ -7,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	142%{?dist}
+Release:	142%{?dist}.1
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -510,64 +510,68 @@ fi
 %endif
 
 %changelog
-* Thu Sep 08 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-142
+* Thu Nov 08 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-142.el8_7.1
+- Sync with 8.8 (actually 2.02-145)
+- Resolves: CVE-2022-2601
+
+* Thu Sep 08 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-142
 - Drop the arena size changes
 - Resolves: #2118896
 
-* Thu Aug 25 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-141
+* Thu Aug 25 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-141
 - Implement vec5 for cas negotiation
 - Resolves: #2117914
 
-* Wed Aug 24 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-140
+* Wed Aug 24 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-140
 - Or two, because I forgot the debug patch
 - Resolves: #2118896
 
-* Thu Aug 18 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-139
+* Thu Aug 18 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-139
 - Kernel allocator fixups (in one pass)
 - Resolves: #2118896
 
-* Wed Jul 20 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-138
+* Wed Jul 20 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-138
 - Rotate signing keys on ppc64le
 - Resolves: #2074762
 
-* Fri Jun 03 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-137
+* Fri Jun 03 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-137
 - CVE fixes for 2022-06-07
 - CVE-2022-28736 CVE-2022-28735 CVE-2022-28734 CVE-2022-28733
 - CVE-2021-3697 CVE-2021-3696 CVE-2021-3695
 - Resolves: #2070687
 
-* Mon May 16 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-129
+* Mon May 16 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-129
 - ppc64le: Slow boot after LPM
 - Resolves: #2070347
 
-* Wed May 04 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-127
+* Wed May 04 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-127
 - ppc64le: CAS improvements, prefix detection, and vTPM support
 - Resolves: #2076795
 - Resolves: #2026568
 - Resolves: #2051331
 
-* Wed May 04 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-126
+* Wed May 04 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-126
 - Fix rpm verification error on grub.cfg permissions
 - Resolves: #2071643
 
-* Wed Apr 20 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-125
+* Wed Apr 20 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-125
 - RHEL 8.6.0 import; no code changes
 - Resolves: #2062892
 
-* Mon Mar 28 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-123
+* Mon Mar 28 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-123
 - Bump for signing
 
-* Wed Mar 09 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-122
+* Wed Mar 09 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-122
 - Fix initialization on efidisk patch
 
-* Tue Mar 08 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-121
+* Tue Mar 08 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-121
 - Backport support for loading initrd above 4GB
 
-* Mon Feb 28 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-120
+* Mon Feb 28 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-120
 - Bump signing
 - Resolves: #2032294
 
-* Mon Feb 28 2022 Robbie Harwood <rharwood@redhat.com> - 2.06-119
+* Mon Feb 28 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-119
 - Enable connectefi module
 - Resolves: #2032294
 

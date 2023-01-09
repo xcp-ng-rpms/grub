@@ -1,0 +1,25 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Robbie Harwood <rharwood@redhat.com>
+Date: Tue, 18 Oct 2022 14:15:28 -0400
+Subject: [PATCH] switch-to-blscfg: don't assume newline at end of cfg
+
+Signed-off-by: Robbie Harwood <rharwood@redhat.com>
+---
+ util/grub-switch-to-blscfg.in | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/util/grub-switch-to-blscfg.in b/util/grub-switch-to-blscfg.in
+index eeea130770..5a97954c39 100644
+--- a/util/grub-switch-to-blscfg.in
++++ b/util/grub-switch-to-blscfg.in
+@@ -277,7 +277,9 @@ if grep '^GRUB_ENABLE_BLSCFG=.*' "${etcdefaultgrub}" \
+     fi
+     GENERATE=1
+ elif ! grep -q '^GRUB_ENABLE_BLSCFG=.*' "${etcdefaultgrub}" ; then
+-    if ! echo 'GRUB_ENABLE_BLSCFG=true' >> "${etcdefaultgrub}" ; then
++    # prepend in case admins have been bad at newlines
++    sed -i '1iGRUB_ENABLE_BLSCFG=true' "${etcdefaultgrub}"
++    if ! grep -q '^GRUB_ENABLE_BLSCFG=true' "${etcdefaultgrub}" ; then
+         gettext_printf "Updating %s failed\n" "${etcdefaultgrub}"
+         exit 1
+     fi
