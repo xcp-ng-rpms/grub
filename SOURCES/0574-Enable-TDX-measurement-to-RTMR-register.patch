@@ -1,0 +1,227 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Lu Ken <ken.lu@intel.com>
+Date: Sat, 3 Jul 2021 10:50:37 -0400
+Subject: [PATCH] Enable TDX measurement to RTMR register
+
+Intel Trust Domain Extensions(Intel TDX) refers to an Intel technology
+that extends Virtual Machine Extensions(VMX) and Multi-Key Total Memory
+Encryption(MK-TME) with a new kind of virtual machine guest called a
+Trust Domain(TD)[1]. A TD runs in a CPU mode that protects the confidentiality
+of its memory contents and its CPU state from any other software, including
+the hosting Virtual Machine Monitor (VMM).
+
+Trust Domain Virtual Firmware (TDVF) is required to provide TD services to
+the TD guest OS.[2] Its reference code is available at https://github.com/tianocore/edk2-staging/tree/TDVF.
+
+To support TD measurement/attestation, TDs provide 4 RTMR registers like
+TPM/TPM2 PCR as below:
+- RTMR[0] is for TDVF configuration
+- RTMR[1] is for the TD OS loader and kernel
+- RTMR[2] is for the OS application
+- RTMR[3] is reserved for special usage only
+
+This patch adds TD Measurement protocol support along with TPM/TPM2 protocol.
+
+References:
+[1] https://software.intel.com/content/dam/develop/external/us/en/documents/tdx-whitepaper-v4.pdf
+[2] https://software.intel.com/content/dam/develop/external/us/en/documents/tdx-virtual-firmware-design-guide-rev-1.pdf
+
+Signed-off-by: Lu Ken <ken.lu@intel.com>
+(cherry picked from commit 841a0977397cf12a5498d439b8aaf8bf28ff8544)
+---
+ grub-core/Makefile.core.def |  1 +
+ grub-core/kern/efi/tdx.c    | 70 +++++++++++++++++++++++++++++++++++++++++++++
+ grub-core/kern/tpm.c        |  4 +++
+ include/grub/efi/tdx.h      | 26 +++++++++++++++++
+ include/grub/tdx.h          | 36 +++++++++++++++++++++++
+ 5 files changed, 137 insertions(+)
+ create mode 100644 grub-core/kern/efi/tdx.c
+ create mode 100644 include/grub/efi/tdx.h
+ create mode 100644 include/grub/tdx.h
+
+diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
+index 637d7203e3..2787d59c52 100644
+--- a/grub-core/Makefile.core.def
++++ b/grub-core/Makefile.core.def
+@@ -200,6 +200,7 @@ kernel = {
+   efi = kern/efi/acpi.c;
+   efi = kern/lockdown.c;
+   efi = lib/envblk.c;
++  efi = kern/efi/tdx.c;
+   efi = kern/efi/tpm.c;
+   i386_coreboot = kern/i386/pc/acpi.c;
+   i386_multiboot = kern/i386/pc/acpi.c;
+diff --git a/grub-core/kern/efi/tdx.c b/grub-core/kern/efi/tdx.c
+new file mode 100644
+index 0000000000..3a49f8d117
+--- /dev/null
++++ b/grub-core/kern/efi/tdx.c
+@@ -0,0 +1,70 @@
++#include <grub/err.h>
++#include <grub/i18n.h>
++#include <grub/efi/api.h>
++#include <grub/efi/efi.h>
++#include <grub/efi/tpm.h>
++#include <grub/efi/tdx.h>
++#include <grub/mm.h>
++#include <grub/tpm.h>
++#include <grub/tdx.h>
++
++static grub_efi_guid_t tdx_guid = EFI_TDX_GUID;
++
++static inline grub_err_t grub_tdx_dprintf(grub_efi_status_t status)
++{
++  switch (status) {
++  case GRUB_EFI_SUCCESS:
++    return 0;
++  case GRUB_EFI_DEVICE_ERROR:
++    grub_dprintf ("tdx", "Command failed: 0x%"PRIxGRUB_EFI_STATUS"\n",
++                  status);
++    return GRUB_ERR_IO;
++  case GRUB_EFI_INVALID_PARAMETER:
++    grub_dprintf ("tdx", "Invalid parameter: 0x%"PRIxGRUB_EFI_STATUS"\n",
++                  status);
++    return GRUB_ERR_BAD_ARGUMENT;
++  case GRUB_EFI_VOLUME_FULL:
++    grub_dprintf ("tdx", "Volume is full: 0x%"PRIxGRUB_EFI_STATUS"\n",
++                  status);
++    return GRUB_ERR_BAD_ARGUMENT;
++  case GRUB_EFI_UNSUPPORTED:
++    grub_dprintf ("tdx", "TDX unavailable: 0x%"PRIxGRUB_EFI_STATUS"\n",
++                  status);
++    return GRUB_ERR_UNKNOWN_DEVICE;
++  default:
++    grub_dprintf ("tdx", "Unknown TDX error: 0x%"PRIxGRUB_EFI_STATUS"\n",
++                  status);
++    return GRUB_ERR_UNKNOWN_DEVICE;
++  }
++}
++
++grub_err_t
++grub_tdx_log_event(unsigned char *buf, grub_size_t size, grub_uint8_t pcr,
++		   const char *description)
++{
++  EFI_TCG2_EVENT *event;
++  grub_efi_status_t status;
++  grub_efi_tdx_protocol_t *tdx;
++
++  tdx = grub_efi_locate_protocol (&tdx_guid, NULL);
++
++  if (!tdx)
++    return 0;
++
++  event = grub_zalloc(sizeof (EFI_TCG2_EVENT) + grub_strlen(description) + 1);
++  if (!event)
++    return grub_error (GRUB_ERR_OUT_OF_MEMORY,
++		       N_("cannot allocate TCG2 event buffer"));
++
++  event->Header.HeaderSize = sizeof(EFI_TCG2_EVENT_HEADER);
++  event->Header.HeaderVersion = 1;
++  event->Header.PCRIndex = pcr;
++  event->Header.EventType = EV_IPL;
++  event->Size = sizeof(*event) - sizeof(event->Event) + grub_strlen(description) + 1;
++  grub_memcpy(event->Event, description, grub_strlen(description) + 1);
++
++  status = efi_call_5 (tdx->hash_log_extend_event, tdx, 0, (unsigned long) buf,
++		       (grub_uint64_t) size, event);
++
++  return grub_tdx_dprintf(status);
++}
+\ No newline at end of file
+diff --git a/grub-core/kern/tpm.c b/grub-core/kern/tpm.c
+index e5e8fced62..71cc4252c1 100644
+--- a/grub-core/kern/tpm.c
++++ b/grub-core/kern/tpm.c
+@@ -4,6 +4,7 @@
+ #include <grub/mm.h>
+ #include <grub/tpm.h>
+ #include <grub/term.h>
++#include <grub/tdx.h>
+ 
+ grub_err_t
+ grub_tpm_measure (unsigned char *buf, grub_size_t size, grub_uint8_t pcr,
+@@ -13,6 +14,9 @@ grub_tpm_measure (unsigned char *buf, grub_size_t size, grub_uint8_t pcr,
+   char *desc = grub_xasprintf("%s %s", kind, description);
+   if (!desc)
+     return GRUB_ERR_OUT_OF_MEMORY;
++
++  grub_tdx_log_event(buf, size, pcr, desc);
++
+   ret = grub_tpm_log_event(buf, size, pcr, desc);
+   grub_free(desc);
+   return ret;
+diff --git a/include/grub/efi/tdx.h b/include/grub/efi/tdx.h
+new file mode 100644
+index 0000000000..9bdac2a275
+--- /dev/null
++++ b/include/grub/efi/tdx.h
+@@ -0,0 +1,26 @@
++/*
++ *  GRUB  --  GRand Unified Bootloader
++ *  Copyright (C) 2015  Free Software Foundation, Inc.
++ *
++ *  GRUB is free software: you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation, either version 3 of the License, or
++ *  (at your option) any later version.
++ *
++ *  GRUB is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#ifndef GRUB_EFI_TDX_HEADER
++#define GRUB_EFI_TDX_HEADER 1
++
++#define EFI_TDX_GUID {0x96751a3d, 0x72f4, 0x41a6, {0xa7, 0x94, 0xed, 0x5d, 0x0e, 0x67, 0xae, 0x6b}};
++
++typedef grub_efi_tpm2_protocol_t grub_efi_tdx_protocol_t;
++
++#endif
+\ No newline at end of file
+diff --git a/include/grub/tdx.h b/include/grub/tdx.h
+new file mode 100644
+index 0000000000..4a98008e39
+--- /dev/null
++++ b/include/grub/tdx.h
+@@ -0,0 +1,36 @@
++/*
++ *  GRUB  --  GRand Unified Bootloader
++ *  Copyright (C) 2015  Free Software Foundation, Inc.
++ *
++ *  GRUB is free software: you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation, either version 3 of the License, or
++ *  (at your option) any later version.
++ *
++ *  GRUB is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#ifndef GRUB_TDX_HEADER
++#define GRUB_TDX_HEADER 1
++
++#if defined (GRUB_MACHINE_EFI)
++grub_err_t grub_tdx_log_event(unsigned char *buf, grub_size_t size,
++			      grub_uint8_t pcr, const char *description);
++#else
++static inline grub_err_t grub_tdx_log_event(
++	unsigned char *buf __attribute__ ((unused)),
++	grub_size_t size __attribute__ ((unused)),
++	grub_uint8_t pcr __attribute__ ((unused)),
++	const char *description __attribute__ ((unused)))
++{
++	return 0;
++};
++#endif
++
++#endif

@@ -571,3 +571,5 @@ Patch0570: 0570-font-Fix-an-integer-underflow-in-blit_comb.patch
 Patch0571: 0571-font-Harden-grub_font_blit_glyph-and-grub_font_blit_.patch
 Patch0572: 0572-font-Assign-null_font-to-glyphs-in-ascii_font_glyph.patch
 Patch0573: 0573-normal-charset-Fix-an-integer-overflow-in-grub_unico.patch
+Patch0574: 0574-Enable-TDX-measurement-to-RTMR-register.patch
+Patch0575: 0575-Enable-shared-processor-mode-in-vector-5.patch

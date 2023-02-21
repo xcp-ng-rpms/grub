@@ -1,0 +1,28 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Avnish Chouhan <avnish@linux.vnet.ibm.com>
+Date: Tue, 24 Jan 2023 08:01:47 -0500
+Subject: [PATCH] Enable shared processor mode in vector 5
+
+This patch is to update the vector 5 which is troubling some
+machines to bootup properly in shared processor mode.
+
+Signed-off-by: Avnish Chouhan <avnish@linux.vnet.ibm.com>
+(cherry picked from commit 30d2ee836649386a336f9437c8a149c8e642a46b)
+(cherry picked from commit 7e309d139c5eca1f03659e612a14499213e79c95)
+---
+ grub-core/kern/ieee1275/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/grub-core/kern/ieee1275/init.c b/grub-core/kern/ieee1275/init.c
+index 37f3098c39..3ea9b73b2a 100644
+--- a/grub-core/kern/ieee1275/init.c
++++ b/grub-core/kern/ieee1275/init.c
+@@ -372,7 +372,7 @@ grub_ieee1275_ibm_cas (void)
+     .vec4 = 0x0001, // set required minimum capacity % to the lowest value
+     .vec5_size = 1 + sizeof(struct option_vector5) - 2,
+     .vec5 = {
+-	0, 0, 0, 0, 0, 0, 0, 0, 256
++	0, 192, 0, 128, 0, 0, 0, 0, 256
+     }
+   };
+ 

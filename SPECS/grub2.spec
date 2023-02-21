@@ -7,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	142%{?dist}.1
+Release:	142%{?dist}.3
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -510,6 +510,14 @@ fi
 %endif
 
 %changelog
+* Mon Feb 06 2023 Robbie Harwood <rharwood@redhat.com> - 2.02-142.el8_7.3
+- Sync with 8.8 (actually 2.02-148)
+- Resolves: #2139508
+
+* Thu Jan 19 2023 Robbie Harwood <rharwood@redhat.com> - 2.02-142.el8_7.2
+- Sync with 8.8 (actually 2.02-147)
+- Resolves: #2162411
+
 * Thu Nov 08 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-142.el8_7.1
 - Sync with 8.8 (actually 2.02-145)
 - Resolves: CVE-2022-2601
