@@ -7,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	142%{?dist}.3
+Release:	148%{?dist}
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -510,21 +510,30 @@ fi
 %endif
 
 %changelog
-* Mon Feb 06 2023 Robbie Harwood <rharwood@redhat.com> - 2.02-142.el8_7.3
-- Sync with 8.8 (actually 2.02-148)
+* Mon Feb 06 2023 Robbie Harwood <rharwood@redhat.com> - 2.02-148
+- ppc64le: cas5, take 3
 - Resolves: #2139508
 
-* Thu Jan 19 2023 Robbie Harwood <rharwood@redhat.com> - 2.02-142.el8_7.2
-- Sync with 8.8 (actually 2.02-147)
-- Resolves: #2162411
+* Tue Jan 10 2023 Robbie Harwood <rharwood@redhat.com> - 2.02-147
+- Enable TDX measurement to RTMR register
+- Resolves: #1981485
 
-* Thu Nov 08 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-142.el8_7.1
-- Sync with 8.8 (actually 2.02-145)
+* Wed Dec 14 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-146
+- ppc64le: fix lpar cas5
+- Resolves: #2139508
+
+* Tue Nov 08 2022 Robbie Harwood <rharwood@redhat.com> - 1:2.02-145
+- Font CVE fixes
 - Resolves: CVE-2022-2601
 
-* Thu Sep 08 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-142
-- Drop the arena size changes
-- Resolves: #2118896
+* Tue Oct 18 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-144
+- blscfg: don't assume newline at end of cfg
+- Resolves: #2121132
+
+* Wed Oct 12 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-143
+- x86-efi: Fix an incorrect array size in kernel allocation
+- Also merge with 8.7
+- Resolves: #2031288
 
 * Thu Aug 25 2022 Robbie Harwood <rharwood@redhat.com> - 2.02-141
 - Implement vec5 for cas negotiation
