@@ -1,3 +1,9 @@
+%global package_speccommit 0d031235d1f0270cef50bfa1886ec97340a221f8
+%global usver 2.02
+%global xsver 3.2.0
+%global xsrel %{xsver}%{?xscount}%{?xshash}
+%global package_srccommit grub-2.02
+
 # Modules always contain just 32-bit code
 %define _libdir %{_exec_prefix}/lib
 
@@ -38,22 +44,17 @@
 Name:           grub
 Epoch:          1
 Version:        2.02
-Release:        3.1.0%{?dist}
+Release:        %{?xsrel}%{?dist}
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
 License:        GPLv3+
 URL:            http://www.gnu.org/software/grub/
 Obsoletes:      grub < 1:0.98
-
-Source0: https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz
-
+Source0: grub-2.02.tar.gz
 Patch0: 0001-tsc-Change-default-tsc-calibration-method-to-pmtimer.patch
 Patch1: wait-before-drain.patch
-
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz) = e54c99aaff5e5f6f5d3b06028506c57e66d8ef77
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/grub.pg/archive?format=tar&at=v3.1.0#/grub.patches.tar) = d168972f8dea5e143ef33798e45b92a5ee010061
-
+Patch2: 0001-lib-relocator-always-enforce-the-requested-alignment.patch
 
 BuildRequires:  gcc
 BuildRequires:  flex bison binutils python
@@ -87,8 +88,6 @@ provides support for PC BIOS systems.
 
 %ifarch %{efiarchs}
 %package efi
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz) = e54c99aaff5e5f6f5d3b06028506c57e66d8ef77
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/grub.pg/archive?format=tar&at=v3.1.0#/grub.patches.tar) = d168972f8dea5e143ef33798e45b92a5ee010061
 Summary:        GRUB for EFI systems.
 Group:          System Environment/Base
 Requires:       %{name}-tools = %{epoch}:%{version}-%{release}
@@ -102,8 +101,6 @@ provides support for EFI systems.
 %endif
 
 %package tools
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/grub/archive?at=2.02&format=tar.gz&prefix=grub-2.02#/grub-2.02.tar.gz) = e54c99aaff5e5f6f5d3b06028506c57e66d8ef77
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/grub.pg/archive?format=tar&at=v3.1.0#/grub.patches.tar) = d168972f8dea5e143ef33798e45b92a5ee010061
 Summary:        Support tools for GRUB.
 Group:          System Environment/Base
 Requires:       gettext os-prober which file system-logos
@@ -279,7 +276,7 @@ cat << EOF > ${RPM_BUILD_ROOT}%{_sysconfdir}/prelink.conf.d/grub2.conf
 -b /usr/sbin/grub2-sparc64-setup
 EOF
 
-%clean    
+%clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
@@ -391,6 +388,10 @@ fi
 %{_mandir}/man8/*
 
 %changelog
+* Wed May 17 2023 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.02-3.2.0
+- Convert to Koji
+- HP-1153: always enforce requested allocation alignment
+
 * Thu Sep 9 2021 Igor Druzhinin <igor.druzhinin@citrix.com> - 2.02-3.1.0
 - CP-37219: Fix a boot hang due to i8254 clock gating on RKL
 
