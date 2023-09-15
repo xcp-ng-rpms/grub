@@ -1,6 +1,6 @@
-%global package_speccommit df392c013db5a8c6e9409b91ff37e1f93e6c57ab
+%global package_speccommit fc34746fb50a39e9650f459538e08b6ea78a3fda
 %global usver 2.06
-%global xsver 4.0.1
+%global xsver 4.0.2
 %global xsrel %{xsver}%{?xscount}%{?xshash}
 %global package_srccommit grub-2.06
 
@@ -48,7 +48,7 @@
 Name:           grub
 Epoch:          1
 Version:        2.06
-Release:        %{?xsrel}%{?dist}
+Release: %{?xsrel}%{?dist}
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
@@ -58,6 +58,7 @@ Obsoletes:      grub < 1:0.98
 Source0: grub-2.06.tar.gz
 Source1: gnulib.tar.gz
 Patch0: wait-before-drain.patch
+Patch1: 0001-lib-relocator-always-enforce-the-requested-alignment.patch
 
 BuildRequires:  devtoolset-10-gcc
 BuildRequires:  flex bison binutils python
@@ -400,6 +401,9 @@ fi
 %{?_cov_results_package}
 
 %changelog
+* Wed May 17 2023 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.06-4.0.2
+- HP-1153: always enforce requested allocation alignment
+
 * Mon Feb 21 2022 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.06-4.0.1
 - CP-38416: Enable static analysis
 

@@ -1,0 +1,58 @@
+From 45d7b7f508a6ab5bd1837920574f3d3d526271e0 Mon Sep 17 00:00:00 2001
+From: Roger Pau Monne <roger.pau@citrix.com>
+Date: Thu, 27 Apr 2023 16:52:44 +0200
+Subject: [PATCH v2] lib/relocator: always enforce the requested alignment in
+ malloc_in_range()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+On failure to allocate from grub_relocator_firmware_alloc_region() in
+malloc_in_range() the function would stop enforcing the alignment, and
+the following was returned:
+
+lib/relocator.c:431: trying to allocate in 0x200000-0xffbf9fff aligned 0x200000 size 0x406000
+lib/relocator.c:1197: allocated: 0x74de2000+0x406000
+lib/relocator.c:1407: allocated 0x74de2000/0x74de2000
+
+Fix this by making sure that target always contains a suitably aligned
+address.  After the change the return from the function is:
+
+lib/relocator.c:431: trying to allocate in 0x200000-0xffb87fff aligned 0x200000 size 0x478000
+lib/relocator.c:1204: allocated: 0x74c00000+0x478000
+lib/relocator.c:1414: allocated 0x74c00000/0x74c00000
+
+Fixes: 3a5768645c05 ('First version of allocation from firmware')
+Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+---
+Changes since v1:
+ - Fix one instance to use ALIGN_DOWN().
+---
+ grub-core/lib/relocator.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/grub-core/lib/relocator.c b/grub-core/lib/relocator.c
+index bfcc70dac3cc..725bca7c3c10 100644
+--- a/grub-core/lib/relocator.c
++++ b/grub-core/lib/relocator.c
+@@ -744,7 +744,7 @@ malloc_in_range (struct grub_relocator *rel,
+ 	    {
+ 	      target = starta;
+ 	      if (target < start)
+-		target = start;
++		target = ALIGN_UP (start, align);
+ 	      if (target + size <= end && target + size <= events[j].pos)
+ 		/* Found an usable address.  */
+ 		goto found;
+@@ -761,7 +761,7 @@ malloc_in_range (struct grub_relocator *rel,
+ 	    {
+ 	      target = starta - size;
+ 	      if (target > end - size)
+-		target = end - size;
++		target = ALIGN_DOWN (end - size, align);
+ 	      if (target >= start && target >= events[j].pos)
+ 		goto found;
+ 	    }
+-- 
+2.40.0
+
