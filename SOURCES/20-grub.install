@@ -109,7 +109,11 @@ case "$COMMAND" in
                 sed -i -e "s,^initrd.*,initrd ${BOOTPREFIX}${INITRD},g" "${BLS_TARGET}"
             fi
 
-            if [[ "$KERNEL_VERSION" == *\+* ]] && [ "x$GRUB_DEFAULT_TO_DEBUG" != "xtrue" ]; then
+            if ( [[ "$KERNEL_VERSION" != *${GRUB_DEFAULT_KERNEL_TYPE}* ]] && \
+                     [ "x$GRUB_NON_STANDARD_KERNEL" == "xtrue" ] ) || \
+                   ( echo "$KERNEL_VERSION" | grep -E -q "64k|auto|rt|uki" && \
+                    	[ "x$GRUB_NON_STANDARD_KERNEL" != "xtrue" ] ) || \
+                   ( [[ "$KERNEL_VERSION" == *debug* ]] && [ "x$GRUB_DEFAULT_TO_DEBUG" != "xtrue" ] ); then
                 GRUB_UPDATE_DEFAULT_KERNEL=false
             fi
 

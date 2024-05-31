@@ -1,0 +1,39 @@
+From a7192a650c1e94221a86b49f5132fb47a4dda6ea Mon Sep 17 00:00:00 2001
+From: Solar Designer <solar@openwall.com>
+Date: Tue, 6 Feb 2024 22:05:45 +0100
+Subject: [PATCH 3/3] grub-set-bootflag: Exit calmly when not running as root
+
+Exit calmly when not installed SUID root and invoked by non-root.  This
+allows installing user/grub-boot-success.service unconditionally while
+supporting non-SUID installation of the program for some limited usage.
+
+Signed-off-by: Solar Designer <solar@openwall.com>
+---
+ util/grub-set-bootflag.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/util/grub-set-bootflag.c b/util/grub-set-bootflag.c
+index 698b55a1ab93..a51805fa8cec 100644
+--- a/util/grub-set-bootflag.c
++++ b/util/grub-set-bootflag.c
+@@ -85,6 +85,17 @@ int main(int argc, char *argv[])
+   bootflag = bootflags[i];
+   len = strlen (bootflag);
+ 
++  /*
++   * Exit calmly when not installed SUID root and invoked by non-root.  This
++   * allows installing user/grub-boot-success.service unconditionally while
++   * supporting non-SUID installation of the program for some limited usage.
++   */
++  if (geteuid())
++    {
++      printf ("grub-set-bootflag not running as root, no action taken\n");
++      return 0;
++    }
++
+   /*
+    * setegid avoids the new grubenv's gid being that of the user.
+    */
+-- 
+2.43.0
+

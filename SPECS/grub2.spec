@@ -1,3 +1,7 @@
+%global efi_vendor almalinux
+%global efidir almalinux
+%global efi_esp_dir /boot/efi/EFI/%{efidir}
+
 %undefine _hardened_build
 
 %global tarversion 2.02
@@ -7,7 +11,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	148%{?dist}
+Release:	156%{?dist}.alma.1
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -24,30 +28,28 @@ Source6:	gitignore
 Source8:	strtoull_test.c
 Source9:	20-grub.install
 Source12:	99-grub-mkconfig.install
-Source13:	redhatsecurebootca3.cer
-Source14:	redhatsecureboot301.cer
-Source15:	redhatsecurebootca5.cer
-Source16:	redhatsecureboot502.cer
-Source17:	redhatsecureboot601.cer
-Source18:	redhatsecureboot701.cer
+Source13:	almalinuxsecurebootca0.cer
 Source19:	sbat.csv.in
 
 %include %{SOURCE1}
 
 %if 0%{with_efi_arch}
 %define old_sb_ca	%{SOURCE13}
-%define old_sb_cer	%{SOURCE14}
-%define old_sb_key	redhatsecureboot301
-%define sb_ca		%{SOURCE15}
-%define sb_cer		%{SOURCE16}
-%define sb_key		redhatsecureboot502
+%define old_sb_cer	%{SOURCE13}
+%define old_sb_key	almalinuxsecurebootca0
+%define sb_ca		%{SOURCE13}
+%define sb_cer		%{SOURCE13}
+%define sb_key		almalinuxsecurebootca0
 %endif
 
 %ifarch ppc64le
-%define old_sb_cer	%{SOURCE17}
-%define sb_cer		%{SOURCE18}
-%define sb_key		redhatsecureboot702
+%define old_sb_cer	%{SOURCE13}
+%define sb_cer		%{SOURCE13}
+%define sb_key		almalinuxsecurebootca0
 %endif
+
+# AlmaLinux: keep upstream EVR for RHEL SBAT entry
+%define rhel_version_release $(echo %{version}-%{release} | sed 's/\.alma.*//')
 
 # generate with do-rebase
 %include %{SOURCE2}
@@ -166,7 +168,7 @@ This subpackage provides tools for support of all platforms.
 mkdir grub-%{grubefiarch}-%{tarversion}
 grep -A100000 '# stuff "make" creates' .gitignore > grub-%{grubefiarch}-%{tarversion}/.gitignore
 cp %{SOURCE4} grub-%{grubefiarch}-%{tarversion}/unifont.pcf.gz
-sed -e "s,@@VERSION@@,%{version},g" -e "s,@@VERSION_RELEASE@@,%{version}-%{release},g" \
+sed -e "s,@@VERSION@@,%{version},g" -e "s,@@VERSION_RELEASE@@,%{version}-%{release},g" -e "s,@@RHEL_VERSION_RELEASE@@,%{rhel_version_release},g" \
     %{SOURCE19} > grub-%{grubefiarch}-%{tarversion}/sbat.csv
 git add grub-%{grubefiarch}-%{tarversion}
 %endif
@@ -341,6 +343,20 @@ if [ "$1" = 0 ]; then
 	/sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/%{name}-dev.info.gz || :
 fi
 
+%if 0%{with_efi_arch}
+%posttrans %{package_arch}
+if [ -d /sys/firmware/efi ] && [ ! -f %{efi_esp_dir}/grub.cfg ]; then
+    grub2-mkconfig -o %{efi_esp_dir}/grub.cfg || :
+fi
+%endif
+
+%if 0%{with_alt_efi_arch}
+%posttrans %{alt_package_arch}
+if [ -d /sys/firmware/efi ] && [ ! -f %{efi_esp_dir}/grub.cfg ]; then
+    grub2-mkconfig -o %{efi_esp_dir}/grub.cfg || :
+fi
+%endif
+
 %files common -f grub.lang
 %dir %{_libdir}/grub/
 %dir %{_datarootdir}/grub/
@@ -510,6 +526,44 @@ fi
 %endif
 
 %changelog
+* Wed Apr 10 2024 Andrew Lukoshko <alukoshko@almalinux.org> - 2.02-156.alma.1
+- Debrand for AlmaLinux
+
+* Tue Feb 20 2024 Nicolas Frayer <nfrayer@redhat.com> - 2.02-156
+- fs/ntfs: OOB write fix
+- (CVE-2023-4692)
+- Resolves: #RHEL-11566
+
+* Thu Feb 8 2024 Nicolas Frayer <nfrayer@redhat.com> - 2.06-155
+- grub-set-bootflag: Fix for CVE-2024-1048
+- (CVE-2024-1048)
+- Resolves: #RHEL-20746
+
+* Mon Nov 27 2023 Nicolas Frayer <nfrayer@redhat.com> - 2.02-154
+- Missing install script for previous commit
+- Related: #RHEL-4343
+
+* Fri Nov 24 2023 Nicolas Frayer <nfrayer@redhat.com> - 2.02-153
+- util: Enable default kernel for updates
+- Resolves: #RHEL-4343
+
+* Fri Oct 20 2023 Nicolas Frayer <nfrayer@redhat.com> - 2.02-152
+- kern/ieee1275/init: ppc64: Restrict high memory in presence
+  of fadump
+- Resolves: #RHEL-14283
+
+* Mon Aug 28 2023 Nicolas Frayer <nfrayer@redhat.com> - 2.02-151
+- util: Regenerate kernelopts if missing on ppc
+- Resolves: #2051889
+
+* Fri Jun 16 2023 Nicolas Frayer <nfrayer@redhat.com> - 2.02-150
+- kern/ieee1275/init: sync vec5 patchset with upstream
+- Resolves: #2172111
+
+* Wed Jun 14 2023 Nicolas Frayer <nfrayer@redhat.com> - 2.02-149
+- efi/http: change uint32_t to uintn_t for grub_efi_http_message_t
+- Resolves: #2178388
+
 * Mon Feb 06 2023 Robbie Harwood <rharwood@redhat.com> - 2.02-148
 - ppc64le: cas5, take 3
 - Resolves: #2139508
