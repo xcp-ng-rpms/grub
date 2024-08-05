@@ -33,7 +33,7 @@
 		%{nil}
 
 %global host_cflags_ %{expand:%%(echo %{build_cflags} %{?_hardening_cflags} | %{cflags_sed})} -fstack-protector-strong
-%ifarch x86_64
+%ifarch %{x86_64}
 %global host_cflags %{host_cflags_} -fcf-protection
 %else
 %global host_cflags %{host_cflags_}
@@ -106,7 +106,7 @@
 
 
 %global efi_only aarch64 %{arm} riscv64
-%global efi_arch x86_64 ia64 %{efi_only}
+%global efi_arch %{x86_64} ia64 %{efi_only}
 %ifarch %{efi_arch}
 %global with_efi_arch 1
 %else
@@ -126,7 +126,7 @@
 %global efi_modules " efi_netfs efifwsetup efinet lsefi lsefimmap connectefi "
 %endif
 
-%ifarch x86_64 %{ix86}
+%ifarch %{x86_64} %{ix86}
 %global platform_modules " backtrace chain tpm usb usbserial_common usbserial_pl2303 usbserial_ftdi usbserial_usbdebug keylayouts at_keyboard "
 %endif
 
@@ -153,7 +153,7 @@
 %global platform pc
 %endif
 
-%ifarch x86_64
+%ifarch %{x86_64}
 %global efiarch x64
 %global target_cpu_name %{_arch}
 %global grub_target_name %{_arch}-efi
@@ -240,7 +240,7 @@
 
 %global evr %{epoch}:%{version}-%{release}
 
-%ifarch x86_64
+%ifarch %{x86_64}
 %global with_efi_common 1
 %global with_legacy_modules 1
 %global with_legacy_common 1

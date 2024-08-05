@@ -38,25 +38,13 @@ Source12:	sbat.csv.in
 
 %include %{SOURCE1}
 
-%ifarch x86_64 aarch64 ppc64le
+%ifarch %{x86_64} aarch64 ppc64le
 %define sb_ca		%{_datadir}/pki/sb-certs/secureboot-ca-%{_arch}.cer
 %define sb_cer		%{_datadir}/pki/sb-certs/secureboot-grub2-%{_arch}.cer
 %endif
 
-%if 0%{?centos}
+%define sb_key         almalinuxsecurebootca0
 
-%ifarch x86_64 aarch64 ppc64le
-%define sb_key		centossecureboot202
-%endif
-%else
-%ifarch x86_64 aarch64
-%define sb_key		redhatsecureboot502
-%endif
-%ifarch ppc64le
-%define sb_key		redhatsecureboot702
-%endif
-
-%endif
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	binutils
@@ -108,6 +96,9 @@ variety of kernel formats, file systems, computer architectures and \
 hardware devices.\
 %{nil}
 
+# AlmaLinux: keep upstream EVR for RHEL SBAT entry
+%define rhel_version_release $(echo %{version}-%{release} | sed 's/\.alma.*//')
+
 # generate with do-rebase
 %include %{SOURCE11}
 
@@ -139,7 +130,7 @@ Requires(pre):	sed
 %{desc}
 This subpackage provides tools for support of all platforms.
 
-%ifarch x86_64
+%ifarch %{x86_64}
 %package tools-efi
 Summary:	Support tools for GRUB.
 Requires:	gettext-runtime os-prober file
@@ -204,7 +195,7 @@ This subpackage provides the GRUB user-space emulation modules.
 mkdir grub-%{grubefiarch}-%{tarversion}
 grep -A100000 '# stuff "make" creates' .gitignore > grub-%{grubefiarch}-%{tarversion}/.gitignore
 cp %{SOURCE4} grub-%{grubefiarch}-%{tarversion}/unifont.pcf.gz
-sed -e "s,@@VERSION@@,%{version},g" -e "s,@@VERSION_RELEASE@@,%{version}-%{release},g" \
+sed -e "s,@@VERSION@@,%{version},g" -e "s,@@VERSION_RELEASE@@,%{version}-%{release},g" -e "s,@@RHEL_VERSION_RELEASE@@,%{rhel_version_release},g" \
     %{SOURCE12} > grub-%{grubefiarch}-%{tarversion}/sbat.csv
 git add grub-%{grubefiarch}-%{tarversion}
 %endif
@@ -273,7 +264,7 @@ rm -fr $RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 ln -s grub2-set-password ${RPM_BUILD_ROOT}/%{_sbindir}/grub2-setpassword
 echo '.so man8/grub2-set-password.8' > ${RPM_BUILD_ROOT}/%{_datadir}/man/man8/grub2-setpassword.8
-%ifnarch x86_64
+%ifnarch %{x86_64}
 rm -vf ${RPM_BUILD_ROOT}/%{_bindir}/grub2-render-label
 rm -vf ${RPM_BUILD_ROOT}/%{_sbindir}/grub2-bios-setup
 rm -vf ${RPM_BUILD_ROOT}/%{_sbindir}/grub2-macbless
@@ -441,7 +432,7 @@ mv ${EFI_HOME}/grub.cfg.stb ${EFI_HOME}/grub.cfg
 %{_datadir}/man/man1/grub2-editenv*
 %{_datadir}/man/man1/grub2-mkpasswd-*
 
-%ifarch x86_64
+%ifarch %{x86_64}
 %files tools-efi
 %{_bindir}/grub2-glue-efi
 %{_bindir}/grub2-render-label
@@ -502,7 +493,7 @@ mv ${EFI_HOME}/grub.cfg.stb ${EFI_HOME}/grub.cfg
 
 %if %{with_legacy_arch}
 %{_sbindir}/grub2-install
-%ifarch x86_64
+%ifarch %{x86_64}
 %{_sbindir}/grub2-bios-setup
 %else
 %exclude %{_sbindir}/grub2-bios-setup
@@ -573,6 +564,9 @@ mv ${EFI_HOME}/grub.cfg.stb ${EFI_HOME}/grub.cfg
 %endif
 
 %changelog
+* Mon Aug 05 2024 Andrew Lukoshko <alukoshko@almalinux.org> - 2.06-122.alma.1
+- Debrand for AlmaLinux
+
 * Wed Jul 31 2024 Andrew Lukoshko <alukoshko@almalinux.org> - 2.06-122
 - grub2-mkconfig: Simplify os_name detection
 - Resolves: #RHEL-32099
