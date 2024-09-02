@@ -17,7 +17,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.06
-Release:	122%{?dist}.alma.1
+Release:	127%{?dist}.alma.1
 Summary:	Bootloader with support for Linux, Multiboot and more
 License:	GPL-3.0-or-later
 URL:		http://www.gnu.org/software/grub/
@@ -221,10 +221,10 @@ git commit -m "After making subdirs"
 
 %build
 %if 0%{with_efi_arch}
-%{expand:%do_primary_efi_build %%{grubefiarch} %%{grubefiname} %%{grubeficdname} %%{_target_platform} %%{efi_target_cflags} %%{efi_host_cflags}}
+%{expand:%do_primary_efi_build %%{grubefiarch} %%{grubefiname} %%{grubeficdname} %%{_target_platform} %%{efi_target_cflags} %%{efi_host_cflags} %{sb_ca} %{sb_cer} %{sb_key}}
 %endif
 %if 0%{with_alt_efi_arch}
-%{expand:%do_alt_efi_build %%{grubaltefiarch} %%{grubaltefiname} %%{grubalteficdname} %%{_alt_target_platform} %%{alt_efi_target_cflags} %%{alt_efi_host_cflags}}
+%{expand:%do_alt_efi_build %%{grubaltefiarch} %%{grubaltefiname} %%{grubalteficdname} %%{_alt_target_platform} %%{alt_efi_target_cflags} %%{alt_efi_host_cflags} %{sb_ca} %{sb_cer} %{sb_key}}
 %endif
 %if 0%{with_legacy_arch}
 %{expand:%do_legacy_build %%{grublegacyarch}}
@@ -564,8 +564,29 @@ mv ${EFI_HOME}/grub.cfg.stb ${EFI_HOME}/grub.cfg
 %endif
 
 %changelog
-* Mon Aug 05 2024 Andrew Lukoshko <alukoshko@almalinux.org> - 2.06-122.alma.1
+* Mon Sep 02 2024 Andrew Lukoshko <alukoshko@almalinux.org> - 2.06-127.alma.1
 - Debrand for AlmaLinux
+
+* Fri Aug 30 2024 Nicolas Frayer <nfrayer@redhat.com> - 2.06-127
+- Sync with rhel9 for critical patches
+- Resolves: #RHEL-56733
+
+* Wed Aug 28 2024 Nicolas Frayer <nfrayer@redhat.com> - 2.06-126
+- grub-mkconfig dont overwrite BLS cmdline if BLSCFG
+- Resolves: #RHEL-53848
+
+* Mon Aug 5 2024 Peter Jones <pjones@redhat.com> - 2.06-125
+- spec/macros: Modified spec and macros files for RHEL10 signing
+- Related: #RHEL-51867
+
+* Thu Aug 1 2024 Nicolas Frayer <nfrayer@redhat.com> - 2.06-124
+- grub2-mkconfig: Remove mountpoint check
+- Related: #RHEL-32099
+
+* Wed Jul 31 2024 Nicolas Frayer <nfrayer@redhat.com> - 2.06-123
+- Use the set of macros provided by system-sb-certs for signing
+- Resolves: #RHEL-51867
+- Resolves: #RHELBLD-15314
 
 * Wed Jul 31 2024 Andrew Lukoshko <alukoshko@almalinux.org> - 2.06-122
 - grub2-mkconfig: Simplify os_name detection

@@ -350,3 +350,17 @@ Patch0349: 0349-Ignore-warnings-for-incompatible-types.patch
 Patch0350: 0350-fs-xfs-Fix-XFS-directory-extent-parsing.patch
 Patch0351: 0351-grub2-mkconfig-Ensure-grub-cfg-stub-is-not-overwritt.patch
 Patch0352: 0352-grub2-mkconfig-Simplify-os_name-detection.patch
+Patch0353: 0353-grub-mkconfig-Remove-check-for-mount-point-for-grub-.patch
+Patch0354: 0354-grub-mkconfig-dont-overwrite-BLS-cmdline-if-BLSCFG.patch
+Patch0355: 0355-grub2-mkconfig-Pass-all-boot-params-when-used-by-ana.patch
+Patch0356: 0356-grub-set-bootflag-Conservative-partial-fix-for-CVE-2.patch
+Patch0357: 0357-grub-set-bootflag-More-complete-fix-for-CVE-2024-104.patch
+Patch0358: 0358-grub-set-bootflag-Exit-calmly-when-not-running-as-ro.patch
+Patch0359: 0359-fs-ntfs-Fix-an-OOB-write-when-parsing-the-ATTRIBUTE_.patch
+Patch0360: 0360-fs-ntfs-Fix-an-OOB-read-when-reading-data-from-the-r.patch
+Patch0361: 0361-fs-ntfs-Fix-an-OOB-read-when-parsing-directory-entri.patch
+Patch0362: 0362-fs-ntfs-Fix-an-OOB-read-when-parsing-bitmaps-for-ind.patch
+Patch0363: 0363-fs-ntfs-Fix-an-OOB-read-when-parsing-a-volume-label.patch
+Patch0364: 0364-fs-ntfs-Make-code-more-readable.patch
+Patch0365: 0365-cmd-search-Rework-of-CVE-2023-4001-fix.patch
+Patch0366: 0366-grub-mkconfig.in-turn-off-executable-owner-bit.patch
