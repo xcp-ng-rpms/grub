@@ -1,0 +1,86 @@
+From 4531bd6bac28a83717fec6b42b11d63fc0158bd0 Mon Sep 17 00:00:00 2001
+From: Chad Kimes <chkimes@github.com>
+Date: Mon, 21 Mar 2022 17:29:15 -0400
+Subject: [PATCH 2/5] net/net: Add vlan information to net_ls_addr output
+Content-Type: text/plain; charset = "utf-8"
+Content-Transfert-Encoding: 8bit
+
+Example output:
+  grub> net_ls_addr
+  efinet1 00:11:22:33:44:55 192.0.2.100 vlan100
+
+Signed-off-by: Chad Kimes <chkimes@github.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+Backported-by: Thierry Escande <thierry.escande@vates.tech>
+Upstream-patch: 98c299e540ec2942c2734c3e56cf586302d3eef0
+
+ grub-core/net/net.c | 19 ++++++++++++++++++-
+ include/grub/net.h  |  6 ++++++
+ 2 files changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/grub-core/net/net.c b/grub-core/net/net.c
+index 4d3eb5c1a..0a93f5931 100644
+--- a/grub-core/net/net.c
++++ b/grub-core/net/net.c
+@@ -781,6 +781,20 @@ grub_net_hwaddr_to_str (const grub_net_link_level_address_t *addr, char *str)
+   grub_printf (_("Unsupported hw address type %d\n"), addr->type);
+ }
+ 
++void
++grub_net_vlan_to_str (grub_uint16_t vlantag, char *str)
++{
++  str[0] = 0;
++
++  /* 12 bits are used to identify the vlan in 802.1Q. */
++  vlantag = vlantag & 0x0fff;
++
++  if (vlantag == 0)
++    return;
++
++  grub_snprintf (str, GRUB_NET_MAX_STR_VLAN_LEN, "vlan%u", vlantag);
++}
++
+ int
+ grub_net_hwaddr_cmp (const grub_net_link_level_address_t *a,
+ 		     const grub_net_link_level_address_t *b)
+@@ -1250,9 +1264,12 @@ grub_cmd_listaddrs (struct grub_command *cmd __attribute__ ((unused)),
+   {
+     char bufh[GRUB_NET_MAX_STR_HWADDR_LEN];
+     char bufn[GRUB_NET_MAX_STR_ADDR_LEN];
++    char bufv[GRUB_NET_MAX_STR_VLAN_LEN];
++
+     grub_net_hwaddr_to_str (&inf->hwaddress, bufh);
+     grub_net_addr_to_str (&inf->address, bufn);
+-    grub_printf ("%s %s %s\n", inf->name, bufh, bufn);
++    grub_net_vlan_to_str (inf->vlantag, bufv);
++    grub_printf ("%s %s %s %s\n", inf->name, bufh, bufn, bufv);
+   }
+   return GRUB_ERR_NONE;
+ }
+diff --git a/include/grub/net.h b/include/grub/net.h
+index 7ae4b6bd8..b2d044ceb 100644
+--- a/include/grub/net.h
++++ b/include/grub/net.h
+@@ -512,12 +512,18 @@ grub_net_addr_cmp (const grub_net_network_level_address_t *a,
+ 
+ #define GRUB_NET_MAX_STR_HWADDR_LEN (sizeof ("XX:XX:XX:XX:XX:XX"))
+ 
++/* Max VLAN id = 4094 */
++#define GRUB_NET_MAX_STR_VLAN_LEN (sizeof ("vlanXXXX"))
++
+ void
+ grub_net_addr_to_str (const grub_net_network_level_address_t *target,
+ 		      char *buf);
+ void
+ grub_net_hwaddr_to_str (const grub_net_link_level_address_t *addr, char *str);
+ 
++void
++grub_net_vlan_to_str (grub_uint16_t vlantag, char *str);
++
+ grub_err_t
+ grub_env_set_net_property (const char *intername, const char *suffix,
+                            const char *value, grub_size_t len);
+-- 
+2.45.2
+

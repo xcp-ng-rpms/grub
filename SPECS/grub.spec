@@ -48,7 +48,7 @@
 Name:           grub
 Epoch:          1
 Version:        2.06
-Release: %{?xsrel}%{?dist}
+Release: %{?xsrel}.1%{?dist}
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
@@ -59,6 +59,13 @@ Source0: grub-2.06.tar.gz
 Source1: gnulib.tar.gz
 Patch0: wait-before-drain.patch
 Patch1: 0001-lib-relocator-always-enforce-the-requested-alignment.patch
+
+# XCP-ng patches
+Patch1001: 0001-net-ethernet-Fix-VLAN-networking-on-little-endian-sy.patch
+Patch1002: 0002-net-net-Add-vlan-information-to-net_ls_addr-output.patch
+Patch1003: 0003-net-net-Add-net_set_vlan-command.patch
+Patch1004: 0004-kern-efi-efi-Print-VLAN-info-in-EFI-device-path.patch
+Patch1005: 0005-net-drivers-efi-efinet-Configure-VLAN-from-UEFI-devi.patch
 
 BuildRequires:  devtoolset-10-gcc
 BuildRequires:  flex bison binutils python
@@ -401,6 +408,9 @@ fi
 %{?_cov_results_package}
 
 %changelog
+* Wed Sep 25 2024 Thierry Escande <thierry.escande@vates.tech> - 2.06-4.0.2.1
+- Backport VLAN networking support for UEFI PXE boot
+
 * Wed May 17 2023 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.06-4.0.2
 - HP-1153: always enforce requested allocation alignment
 
