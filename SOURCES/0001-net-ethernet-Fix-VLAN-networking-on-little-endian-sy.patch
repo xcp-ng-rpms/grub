@@ -1,0 +1,62 @@
+From e733d8d2e864ab9d61e7b9eaf24733ae3ef56e56 Mon Sep 17 00:00:00 2001
+From: Chad Kimes <chkimes@github.com>
+Date: Wed, 2 Mar 2022 14:21:22 -0500
+Subject: [PATCH 1/5] net/ethernet: Fix VLAN networking on little-endian
+ systems
+Content-Type: text/plain; charset = "utf-8"
+Content-Transfert-Encoding: 8bit
+
+VLAN configuration seems to have never worked on little-endian systems.
+This is likely because VLANTAG_IDENTIFIER is not byte-swapped before
+copying into the net buffer, nor is inf->vlantag. We can resolve this by
+using grub_cpu_to_be16{_compile_time}() and its inverse when copying
+VLAN info to/from the net buffer.
+
+Signed-off-by: Chad Kimes <chkimes@github.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+Backported-by: Thierry Escande <thierry.escande@vates.tech>
+Upstream patch: c216df4036b67e27defafd65543c075274709b37
+
+ grub-core/net/ethernet.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/grub-core/net/ethernet.c b/grub-core/net/ethernet.c
+index 4d7ceed6f..a9906338c 100644
+--- a/grub-core/net/ethernet.c
++++ b/grub-core/net/ethernet.c
+@@ -58,7 +58,7 @@ send_ethernet_packet (struct grub_net_network_level_interface *inf,
+   struct etherhdr *eth;
+   grub_err_t err;
+   grub_uint8_t etherhdr_size;
+-  grub_uint16_t vlantag_id = VLANTAG_IDENTIFIER;
++  grub_uint16_t vlantag_id = grub_cpu_to_be16_compile_time (VLANTAG_IDENTIFIER);
+ 
+   etherhdr_size = sizeof (*eth);
+   COMPILE_TIME_ASSERT (sizeof (*eth) + 4 < GRUB_NET_MAX_LINK_HEADER_SIZE);
+@@ -93,8 +93,9 @@ send_ethernet_packet (struct grub_net_network_level_interface *inf,
+                    (char *) nb->data + etherhdr_size - 6, 2);
+ 
+       /* Add the tag in the middle */
++      grub_uint16_t vlan = grub_cpu_to_be16 (inf->vlantag);
+       grub_memcpy ((char *) nb->data + etherhdr_size - 6, &vlantag_id, 2);
+-      grub_memcpy ((char *) nb->data + etherhdr_size - 4, (char *) &(inf->vlantag), 2);
++      grub_memcpy ((char *) nb->data + etherhdr_size - 4, &vlan, 2);
+     }
+ 
+   return inf->card->driver->send (inf->card, nb);
+@@ -118,9 +119,9 @@ grub_net_recv_ethernet_packet (struct grub_net_buff *nb,
+   /* Check if a vlan-tag is present. If so, the ethernet header is 4 bytes */
+   /* longer than the original one. The vlantag id is extracted and the header */
+   /* is reseted to the original size. */
+-  if (grub_get_unaligned16 (nb->data + etherhdr_size - 2) == VLANTAG_IDENTIFIER)
++  if (grub_get_unaligned16 (nb->data + etherhdr_size - 2) == grub_cpu_to_be16_compile_time (VLANTAG_IDENTIFIER))
+     {
+-      vlantag = grub_get_unaligned16 (nb->data + etherhdr_size);
++      vlantag = grub_be_to_cpu16 (grub_get_unaligned16 (nb->data + etherhdr_size));
+       etherhdr_size += 4;
+       /* Move eth type to the original position */
+       grub_memcpy((char *) nb->data + etherhdr_size - 6,
+-- 
+2.45.2
+

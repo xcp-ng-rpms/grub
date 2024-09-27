@@ -1,0 +1,58 @@
+From 2bca85cb27b51792074771c43b22d7797c16abb8 Mon Sep 17 00:00:00 2001
+From: Chad Kimes <chkimes@github.com>
+Date: Mon, 21 Mar 2022 18:07:31 -0400
+Subject: [PATCH 4/5] kern/efi/efi: Print VLAN info in EFI device path
+Content-Type: text/plain; charset = "utf-8"
+Content-Transfert-Encoding: 8bit
+
+Signed-off-by: Chad Kimes <chkimes@github.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+Backported-by: Thierry Escande <thierry.escande@vates.tech>
+Upstream-patch: c143056a34b4ccc255a6ad4e96a5aa989d304760
+
+ grub-core/kern/efi/efi.c | 7 +++++++
+ include/grub/efi/api.h   | 9 +++++++++
+ 2 files changed, 16 insertions(+)
+
+diff --git a/grub-core/kern/efi/efi.c b/grub-core/kern/efi/efi.c
+index 8cff7be02..996e3c7c3 100644
+--- a/grub-core/kern/efi/efi.c
++++ b/grub-core/kern/efi/efi.c
+@@ -824,6 +824,13 @@ grub_efi_print_device_path (grub_efi_device_path_t *dp)
+ 			     sata->lun);
+ 	      }
+ 	      break;
++	    case GRUB_EFI_VLAN_DEVICE_PATH_SUBTYPE:
++	      {
++		grub_efi_vlan_device_path_t *vlan;
++		vlan = (grub_efi_vlan_device_path_t *) dp;
++		grub_printf ("/Vlan(%u)", vlan->vlan_id);
++	      }
++	      break;
+ 
+ 	    case GRUB_EFI_VENDOR_MESSAGING_DEVICE_PATH_SUBTYPE:
+ 	      dump_vendor_path ("Messaging",
+diff --git a/include/grub/efi/api.h b/include/grub/efi/api.h
+index f1a52210c..05db3b927 100644
+--- a/include/grub/efi/api.h
++++ b/include/grub/efi/api.h
+@@ -903,6 +903,15 @@ struct grub_efi_sata_device_path
+ } GRUB_PACKED;
+ typedef struct grub_efi_sata_device_path grub_efi_sata_device_path_t;
+ 
++#define GRUB_EFI_VLAN_DEVICE_PATH_SUBTYPE		20
++
++struct grub_efi_vlan_device_path
++{
++  grub_efi_device_path_t header;
++  grub_efi_uint16_t vlan_id;
++} GRUB_PACKED;
++typedef struct grub_efi_vlan_device_path grub_efi_vlan_device_path_t;
++
+ #define GRUB_EFI_VENDOR_MESSAGING_DEVICE_PATH_SUBTYPE	10
+ 
+ /* Media Device Path.  */
+-- 
+2.45.2
+

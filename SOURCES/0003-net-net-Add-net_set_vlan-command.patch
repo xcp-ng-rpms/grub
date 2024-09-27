@@ -1,0 +1,139 @@
+From 6ba49b5b8fc56a904cae6f47217752ad0f908f96 Mon Sep 17 00:00:00 2001
+From: Chad Kimes <chkimes@github.com>
+Date: Mon, 21 Mar 2022 17:29:16 -0400
+Subject: [PATCH 3/5] net/net: Add net_set_vlan command
+Content-Type: text/plain; charset = "utf-8"
+Content-Transfert-Encoding: 8bit
+
+Previously there was no way to set the 802.1Q VLAN identifier, despite
+support for vlantag in the net module. The only location vlantag was
+being populated was from PXE boot and only for Open Firmware hardware.
+This commit allows users to manually configure VLAN information for any
+interface.
+
+Example usage:
+  grub> net_ls_addr
+  efinet1 00:11:22:33:44:55 192.0.2.100
+  grub> net_set_vlan efinet1 100
+  grub> net_ls_addr
+  efinet1 00:11:22:33:44:55 192.0.2.100 vlan100
+  grub> net_set_vlan efinet1 0
+  efinet1 00:11:22:33:44:55 192.0.2.100
+
+Signed-off-by: Chad Kimes <chkimes@github.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+Backported-by: Thierry Escande <thierry.escande@vates.tech>
+Upstream-patch: 954c48b9c833d64b74ced1f27701af2ea5c6f55a
+
+ docs/grub.texi      | 20 ++++++++++++++++++++
+ grub-core/net/net.c | 41 ++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 60 insertions(+), 1 deletion(-)
+
+diff --git a/docs/grub.texi b/docs/grub.texi
+index f8b4b3b21..f7fc6d784 100644
+--- a/docs/grub.texi
++++ b/docs/grub.texi
+@@ -5493,6 +5493,7 @@ This command is only available on AArch64 systems.
+ * net_ls_dns::                  List DNS servers
+ * net_ls_routes::               List routing entries
+ * net_nslookup::                Perform a DNS lookup
++* net_set_vlan::                Set vlan id on an interface
+ @end menu
+ 
+ 
+@@ -5669,6 +5670,25 @@ is given, use default list of servers.
+ @end deffn
+ 
+ 
++@node net_set_vlan
++@subsection net_set_vlan
++
++@deffn Command net_set_vlan @var{interface} @var{vlanid}
++Set the 802.1Q VLAN identifier on @var{interface} to @var{vlanid}. For example,
++to set the VLAN identifier on interface @samp{efinet1} to @samp{100}:
++
++@example
++net_set_vlan efinet1 100
++@end example
++
++The VLAN identifier can be removed by setting it to @samp{0}:
++
++@example
++net_set_vlan efinet1 0
++@end example
++@end deffn
++
++
+ @node Internationalisation
+ @chapter Internationalisation
+ 
+diff --git a/grub-core/net/net.c b/grub-core/net/net.c
+index 0a93f5931..2e34c1c4c 100644
+--- a/grub-core/net/net.c
++++ b/grub-core/net/net.c
+@@ -1176,6 +1176,42 @@ grub_cmd_addroute (struct grub_command *cmd __attribute__ ((unused)),
+     }
+ }
+ 
++static grub_err_t
++grub_cmd_setvlan (struct grub_command *cmd __attribute__ ((unused)),
++		  int argc, char **args)
++{
++  const char *vlan_string, *vlan_string_end;
++  unsigned long vlantag;
++  struct grub_net_network_level_interface *inter;
++
++  if (argc != 2)
++    return grub_error (GRUB_ERR_BAD_ARGUMENT, N_("two arguments expected"));
++
++  vlan_string = args[1];
++  vlantag = grub_strtoul (vlan_string, &vlan_string_end, 10);
++
++  if (*vlan_string == '\0' || *vlan_string_end != '\0')
++    return grub_error (GRUB_ERR_BAD_NUMBER,
++		       N_("non-numeric or invalid number `%s'"), vlan_string);
++
++  if (vlantag > 4094)
++    return grub_error (GRUB_ERR_OUT_OF_RANGE,
++		       N_("vlan id `%s' not in the valid range of 0-4094"),
++		       vlan_string);
++
++  FOR_NET_NETWORK_LEVEL_INTERFACES (inter)
++    {
++      if (grub_strcmp (inter->name, args[0]) != 0)
++	continue;
++
++      inter->vlantag = vlantag;
++      return GRUB_ERR_NONE;
++    }
++
++  return grub_error (GRUB_ERR_BAD_ARGUMENT,
++                     N_("network interface not found"));
++}
++
+ static void
+ print_net_address (const grub_net_network_level_netaddress_t *target)
+ {
+@@ -1892,7 +1928,7 @@ grub_net_search_config_file (char *config)
+ static struct grub_preboot *fini_hnd;
+ 
+ static grub_command_t cmd_addaddr, cmd_deladdr, cmd_addroute, cmd_delroute;
+-static grub_command_t cmd_lsroutes, cmd_lscards;
++static grub_command_t cmd_setvlan, cmd_lsroutes, cmd_lscards;
+ static grub_command_t cmd_lsaddr, cmd_slaac;
+ 
+ GRUB_MOD_INIT(net)
+@@ -1930,6 +1966,9 @@ GRUB_MOD_INIT(net)
+   cmd_delroute = grub_register_command ("net_del_route", grub_cmd_delroute,
+ 					N_("SHORTNAME"),
+ 					N_("Delete a network route."));
++  cmd_setvlan = grub_register_command ("net_set_vlan", grub_cmd_setvlan,
++				       N_("SHORTNAME VLANID"),
++				       N_("Set an interface's vlan id."));
+   cmd_lsroutes = grub_register_command ("net_ls_routes", grub_cmd_listroutes,
+ 					"", N_("list network routes"));
+   cmd_lscards = grub_register_command ("net_ls_cards", grub_cmd_listcards,
+-- 
+2.45.2
+
