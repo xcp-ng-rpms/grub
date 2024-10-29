@@ -17,7 +17,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.06
-Release:	133%{?dist}
+Release:	134%{?dist}
 Summary:	Bootloader with support for Linux, Multiboot and more
 License:	GPL-3.0-or-later
 URL:		http://www.gnu.org/software/grub/
@@ -583,6 +583,10 @@ mv ${EFI_HOME}/grub.cfg.stb ${EFI_HOME}/grub.cfg
 %endif
 
 %changelog
+* Tue Oct 29 2024 Troy Dawson <tdawson@redhat.com>
+- Bump release for October 2024 mass rebuild:
+  Resolves: RHEL-64018
+
 * Mon Sep 23 2024 Leo Sandoval <lsandova@redhat.com> - 2.06-133
 - posttrans: condition EFI_HOME/grub.cfg cmds if stub is present
 - Resolves: #RHEL-59796
