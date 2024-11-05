@@ -285,13 +285,7 @@ Requires:	%{name}-common = %{evr}					\
 Requires:	%{name}-tools-minimal >= %{evr}				\
 Requires:	%{name}-tools-extra = %{evr}				\
 Requires:	%{name}-tools = %{evr}					\
-Requires:	%{efi_esp_dir}/shim%%(echo %{1} | cut -d- -f2).efi	\
 Provides:	%{name}-efi = %{evr}					\
-Provides:	almalinux(grub2-sig-key) = 202303				\
-%{expand:%%ifarch x86_64						\
-Conflicts:	shim-x64 <= 15.6-1.el8.alma					\
-Conflicts:	shim-ia32 <= 15.6-1.el8.alma				\
-%%endif}										\
 %{?legacy_provides:Provides:	%{name} = %{evr}}			\
 %{-o:Obsoletes:	%{name}-efi < %{evr}}					\
 									\
@@ -546,7 +540,7 @@ install -D -m 700 unicode.pf2					\\\
 	$RPM_BUILD_ROOT%{efi_esp_dir}/fonts/unicode.pf2		\
 ${RPM_BUILD_ROOT}/%{_bindir}/%{name}-editenv			\\\
 	${RPM_BUILD_ROOT}%{efi_esp_dir}/grubenv create		\
-ln -sf ../efi/EFI/%{efidir}/grubenv				\\\
+ln -sf ../efi/EFI/%{efi_vendor}/grubenv				\\\
 	$RPM_BUILD_ROOT/boot/grub2/grubenv			\
 cd ..								\
 %{nil}
@@ -595,14 +589,15 @@ install -d -m 0700 ${RPM_BUILD_ROOT}%{_sysconfdir}/sysconfig	\
 touch ${RPM_BUILD_ROOT}%{_sysconfdir}/default/grub		\
 ln -sf ../default/grub						\\\
 	${RPM_BUILD_ROOT}%{_sysconfdir}/sysconfig/grub		\
-touch ${RPM_BUILD_ROOT}/boot/%{name}/grub.cfg			\
+touch grub.cfg							\
+install -m 0600 grub.cfg ${RPM_BUILD_ROOT}/boot/%{name}/	\
 %{nil}
 
 %define define_legacy_variant_files()				\
 %{expand:%%files %{1}}						\
 %defattr(-,root,root,-)						\
 %config(noreplace) %{_sysconfdir}/%{name}.cfg			\
-%ghost %config(noreplace) %attr(0700,root,root)/boot/%{name}/grub.cfg	\
+%ghost %config(noreplace) %attr(0600,root,root)/boot/%{name}/grub.cfg	\
 %dir %attr(0700,root,root)/boot/loader/entries			\
 %ifarch ppc64le						\
 %dir %{_libdir}/grub/%{2}/					\

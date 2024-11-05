@@ -1,4 +1,9 @@
-SOURCES/almalinuxsecurebootca0.cer
 SOURCES/grub-2.02.tar.xz
+SOURCES/redhatsecureboot301.cer
+SOURCES/redhatsecureboot502.cer
+SOURCES/redhatsecureboot601.cer
+SOURCES/redhatsecureboot701.cer
+SOURCES/redhatsecurebootca3.cer
+SOURCES/redhatsecurebootca5.cer
 SOURCES/theme.tar.bz2
 SOURCES/unifont-5.1.20080820.pcf.gz

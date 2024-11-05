@@ -90,13 +90,10 @@ case "$COMMAND" in
             [[ -d "$BLS_DIR" ]] || mkdir -m 0700 -p "$BLS_DIR"
             BLS_ID="${MACHINE_ID}-${KERNEL_VERSION}"
             BLS_TARGET="${BLS_DIR}/${BLS_ID}.conf"
-            if [[ -f "${KERNEL_DIR}/bls.conf" ]]; then
-                cp -aT "${KERNEL_DIR}/bls.conf" "${BLS_TARGET}" || exit $?
-            else
-                mkbls "${KERNEL_VERSION}" \
-                    "$(date -u +%Y%m%d%H%M%S -d "$(stat -c '%y' "${KERNEL_DIR}")")" \
-                    >"${BLS_TARGET}"
-            fi
+            mkbls "${KERNEL_VERSION}" \
+                "$(date -u +%Y%m%d%H%M%S -d "$(stat -c '%y' "${KERNEL_DIR}")")" \
+                >"${BLS_TARGET}"
+            command -v restorecon &>/dev/null && restorecon -R "${BLS_TARGET}"
 
             LINUX="$(grep '^linux[ \t]' "${BLS_TARGET}" | sed -e 's,^linux[ \t]*,,')"
             INITRD="$(grep '^initrd[ \t]' "${BLS_TARGET}" | sed -e 's,^initrd[ \t]*,,')"

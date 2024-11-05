@@ -588,3 +588,4 @@ Patch0587: 0587-fs-ntfs-Fix-an-OOB-read-when-parsing-directory-entri.patch
 Patch0588: 0588-fs-ntfs-Fix-an-OOB-read-when-parsing-bitmaps-for-ind.patch
 Patch0589: 0589-fs-ntfs-Fix-an-OOB-read-when-parsing-a-volume-label.patch
 Patch0590: 0590-fs-ntfs-Make-code-more-readable.patch
+Patch0591: 0591-grub-mkconfig.in-turn-off-executable-owner-bit.patch

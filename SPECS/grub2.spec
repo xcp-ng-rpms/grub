@@ -1,7 +1,3 @@
-%global efi_vendor almalinux
-%global efidir almalinux
-%global efi_esp_dir /boot/efi/EFI/%{efidir}
-
 %undefine _hardened_build
 
 %global tarversion 2.02
@@ -11,7 +7,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.02
-Release:	156%{?dist}.alma.1
+Release:	158%{?dist}
 Summary:	Bootloader with support for Linux, Multiboot and more
 Group:		System Environment/Base
 License:	GPLv3+
@@ -28,28 +24,30 @@ Source6:	gitignore
 Source8:	strtoull_test.c
 Source9:	20-grub.install
 Source12:	99-grub-mkconfig.install
-Source13:	almalinuxsecurebootca0.cer
+Source13:	redhatsecurebootca3.cer
+Source14:	redhatsecureboot301.cer
+Source15:	redhatsecurebootca5.cer
+Source16:	redhatsecureboot502.cer
+Source17:	redhatsecureboot601.cer
+Source18:	redhatsecureboot701.cer
 Source19:	sbat.csv.in
 
 %include %{SOURCE1}
 
 %if 0%{with_efi_arch}
 %define old_sb_ca	%{SOURCE13}
-%define old_sb_cer	%{SOURCE13}
-%define old_sb_key	almalinuxsecurebootca0
-%define sb_ca		%{SOURCE13}
-%define sb_cer		%{SOURCE13}
-%define sb_key		almalinuxsecurebootca0
+%define old_sb_cer	%{SOURCE14}
+%define old_sb_key	redhatsecureboot301
+%define sb_ca		%{SOURCE15}
+%define sb_cer		%{SOURCE16}
+%define sb_key		redhatsecureboot502
 %endif
 
 %ifarch ppc64le
-%define old_sb_cer	%{SOURCE13}
-%define sb_cer		%{SOURCE13}
-%define sb_key		almalinuxsecurebootca0
+%define old_sb_cer	%{SOURCE17}
+%define sb_cer		%{SOURCE18}
+%define sb_key		redhatsecureboot702
 %endif
-
-# AlmaLinux: keep upstream EVR for RHEL SBAT entry
-%define rhel_version_release $(echo %{version}-%{release} | sed 's/\.alma.*//')
 
 # generate with do-rebase
 %include %{SOURCE2}
@@ -168,7 +166,7 @@ This subpackage provides tools for support of all platforms.
 mkdir grub-%{grubefiarch}-%{tarversion}
 grep -A100000 '# stuff "make" creates' .gitignore > grub-%{grubefiarch}-%{tarversion}/.gitignore
 cp %{SOURCE4} grub-%{grubefiarch}-%{tarversion}/unifont.pcf.gz
-sed -e "s,@@VERSION@@,%{version},g" -e "s,@@VERSION_RELEASE@@,%{version}-%{release},g" -e "s,@@RHEL_VERSION_RELEASE@@,%{rhel_version_release},g" \
+sed -e "s,@@VERSION@@,%{version},g" -e "s,@@VERSION_RELEASE@@,%{version}-%{release},g" \
     %{SOURCE19} > grub-%{grubefiarch}-%{tarversion}/sbat.csv
 git add grub-%{grubefiarch}-%{tarversion}
 %endif
@@ -312,6 +310,19 @@ if [ "$1" = 2 ]; then
 	/sbin/grub2-switch-to-blscfg --backup-suffix=.rpmsave &>/dev/null || :
 fi
 
+%posttrans common
+set -eu
+
+GRUB_HOME=/boot/%{name}
+
+if test  -f ${GRUB_HOME}/grub.cfg; then
+    # make sure GRUB_HOME/grub.cfg has 600 permissions
+    GRUB_CFG_MODE=$(stat --format="%a" ${GRUB_HOME}/grub.cfg)
+    if ! test "${GRUB_CFG_MODE}" = "600"; then
+        chmod 0600 ${GRUB_HOME}/grub.cfg
+    fi
+fi
+
 %triggerun -- grub2 < 1:1.99-4
 # grub2 < 1.99-4 removed a number of essential files in postun. To fix upgrades
 # from the affected grub2 packages, we first back up the files in triggerun and
@@ -342,20 +353,6 @@ if [ "$1" = 0 ]; then
 	/sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/%{name}.info.gz || :
 	/sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/%{name}-dev.info.gz || :
 fi
-
-%if 0%{with_efi_arch}
-%posttrans %{package_arch}
-if [ -d /sys/firmware/efi ] && [ ! -f %{efi_esp_dir}/grub.cfg ]; then
-    grub2-mkconfig -o %{efi_esp_dir}/grub.cfg || :
-fi
-%endif
-
-%if 0%{with_alt_efi_arch}
-%posttrans %{alt_package_arch}
-if [ -d /sys/firmware/efi ] && [ ! -f %{efi_esp_dir}/grub.cfg ]; then
-    grub2-mkconfig -o %{efi_esp_dir}/grub.cfg || :
-fi
-%endif
 
 %files common -f grub.lang
 %dir %{_libdir}/grub/
@@ -526,8 +523,13 @@ fi
 %endif
 
 %changelog
-* Wed Apr 10 2024 Andrew Lukoshko <alukoshko@almalinux.org> - 2.02-156.alma.1
-- Debrand for AlmaLinux
+* Thu Sep 19 2024 Leo Sandoval <lsandova@redhat.com> - 2.02-158
+- grub-mkconfig.in: turn off executable owner bit
+- Resolves: #RHEL-58835
+
+* Wed Aug 14 2024 Leo Sandoval <lsandova@redhat.com> - 2.02-157
+- 20-grub-install: fix SELinux security type context for BLS
+- Resolves: #RHEL-4395
 
 * Tue Feb 20 2024 Nicolas Frayer <nfrayer@redhat.com> - 2.02-156
 - fs/ntfs: OOB write fix
