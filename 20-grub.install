@@ -188,8 +188,9 @@ case "$COMMAND" in
 
         if [[ "x${GRUB_ENABLE_BLSCFG}" = "xtrue" ]] || [[ ! -f /sbin/new-kernel-pkg ]]; then
             BLS_TARGET="${BLS_DIR}/${MACHINE_ID}-${KERNEL_VERSION}.conf"
+            BLS_FAKE_TARGET="${BLS_DIR}/ffffffffffffffffffffffffffffffff-${KERNEL_VERSION}.conf"
             BLS_DEBUG="$(echo ${BLS_TARGET} | sed -e "s/${KERNEL_VERSION}/${KERNEL_VERSION}~debug/")"
-            rm -f "${BLS_TARGET}" "${BLS_DEBUG}"
+            rm -f "${BLS_TARGET}" "${BLS_DEBUG}" "${BLS_FAKE_TARGET}"
 
             for i in vmlinuz System.map config zImage.stub dtb; do
                 rm -rf "/boot/${i}-${KERNEL_VERSION}"
