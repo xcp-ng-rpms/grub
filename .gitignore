@@ -1,9 +1,4 @@
-SOURCES/grub-2.02.tar.xz
-SOURCES/redhatsecureboot301.cer
-SOURCES/redhatsecureboot502.cer
-SOURCES/redhatsecureboot601.cer
-SOURCES/redhatsecureboot701.cer
-SOURCES/redhatsecurebootca3.cer
-SOURCES/redhatsecurebootca5.cer
-SOURCES/theme.tar.bz2
-SOURCES/unifont-5.1.20080820.pcf.gz
+gnulib-9f48fb992a3d7e96610c4ce8be969cff2d61a01b.tar.gz
+grub-2.06.tar.xz
+theme.tar.bz2
+unifont-13.0.06.pcf.gz
