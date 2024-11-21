@@ -17,7 +17,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.12
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Bootloader with support for Linux, Multiboot and more
 License:	GPL-3.0-or-later
 URL:		http://www.gnu.org/software/grub/
@@ -583,6 +583,10 @@ mv ${EFI_HOME}/grub.cfg.stb ${EFI_HOME}/grub.cfg
 %endif
 
 %changelog
+* Thu Nov 21 2024 Leo Sandoval <lsandova@redhat.com> - 2.12-2
+- 10_linux.in: escape semicolon and ampersand on BLS upddate
+- Resolves: #RHEL-68531
+
 * Wed Nov 6 2024 Leo Sandoval <lsandova@redhat.com> - 2.12-1
 - Rebased to release grub-2.12
 - Resolves: #RHEL-15032
