@@ -17,7 +17,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.12
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Bootloader with support for Linux, Multiboot and more
 License:	GPL-3.0-or-later
 URL:		http://www.gnu.org/software/grub/
@@ -583,6 +583,10 @@ mv ${EFI_HOME}/grub.cfg.stb ${EFI_HOME}/grub.cfg
 %endif
 
 %changelog
+* Thu Jan 09 2025 Nicolas Frayer <nfrayer@redhat.com> 2.12-5
+- fs/xfs: fix large extent counters incompat feature support
+- Resolves: #RHEL-68390
+
 * Mon Dec 09 2024 Leo Sandoval <lsandova@redhat.com> 2.12-4
 - Remove BLS fake config in case of kernel removal
 - Resolves: #RHEL-59557

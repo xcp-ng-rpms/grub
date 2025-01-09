@@ -280,3 +280,4 @@ Patch0279: 0279-grub-mkconfig-dont-overwrite-BLS-cmdline-if-BLSCFG.patch
 Patch0280: 0280-grub2-mkconfig-Pass-all-boot-params-when-used-by-ana.patch
 Patch0281: 0281-10_linux.in-escape-semicolon-and-ampersand-on-BLS-up.patch
 Patch0282: 0282-acpi-Fix-out-of-bounds-access-in-grub_acpi_xsdt_find.patch
+Patch0283: 0283-fs-xfs-Fix-large-extent-counters-incompat-feature-su.patch
