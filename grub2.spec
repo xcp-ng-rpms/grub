@@ -17,7 +17,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.12
-Release:	3%{?dist}.alma.1
+Release:	4%{?dist}.alma.1
 Summary:	Bootloader with support for Linux, Multiboot and more
 License:	GPL-3.0-or-later
 URL:		http://www.gnu.org/software/grub/
@@ -574,8 +574,12 @@ mv ${EFI_HOME}/grub.cfg.stb ${EFI_HOME}/grub.cfg
 %endif
 
 %changelog
-* Wed Jan 08 2025 Eduard Abdullin <eabdullin@almalinux.org> - 2.12-3.alma.1
+* Thu Jan 16 2025 Eduard Abdullin <eabdullin@almalinux.org> - 2.12-4.alma.1
 - Debrand for AlmaLinux
+
+* Mon Dec 09 2024 Leo Sandoval <lsandova@redhat.com> 2.12-4
+- Remove BLS fake config in case of kernel removal
+- Resolves: #RHEL-59557
 
 * Mon Dec 09 2024 Leo Sandoval <lsandova@redhat.com> 2.12-3
 - acpi: Fix out of bounds access in grub_acpi_xsdt_find_table()
