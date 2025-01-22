@@ -282,3 +282,5 @@ Patch0281: 0281-10_linux.in-escape-semicolon-and-ampersand-on-BLS-up.patch
 Patch0282: 0282-acpi-Fix-out-of-bounds-access-in-grub_acpi_xsdt_find.patch
 Patch0283: 0283-fs-xfs-Fix-large-extent-counters-incompat-feature-su.patch
 Patch0284: 0284-term-ns8250-spcr-return-if-redirection-is-disabled.patch
+Patch0285: 0285-commands-legacycfg-Avoid-closing-file-twice.patch
+Patch0286: 0286-disk-ahci.c-remove-conditional-operator-for-endtime.patch
