@@ -17,7 +17,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.12
-Release:	5%{?dist}.alma.1
+Release:	9%{?dist}.alma.1
 Summary:	Bootloader with support for Linux, Multiboot and more
 License:	GPL-3.0-or-later
 URL:		http://www.gnu.org/software/grub/
@@ -574,8 +574,33 @@ mv ${EFI_HOME}/grub.cfg.stb ${EFI_HOME}/grub.cfg
 %endif
 
 %changelog
-* Fri Jan 24 2025 2025 Eduard Abdullin <eabdullin@almalinux.org> - 2.12-5.alma.1
+* Wed Feb 26 2025 Eduard Abdullin <eabdullin@almalinux.org> - 1:2.12-9.alma.1
 - Debrand for AlmaLinux
+
+* Tue Feb 18 2025 Leo Sandoval <lsandova@redhat.com> - 2.02-9
+- Add Several CVE fixes
+- Resolves: CVE-2024-45781 CVE-2024-45783 CVE-2024-45778
+- Resolves: CVE-2024-45775 CVE-2024-45780 CVE-2024-45774
+- Resolves: CVE-2025-0690 CVE-2025-1118 CVE-2024-45782
+- Resolves: CVE-2025-0624 CVE-2024-45779 CVE-2024-45776
+- Resolves: CVE-2025-0622 CVE-2025-0677
+- Resolves: #RHEL-80691
+- Resolves: #RHEL-80690
+- Resolves: #RHEL-80689
+- Resolves: #RHEL-80687
+- Resolves: #RHEL-80686
+
+* Wed Jan 22 2025 Leo Sandoval <lsandova@redhat.com> 2.12-8
+- fix pending SAST issues
+- Resolves: #RHEL-50504
+
+* Fri Jan 17 2025 Leo Sandoval <lsandova@redhat.com> 2.12-7
+- term/ns8250-spcr: return if redirection is disabled
+- Resolves: #RHEL-68622
+
+* Mon Jan 13 2025 Leo Sandoval <lsandova@redhat.com> 2.12-6
+- term/ns8250: return in case of a null SPCR base addresses
+- Resolves: #RHEL-68622
 
 * Thu Jan 09 2025 Nicolas Frayer <nfrayer@redhat.com> 2.12-5
 - fs/xfs: fix large extent counters incompat feature support
