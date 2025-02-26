@@ -17,7 +17,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.12
-Release:	9%{?dist}
+Release:	10%{?dist}
 Summary:	Bootloader with support for Linux, Multiboot and more
 License:	GPL-3.0-or-later
 URL:		http://www.gnu.org/software/grub/
@@ -583,6 +583,10 @@ mv ${EFI_HOME}/grub.cfg.stb ${EFI_HOME}/grub.cfg
 %endif
 
 %changelog
+* Wed Feb 26 2025 Nicolas Frayer <nfrayer@redhat.com> - 2.02-10
+- fs/ext2: Rework out-of-bounds read for inline and external extents
+- Related: #RHEL-80686
+
 * Tue Feb 18 2025 Leo Sandoval <lsandova@redhat.com> - 2.02-9
 - Add Several CVE fixes
 - Resolves: CVE-2024-45781 CVE-2024-45783 CVE-2024-45778

@@ -357,3 +357,4 @@ Patch0356: 0356-kern-partition-Add-sanity-check-after-grub_strtoul-c.patch
 Patch0357: 0357-kern-misc-Add-sanity-check-after-grub_strtoul-call.patch
 Patch0358: 0358-loader-i386-linux-Cast-left-shift-to-grub_uint32_t.patch
 Patch0359: 0359-loader-i386-bsd-Use-safe-math-to-avoid-underflow.patch
+Patch0360: 0360-fs-ext2-Rework-out-of-bounds-read-for-inline-and-ext.patch
