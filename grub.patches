@@ -301,7 +301,6 @@ Patch0300: 0300-fs-ext2-Fix-out-of-bounds-read-for-inline-extents.patch
 Patch0301: 0301-fs-ntfs-Fix-out-of-bounds-read.patch
 Patch0302: 0302-fs-ntfs-Track-the-end-of-the-MFT-attribute-buffer.patch
 Patch0303: 0303-fs-ntfs-Use-a-helper-function-to-access-attributes.patch
-Patch0304: 0304-fs-ntfs-Implement-attribute-verification.patch
 Patch0305: 0305-fs-xfs-Fix-out-of-bounds-read.patch
 Patch0306: 0306-fs-xfs-Ensuring-failing-to-mount-sets-a-grub_errno.patch
 Patch0307: 0307-kern-file-Ensure-file-data-is-set.patch
