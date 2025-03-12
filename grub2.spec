@@ -17,7 +17,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.12
-Release:	11%{?dist}.alma.1
+Release:	12%{?dist}.alma.1
 Summary:	Bootloader with support for Linux, Multiboot and more
 License:	GPL-3.0-or-later
 URL:		http://www.gnu.org/software/grub/
@@ -574,17 +574,21 @@ mv ${EFI_HOME}/grub.cfg.stb ${EFI_HOME}/grub.cfg
 %endif
 
 %changelog
-* Thu Feb 27 2025 Eduard Abdullin <eabdullin@almalinux.org> - 1:2.12-11.alma.1
+* Wed Mar 12 2025 Eduard Abdullin <eabdullin@almalinux.org> - 1:2.12-12.alma.1
 - Debrand for AlmaLinux
 
-* Wed Feb 26 2025 Nicolas Frayer <nfrayer@redhat.com> - 2.02-11
+* Mon Mar 10 2025 Leo Sandoval <lsandova@redhat.com> 2.12-12
+- Remove 'fs/ntfs: Implement attribute verification' patch
+- Related: RHEL-80686
+
+* Wed Feb 26 2025 Nicolas Frayer <nfrayer@redhat.com> - 2.12-11
 - Bump release to trigger signing tools
 
-* Wed Feb 26 2025 Nicolas Frayer <nfrayer@redhat.com> - 2.02-10
+* Wed Feb 26 2025 Nicolas Frayer <nfrayer@redhat.com> - 2.12-10
 - fs/ext2: Rework out-of-bounds read for inline and external extents
 - Related: #RHEL-80686
 
-* Tue Feb 18 2025 Leo Sandoval <lsandova@redhat.com> - 2.02-9
+* Tue Feb 18 2025 Leo Sandoval <lsandova@redhat.com> - 2.12-9
 - Add Several CVE fixes
 - Resolves: CVE-2024-45781 CVE-2024-45783 CVE-2024-45778
 - Resolves: CVE-2024-45775 CVE-2024-45780 CVE-2024-45774
