@@ -17,7 +17,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.12
-Release:	12%{?dist}.alma.1
+Release:	13%{?dist}.alma.1
 Summary:	Bootloader with support for Linux, Multiboot and more
 License:	GPL-3.0-or-later
 URL:		http://www.gnu.org/software/grub/
@@ -574,8 +574,12 @@ mv ${EFI_HOME}/grub.cfg.stb ${EFI_HOME}/grub.cfg
 %endif
 
 %changelog
-* Wed Mar 12 2025 Eduard Abdullin <eabdullin@almalinux.org> - 1:2.12-12.alma.1
+* Wed Mar 19 2025 Eduard Abdullin <eabdullin@almalinux.org> - 1:2.12-13.alma.1
 - Debrand for AlmaLinux
+
+* Tue Mar 18 2025 Nicolas Frayer <nfrayer@redhat.com> 2.12-13
+- powerpc: increase MIN RMA size for CAS negotiation
+- Resolves: #RHEL-76429
 
 * Mon Mar 10 2025 Leo Sandoval <lsandova@redhat.com> 2.12-12
 - Remove 'fs/ntfs: Implement attribute verification' patch
