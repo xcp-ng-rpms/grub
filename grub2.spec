@@ -17,7 +17,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.12
-Release:	16%{?dist}
+Release:	17%{?dist}
 Summary:	Bootloader with support for Linux, Multiboot and more
 License:	GPL-3.0-or-later
 URL:		http://www.gnu.org/software/grub/
@@ -583,6 +583,10 @@ mv ${EFI_HOME}/grub.cfg.stb ${EFI_HOME}/grub.cfg
 %endif
 
 %changelog
+* Wed Apr 16 2025 Andrea Bolognani <abologna@redhat.com> - 2.12-17
+- Fix riscv64 build
+  Resolves: RHEL-85987
+
 * Tue Apr 15 2025 Nicolas Frayer <nfrayer@redhat.com> - 2.12-16
 - ppc/mkimage: SBAT support on powerpc
 - Resolves: #RHEL-87420
