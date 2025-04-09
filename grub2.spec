@@ -17,7 +17,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.12
-Release:	14%{?dist}.alma.1
+Release:	15%{?dist}.alma.1
 Summary:	Bootloader with support for Linux, Multiboot and more
 License:	GPL-3.0-or-later
 URL:		http://www.gnu.org/software/grub/
@@ -574,8 +574,12 @@ mv ${EFI_HOME}/grub.cfg.stb ${EFI_HOME}/grub.cfg
 %endif
 
 %changelog
-* Wed Mar 26 2025 Eduard Abdullin <eabdullin@almalinux.org> - 1:2.12-14.alma.1
+* Wed Apr 09 2025 Eduard Abdullin <eabdullin@almalinux.org> - 1:2.12-15.alma.1
 - Debrand for AlmaLinux
+
+* Mon Apr 7 2025 Marta Lewandowska <mlewando@redhat.com> - 2.12-15
+- 99-grub-mkconfig.install: Disable BLS and run grub2-mkconfig when GRUB_ENABLE_BLSCFG is disable
+- Resolves: #RHEL-86261
 
 * Tue Mar 25 2025 Nicolas Frayer <nfrayer@redhat.com> 2.12-14
 - ieee1275/ofnet: Fix grub_malloc() removed after added safe
