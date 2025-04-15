@@ -359,3 +359,5 @@ Patch0359: 0359-loader-i386-bsd-Use-safe-math-to-avoid-underflow.patch
 Patch0360: 0360-fs-ext2-Rework-out-of-bounds-read-for-inline-and-ext.patch
 Patch0361: 0361-powerpc-increase-MIN-RMA-size-for-CAS-negotiation.patch
 Patch0362: 0362-ieee1275-ofnet-Fix-grub_malloc-removed-after-added-s.patch
+Patch0363: 0363-grub-mkimage-Create-new-ELF-note-for-SBAT.patch
+Patch0364: 0364-grub-mkimage-Add-SBAT-metadata-into-ELF-note-for-Pow.patch
