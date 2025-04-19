@@ -361,3 +361,6 @@ Patch0361: 0361-powerpc-increase-MIN-RMA-size-for-CAS-negotiation.patch
 Patch0362: 0362-ieee1275-ofnet-Fix-grub_malloc-removed-after-added-s.patch
 Patch0363: 0363-grub-mkimage-Create-new-ELF-note-for-SBAT.patch
 Patch0364: 0364-grub-mkimage-Add-SBAT-metadata-into-ELF-note-for-Pow.patch
+Patch0365: 0365-loader-efi-Fix-RISC-V-build.patch
+Patch0366: 0366-kern-riscv-efi-init-Use-time-register-in-grub_efi_ge.patch
+Patch0367: 0367-Use-medany-instead-of-large-model-for-RISCV.patch
