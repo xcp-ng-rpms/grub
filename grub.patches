@@ -364,3 +364,5 @@ Patch0364: 0364-grub-mkimage-Add-SBAT-metadata-into-ELF-note-for-Pow.patch
 Patch0365: 0365-loader-efi-Fix-RISC-V-build.patch
 Patch0366: 0366-kern-riscv-efi-init-Use-time-register-in-grub_efi_ge.patch
 Patch0367: 0367-Use-medany-instead-of-large-model-for-RISCV.patch
+Patch0368: 0368-10_linux.in-escape-kernel-option-characters-properly.patch
+Patch0369: 0369-blscfg-check-if-variable-is-escaped-before-consideri.patch
