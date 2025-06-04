@@ -17,7 +17,7 @@
 Name:		grub2
 Epoch:		1
 Version:	2.12
-Release:	19%{?dist}.alma.1
+Release:	20%{?dist}.alma.1
 Summary:	Bootloader with support for Linux, Multiboot and more
 License:	GPL-3.0-or-later
 URL:		http://www.gnu.org/software/grub/
@@ -574,8 +574,12 @@ mv ${EFI_HOME}/grub.cfg.stb ${EFI_HOME}/grub.cfg
 %endif
 
 %changelog
-* Thu May 15 2025 Eduard Abdullin <eabdullin@almalinux.org> - 1:2.12-19.alma.1
+* Wed Jun 04 2025 Eduard Abdullin <eabdullin@almalinux.org> - 1:2.12-20.alma.1
 - Debrand for AlmaLinux
+
+* Mon Jun 2 2025 Leo Sandoval <lsandova@redhat.com> 2.12-20
+- Handle special kernel parameter characters properly
+- Resolves: #RHEL-94342
 
 * Wed May 14 2025 Nicolas Frayer <nfrayer@redhat.com> - 2.12-19
 - sbat: bump grub sbat for new shim release
