@@ -401,7 +401,7 @@ install -m 644 %{1}.conf ${RPM_BUILD_ROOT}/etc/dnf/protected.d/ \
 rm -f %{1}.conf							\
 %{nil}
 
-%global grub_modules  " all_video boot blscfg                   \\\
+%global grub_modules  " all_video boot blscfg btrfs             \\\
 			cat configfile cryptodisk		\\\
 			echo ext2 f2fs fat font			\\\
 			gcry_rijndael gcry_rsa gcry_serpent	\\\
