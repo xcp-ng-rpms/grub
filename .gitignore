@@ -11,3 +11,7 @@ tmp/
 .*.sw?
 results_grub2/
 /gnulib-*.tar.?z
+BUILD/
+RPMS/
+SRPMS/
+BUILDROOT/

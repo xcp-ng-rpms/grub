@@ -437,10 +437,8 @@ mksquashfs memdisk memdisk.squashfs -comp lzo			\
 	-m memdisk.squashfs					\\\
 	-p /EFI/BOOT						\\\
 	${GRUB_MODULES}						\
-%{expand:%%define ___pesign_client_cert %{?___pesign_client_cert}%{!?___pesign_client_cert:%{__pesign_client_cert}}} \
-%{?__pesign_client_cert:%{expand:%%define __pesign_client_cert %{___pesign_client_cert}}} \
-%{expand:%%{pesign -s -i %%{2}.orig -o %%{2} -a %%{5} -c %%{6} -n %%{7}}}	\
-%{expand:%%{pesign -s -i %%{3}.orig -o %%{3} -a %%{5} -c %%{6} -n %%{7}}}	\
+pesign -s -i %%{2}.orig -o %%{2} -c %%{6} -n %%{7} \
+pesign -s -i %%{3}.orig -o %%{3} -c %%{6} -n %%{7} \
 %{nil}
 %endif
 

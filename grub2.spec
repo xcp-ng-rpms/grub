@@ -41,12 +41,15 @@ Source1001: sb_grub.cer
 
 %include %{SOURCE1}
 
-%ifarch %{x86_64} aarch64 ppc64le
-%define sb_ca		%{Source1000}
-%define sb_cer		%{Source1001}
-%endif
+#%ifarch %{x86_64} aarch64 ppc64le
+#%define sb_ca		%{Source1000}
+#%define sb_cer		%{Source1001}
+#%endif
 
-%define sb_key         sb_grub
+%define sb_cer sb_grub
+%define sb_key /etc/pki/pesign-xcpng sb_grub
+#%define pe_signing_token NSS Certificate DB
+#%define pe_signing_cert /etc/pki/pesign-xcpng
 
 BuildRequires:	autoconf
 BuildRequires:	automake
