@@ -36,14 +36,17 @@ Source10:	20-grub.install
 Source11:	grub.patches
 Source12:	sbat.csv.in
 
+Source1000: sb_ca.cer
+Source1001: sb_grub.cer
+
 %include %{SOURCE1}
 
 %ifarch %{x86_64} aarch64 ppc64le
-%define sb_ca		%{_datadir}/pki/sb-certs/secureboot-ca-%{_arch}.cer
-%define sb_cer		%{_datadir}/pki/sb-certs/secureboot-grub2-%{_arch}.cer
+%define sb_ca		%{Source1000}
+%define sb_cer		%{Source1001}
 %endif
 
-%define sb_key         almalinuxsecurebootca0
+%define sb_key         sb_grub
 
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -75,7 +78,6 @@ BuildRequires:	systemd-rpm-macros
 %ifarch %{efi_arch}
 BuildRequires:	pesign >= 0.99-8
 %endif
-BuildRequires:	system-sb-certs
 %if %{?_with_ccache: 1}%{?!_with_ccache: 0}
 BuildRequires:	ccache
 %endif
@@ -836,7 +838,7 @@ https://fedoraproject.org/wiki/Changes/Linker_Error_On_Security_Issues
 - Add legacy pxe core.0 (cmadams)
 
 * Thu Mar 30 2023 Robbie Harwood <rharwood@redhat.com> - 2.06-92
-- Disable the tpm verifier if the TPM device is not present 
+- Disable the tpm verifier if the TPM device is not present
 
 * Thu Mar 30 2023 Robbie Harwood <rharwood@redhat.com> - 2.06-91
 - ppc64le: more cas vec5 shenanigans
