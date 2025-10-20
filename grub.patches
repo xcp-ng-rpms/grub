@@ -364,3 +364,5 @@ Patch0363: 0363-fs-ntfs-Fix-an-OOB-read-when-parsing-a-volume-label.patch
 Patch0364: 0364-fs-ntfs-Make-code-more-readable.patch
 Patch0365: 0365-cmd-search-Rework-of-CVE-2023-4001-fix.patch
 Patch0366: 0366-grub-mkconfig.in-turn-off-executable-owner-bit.patch
+Patch0367: 0001-linux_cmd-fix-an-issue-with-linux_args-during-Xen-bo.patch
+Patch0368: 0002-xen-linux-_cmd-introduce-grub_arch_efi_linux_boot_im.patch 

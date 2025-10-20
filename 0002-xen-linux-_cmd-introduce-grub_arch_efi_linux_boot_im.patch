@@ -1,0 +1,131 @@
+From 92abdea07048822c8c1f7a13c2865abfcb5a718a Mon Sep 17 00:00:00 2001
+From: Fedora Ninjas <grub2-owner@fedoraproject.org>
+Date: Wed, 12 Mar 2025 17:53:35 +0100
+Subject: [PATCH 2/3] {xen,linux}_cmd: introduce
+ grub_arch_efi_linux_boot_image_v2()
+
+Xen built with ACPI and EFI support is used.
+
+The current implementation of grub_arch_efi_linux_boot_image() uses
+incorrect start address for Xen and jump to real_start() instead of
+efi_start() what leads to DTB file is taken from r2 register instead
+of taking it from ACPI.
+
+Introduce grub_arch_efi_linux_boot_image_v2() which jumps to proper
+start adrress (efi_start()) which will get DTB address from proper
+place.
+
+Upstream-status: Not ready
+Signed-off-by: Fedora Ninjas <grub2-owner@fedoraproject.org>
+---
+ grub-core/loader/arm64/linux.c    | 62 +++++++++++++++++++++++++++++++
+ grub-core/loader/arm64/xen_boot.c |  5 +--
+ include/grub/efi/efi.h            |  2 +
+ 3 files changed, 66 insertions(+), 3 deletions(-)
+
+diff --git a/grub-core/loader/arm64/linux.c b/grub-core/loader/arm64/linux.c
+index 06995a1..b787722 100644
+--- a/grub-core/loader/arm64/linux.c
++++ b/grub-core/loader/arm64/linux.c
+@@ -147,6 +147,68 @@ free_params (void)
+     }
+ }
+ 
++grub_err_t
++grub_arch_efi_linux_boot_image_v2 (grub_addr_t addr, grub_size_t size, char *args)
++{
++  grub_efi_memory_mapped_device_path_t *mempath;
++  grub_efi_handle_t image_handle;
++  grub_efi_boot_services_t *b;
++  grub_efi_status_t status;
++  grub_efi_loaded_image_t *loaded_image;
++  int len;
++
++  if (finalize_params_linux () != GRUB_ERR_NONE)
++    return grub_errno;
++
++  mempath = grub_malloc (2 * sizeof (grub_efi_memory_mapped_device_path_t));
++  if (!mempath)
++    return grub_errno;
++
++  mempath[0].header.type = GRUB_EFI_HARDWARE_DEVICE_PATH_TYPE;
++  mempath[0].header.subtype = GRUB_EFI_MEMORY_MAPPED_DEVICE_PATH_SUBTYPE;
++  mempath[0].header.length = grub_cpu_to_le16_compile_time (sizeof (*mempath));
++  mempath[0].memory_type = GRUB_EFI_LOADER_DATA;
++  mempath[0].start_address = addr;
++  mempath[0].end_address = addr + size;
++
++  mempath[1].header.type = GRUB_EFI_END_DEVICE_PATH_TYPE;
++  mempath[1].header.subtype = GRUB_EFI_END_ENTIRE_DEVICE_PATH_SUBTYPE;
++  mempath[1].header.length = sizeof (grub_efi_device_path_t);
++
++  b = grub_efi_system_table->boot_services;
++  status = b->load_image (0, grub_efi_image_handle,
++		          (grub_efi_device_path_t *) mempath,
++			  (void *) addr, size, &image_handle);
++  if (status != GRUB_EFI_SUCCESS)
++    return grub_error (GRUB_ERR_BAD_OS, "cannot load image");
++
++  grub_dprintf ("linux", "linux command line: '%s'\n", args);
++
++  /* Convert command line to UCS-2 */
++  loaded_image = grub_efi_get_loaded_image (image_handle);
++  loaded_image->load_options_size = len =
++    (grub_strlen (args) + 1) * sizeof (grub_efi_char16_t);
++  loaded_image->load_options =
++    grub_efi_allocate_any_pages (GRUB_EFI_BYTES_TO_PAGES (loaded_image->load_options_size));
++  if (!loaded_image->load_options)
++    return grub_errno;
++
++  loaded_image->load_options_size =
++    2 * grub_utf8_to_utf16 (loaded_image->load_options, len,
++		            (grub_uint8_t *) args, len, NULL);
++
++  grub_dprintf ("linux", "starting image %p\n", image_handle);
++
++  status = b->start_image (image_handle, 0, NULL);
++
++  /* When successful, not reached */
++  b->unload_image (image_handle);
++  grub_efi_free_pages ((grub_addr_t) loaded_image->load_options,
++   		        GRUB_EFI_BYTES_TO_PAGES (loaded_image->load_options_size));
++
++  return grub_errno;
++}
++
+ grub_err_t
+ grub_arch_efi_linux_boot_image (grub_addr_t addr, grub_size_t size, char *args,
+ 				int nx_supported)
+diff --git a/grub-core/loader/arm64/xen_boot.c b/grub-core/loader/arm64/xen_boot.c
+index 6e7e920..d1b3734 100644
+--- a/grub-core/loader/arm64/xen_boot.c
++++ b/grub-core/loader/arm64/xen_boot.c
+@@ -265,10 +265,9 @@ xen_boot (void)
+   if (err)
+     return err;
+ 
+-  return grub_arch_efi_linux_boot_image (xen_hypervisor->start,
++  return grub_arch_efi_linux_boot_image_v2 (xen_hypervisor->start,
+                                          xen_hypervisor->size,
+-                                         xen_hypervisor->cmdline,
+-                                         0);
++                                         xen_hypervisor->cmdline);
+ }
+ 
+ static void
+diff --git a/include/grub/efi/efi.h b/include/grub/efi/efi.h
+index 449e552..3638384 100644
+--- a/include/grub/efi/efi.h
++++ b/include/grub/efi/efi.h
+@@ -150,6 +150,8 @@ grub_err_t EXPORT_FUNC(grub_efi_get_ram_base)(grub_addr_t *);
+ grub_err_t grub_arch_efi_linux_check_image(struct linux_arch_kernel_header *lh);
+ grub_err_t grub_arch_efi_linux_boot_image(grub_addr_t addr, grub_size_t size,
+ 					  char *args, int nx_enabled);
++grub_err_t grub_arch_efi_linux_boot_image_v2(grub_addr_t addr, grub_size_t size,
++					  char *args);
+ #endif
+ 
+ grub_addr_t grub_efi_section_addr (const char *section);
+-- 
+2.45.2
+
