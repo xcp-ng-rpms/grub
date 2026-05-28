@@ -1,7 +1,14 @@
-%global package_speccommit fc34746fb50a39e9650f459538e08b6ea78a3fda
+%global package_speccommit 41135ff309bc7091fd8f335637427dc79395b6a6
 %global usver 2.06
-%global xsver 4.0.2
+%global xsver 4.0.5
 %global xsrel %{xsver}%{?xscount}%{?xshash}
+# This package calls binutils components directly and would need to pass
+# in flags to enable the LTO plugins
+# Disable LTO
+%global _lto_cflags %{nil}
+
+%undefine _hardened_build
+
 %global package_srccommit grub-2.06
 
 # Modules always contain just 32-bit code
@@ -57,13 +64,35 @@ URL:            http://www.gnu.org/software/grub/
 Obsoletes:      grub < 1:0.98
 Source0: grub-2.06.tar.gz
 Source1: gnulib.tar.gz
-Patch0: wait-before-drain.patch
-Patch1: 0001-lib-relocator-always-enforce-the-requested-alignment.patch
+Patch0: 0001-mm-Document-GRUB-internal-memory-management-structur.patch
+Patch1: 0002-mm-Clarify-grub_real_malloc.patch
+Patch2: 0003-mm-grub_real_malloc-Make-small-allocs-comment-match-.patch
+Patch3: 0004-mm-Document-grub_free.patch
+Patch4: 0005-mm-Document-grub_mm_init_region.patch
+Patch5: 0001-mm-Assert-that-we-preserve-header-vs-region-alignmen.patch
+Patch6: 0002-mm-When-adding-a-region-merge-with-region-after-as-w.patch
+Patch7: 0003-mm-Debug-support-for-region-operations.patch
+Patch8: 0004-mm-Drop-unused-unloading-of-modules-on-OOM.patch
+Patch9: 0005-mm-Allow-dynamically-requesting-additional-memory-re.patch
+Patch10: 0006-kern-efi-mm-Always-request-a-fixed-number-of-pages-o.patch
+Patch11: 0007-kern-efi-mm-Extract-function-to-add-memory-regions.patch
+Patch12: 0008-kern-efi-mm-Pass-up-errors-from-add_memory_regions.patch
+Patch13: 0009-kern-efi-mm-Implement-runtime-addition-of-pages.patch
+Patch14: 0001-efi-Increase-default-memory-allocation-to-32-MiB.patch
+Patch15: 0001-kern-efi-mm-Detect-calls-to-grub_efi_drop_alloc-with.patch
+Patch16: 0001-lib-relocator-Always-enforce-the-requested-alignment.patch
+Patch17: 0001-kern-efi-mm-Fix-use-after-free-in-finish-boot-servic.patch
+Patch18: 0002-kern-efi-mm-Change-grub_efi_mm_add_regions-to-keep-t.patch
+Patch19: 0003-kern-efi-mm-Change-grub_efi_allocate_pages_real-to-c.patch
+Patch20: 0005-kern-efi-mm-Reset-grub_mm_add_region_fn-after-ExitBo.patch
+Patch21: wait-before-drain.patch
 
+%if 0%{?xenserver} < 9
 BuildRequires:  devtoolset-10-gcc
+%endif
 BuildRequires:  flex bison binutils python
 BuildRequires:  ncurses-devel xz-devel
-BuildRequires:  freetype-devel libusb-devel
+BuildRequires:  libusb-devel
 %ifarch %{sparc} x86_64
 # sparc builds need 64 bit glibc-devel - also for 32 bit userland
 BuildRequires:  %{_exec_prefix}/lib64/crt1.o glibc-static
@@ -71,8 +100,8 @@ BuildRequires:  %{_exec_prefix}/lib64/crt1.o glibc-static
 # ppc64 builds need the ppc crt1.o
 BuildRequires:  %{_exec_prefix}/lib/crt1.o glibc-static
 %endif
-BuildRequires:  autoconf automake autogen device-mapper-devel
-BuildRequires:  freetype-devel gettext-devel git
+BuildRequires:  autoconf automake device-mapper-devel
+BuildRequires:  gettext-devel git
 BuildRequires:  texinfo
 BuildRequires:  help2man
 %{?_cov_buildrequires}
@@ -124,14 +153,16 @@ cp -a . ../%{name}-efi-%{version}
 %{?_cov_prepare}
 
 %build
+%if 0%{?xenserver} < 9
 . /opt/rh/devtoolset-10/enable
+%endif
 
 %ifarch %{efiarchs}
 pushd ../%{name}-efi-%{version}
 ./bootstrap
 %configure \
     CFLAGS="$(echo $RPM_OPT_FLAGS | sed \
-        -e 's/-O.//g' \
+        -e 's/-O. /-Os /g' \
         -e 's/-fstack-protector[[:alpha:]-]\+//g' \
         -e 's/-fstack-protector//g' \
         -e 's/--param=ssp-buffer-size=4//g' \
@@ -139,6 +170,7 @@ pushd ../%{name}-efi-%{version}
         -e 's/-fexceptions//g' \
         -e 's/-fasynchronous-unwind-tables//g' \
         -e 's/-m64//g' \
+        -e 's/-fcf-protection//g' \
         -e 's/^/ -fno-strict-aliasing /' \
         -e 's/^/ -fno-stack-protector /' \
                 )"                                              \
@@ -173,7 +205,7 @@ popd
 %endif
 %configure \
     CFLAGS="$(echo $RPM_OPT_FLAGS | sed \
-        -e 's/-O.//g' \
+        -e 's/-O. /-Os /g' \
         -e 's/-fstack-protector[[:alpha:]-]\+//g' \
         -e 's/-fstack-protector//g' \
         -e 's/--param=ssp-buffer-size=4//g' \
@@ -182,6 +214,7 @@ popd
         -e 's/-m64//g' \
         -e 's/-fasynchronous-unwind-tables//g' \
         -e 's/-mcpu=power7/-mcpu=power6/g' \
+        -e 's/-fcf-protection//g' \
         -e 's/^/ -fno-strict-aliasing /' )" \
     TARGET_LDFLAGS=-static \
         --with-platform=%{platform} \
@@ -367,7 +400,6 @@ fi
 %{_bindir}/%{name}-glue-efi
 %{_bindir}/%{name}-kbdcomp
 %{_bindir}/%{name}-menulst2cfg
-%{_bindir}/%{name}-mkfont
 %{_bindir}/%{name}-mkimage
 %{_bindir}/%{name}-mklayout
 %{_bindir}/%{name}-mknetdir
@@ -401,6 +433,15 @@ fi
 %{?_cov_results_package}
 
 %changelog
+* Fri Apr 17 2026 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.06-4.0.5
+- CA-424431: Fix a rare out-of-memory error
+
+* Thu May 30 2024 Deli Zhang <deli.zhang@cloud.com> - 2.06-4.0.4
+- CP-46111: Remove build require freetype-devel
+
+* Thu Apr 11 2024 Frediano Ziglio <frediano.ziglio@cloud.com> - 2.06-4.0.3
+- CP-47745: compatibilities for XS9, optimize back some code
+
 * Wed May 17 2023 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.06-4.0.2
 - HP-1153: always enforce requested allocation alignment
 

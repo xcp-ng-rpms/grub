@@ -1,0 +1,39 @@
+From 55d35d62831af122fadf33c4bc8cd53aada949cb Mon Sep 17 00:00:00 2001
+From: Mate Kukri <mate.kukri@canonical.com>
+Date: Wed, 12 Jun 2024 16:14:21 +0100
+Subject: [PATCH 1/1] kern/efi/mm: Detect calls to grub_efi_drop_alloc() with
+ wrong page counts
+
+Silently keeping entries in the list if the address matches, but the
+page count doesn't is a bad idea, and can lead to double frees.
+
+grub_efi_free_pages() have already freed parts of this block by this
+point, and thus keeping the whole block in the list and freeing it again
+at exit can lead to double frees.
+
+Signed-off-by: Mate Kukri <mate.kukri@canonical.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/kern/efi/mm.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/grub-core/kern/efi/mm.c b/grub-core/kern/efi/mm.c
+index bc18b149d282..df7bf2869889 100644
+--- a/grub-core/kern/efi/mm.c
++++ b/grub-core/kern/efi/mm.c
+@@ -95,8 +95,10 @@ grub_efi_drop_alloc (grub_efi_physical_address_t address,
+ 
+   for (eap = NULL, ea = efi_allocated_memory; ea; eap = ea, ea = ea->next)
+     {
+-      if (ea->address != address || ea->pages != pages)
+-         continue;
++      if (ea->address != address)
++	continue;
++      if (ea->pages != pages)
++	grub_fatal ("grub_efi_drop_alloc() called with wrong page count");
+ 
+       /* Remove the current entry from the list. */
+       if (eap)
+-- 
+2.53.0
+

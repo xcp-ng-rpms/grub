@@ -1,0 +1,44 @@
+From 6f05a277961dc801ba6de4f0f3bc22184ae80b0f Mon Sep 17 00:00:00 2001
+From: Alec Brown <alec.r.brown@oracle.com>
+Date: Mon, 22 May 2023 16:52:49 -0400
+Subject: [PATCH 1/1] kern/efi/mm: Fix use-after-free in finish boot services
+
+In grub-core/kern/efi/mm.c, grub_efi_finish_boot_services() has an instance
+where the memory for the variable finish_mmap_buf is freed, but on the next
+iteration of a while loop, grub_efi_get_memory_map() uses finish_mmap_buf. To
+prevent this, we can set finish_mmap_buf to NULL after the free.
+
+Signed-off-by: Alec Brown <alec.r.brown@oracle.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/kern/efi/mm.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/grub-core/kern/efi/mm.c b/grub-core/kern/efi/mm.c
+index 2be0e697359d..6a6fba891846 100644
+--- a/grub-core/kern/efi/mm.c
++++ b/grub-core/kern/efi/mm.c
+@@ -263,6 +263,7 @@ grub_efi_finish_boot_services (grub_efi_uintn_t *outbuf_size, void *outbuf,
+ 				   &finish_desc_size, &finish_desc_version) <= 0)
+ 	{
+ 	  grub_free (finish_mmap_buf);
++	  finish_mmap_buf = NULL;
+ 	  return grub_error (GRUB_ERR_IO, "couldn't retrieve memory map");
+ 	}
+ 
+@@ -274,10 +275,12 @@ grub_efi_finish_boot_services (grub_efi_uintn_t *outbuf_size, void *outbuf,
+       if (status != GRUB_EFI_INVALID_PARAMETER)
+ 	{
+ 	  grub_free (finish_mmap_buf);
++	  finish_mmap_buf = NULL;
+ 	  return grub_error (GRUB_ERR_IO, "couldn't terminate EFI services");
+ 	}
+ 
+       grub_free (finish_mmap_buf);
++      finish_mmap_buf = NULL;
+       grub_printf ("Trying to terminate EFI services again\n");
+     }
+   grub_efi_is_finished = 1;
+-- 
+2.53.0
+
