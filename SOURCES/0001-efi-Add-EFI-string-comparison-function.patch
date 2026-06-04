@@ -1,0 +1,39 @@
+From 13b8f90107a7df33ce3da97e66c87320a89d3336 Mon Sep 17 00:00:00 2001
+From: Ross Lagerwall <ross.lagerwall@citrix.com>
+Date: Mon, 21 Jul 2025 15:20:48 +0100
+Subject: [PATCH 1/7] efi: Add EFI string comparison function
+
+Like grub_strcmp but for grub_efi_char16_t.
+
+Signed-off-by: Ross Lagerwall <ross.lagerwall@citrix.com>
+---
+ include/grub/efi/efi.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/include/grub/efi/efi.h b/include/grub/efi/efi.h
+index b4d2f2d46d0c..fcc9fef8a3bb 100644
+--- a/include/grub/efi/efi.h
++++ b/include/grub/efi/efi.h
+@@ -193,4 +193,19 @@ struct grub_net_card;
+ grub_efi_handle_t
+ grub_efinet_get_device_handle (struct grub_net_card *card);
+ 
++static inline int
++grub_efi_strcmp (const grub_efi_char16_t *s1, const grub_efi_char16_t *s2)
++{
++  while (*s1 && *s2)
++    {
++      if (*s1 != *s2)
++	break;
++
++      s1++;
++      s2++;
++    }
++
++  return (int) (grub_uint16_t) *s1 - (int) (grub_uint16_t) *s2;
++}
++
+ #endif /* ! GRUB_EFI_EFI_HEADER */
+-- 
+2.50.1
+

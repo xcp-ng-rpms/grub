@@ -1,144 +1,85 @@
-%global package_speccommit fc34746fb50a39e9650f459538e08b6ea78a3fda
-%global usver 2.06
-%global xsver 4.0.2
+%global package_speccommit 5a0928cc7e5b0d008bdfdebdd80db2e839948011
+%global usver 2.12
+%global xsver 14
 %global xsrel %{xsver}%{?xscount}%{?xshash}
-%global package_srccommit grub-2.06
+# This package calls binutils components directly and would need to pass
+# in flags to enable the LTO plugins
+# Disable LTO
+%global _lto_cflags %{nil}
+
+%undefine _hardened_build
+
+%global package_srccommit 0e367796c0f41cb77562aa30282d85d0d2b3480a
+%global package_suffix 0e367796c0f4
 
 # Modules always contain just 32-bit code
 %define _libdir %{_exec_prefix}/lib
 
-# 64bit intel machines use 32bit boot loader
-# (We cannot just redefine _target_cpu, as we'd get i386.rpm packages then)
-%ifarch x86_64
-%define _target_platform i386-%{_vendor}-%{_target_os}%{?_gnu}
-%endif
-# sparc is always compiled 64 bit
-%ifarch %{sparc}
-%define _target_platform sparc64-%{_vendor}-%{_target_os}%{?_gnu}
-%endif
-
-%if ! 0%{?efi:1}
-
-%global efiarchs x86_64
-
-%ifarch %{ix86}
-%global grubefiarch i386-efi
-%global grubefiname grubia32.efi
-%global grubeficdname gcdia32.efi
-%endif
-%ifarch x86_64
 %global grubefiarch %{_arch}-efi
 %global grubefiname grubx64.efi
-%global grubeficdname gcdx64.efi
-%endif
-
-%global grubefibootname BOOTX64.EFI
-
 %global efidir xenserver
-%global efibootdir BOOT
-
-%endif
 
 %undefine _missing_build_ids_terminate_build
 
 # submodule gnulib
-%define gnulib_cset d271f868a8df9bbec29049d01e056481b7a1a263
+%define gnulib_cset stable-202201
 %define gnulib_path gnulib
 
 Name:           grub
-Epoch:          1
-Version:        2.06
-Release: %{?xsrel}.1%{?dist}
+Epoch:          0
+Version:        2.12
+Release: %{?xsrel}%{?dist}
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
 License:        GPLv3+
 URL:            http://www.gnu.org/software/grub/
-Obsoletes:      grub < 1:0.98
-Source0: grub-2.06.tar.gz
+Source0: grub-2.12-0e367796c0f4.tar.gz
 Source1: gnulib.tar.gz
-Patch0: wait-before-drain.patch
-Patch1: 0001-lib-relocator-always-enforce-the-requested-alignment.patch
+Source2: sbat.csv.in
+Patch0: 00045-efi-disallow-fallback-to-legacy-Linux-loader-when-shim.patch
+Patch1: 0001-efi-Add-EFI-string-comparison-function.patch
+Patch2: 0002-efi-Add-filesystem-definitions.patch
+Patch3: 0003-loader-efi-linux-Make-device-handle-and-path-settabl.patch
+Patch4: 0004-loader-efi-linux-Allocate-device-path-on-the-stack.patch
+Patch5: 0005-loader-efi-linux-Set-device-path-when-loading-via-sh.patch
+Patch6: 0006-sb-Verify-Xen-hypevisor-and-don-t-verify-modules.patch
+Patch7: 0007-Add-xen_boot-module-for-x86_64_efi.patch
+Patch8: wait-before-drain.patch
 
-# XCP-ng patches
-Patch1001: 0001-net-ethernet-Fix-VLAN-networking-on-little-endian-sy.patch
-Patch1002: 0002-net-net-Add-vlan-information-to-net_ls_addr-output.patch
-Patch1003: 0003-net-net-Add-net_set_vlan-command.patch
-Patch1004: 0004-kern-efi-efi-Print-VLAN-info-in-EFI-device-path.patch
-Patch1005: 0005-net-drivers-efi-efinet-Configure-VLAN-from-UEFI-devi.patch
-
-BuildRequires:  devtoolset-10-gcc
 BuildRequires:  flex bison binutils python
 BuildRequires:  ncurses-devel xz-devel
-BuildRequires:  freetype-devel libusb-devel
-%ifarch %{sparc} x86_64
-# sparc builds need 64 bit glibc-devel - also for 32 bit userland
+BuildRequires:  libusb1-devel
 BuildRequires:  %{_exec_prefix}/lib64/crt1.o glibc-static
-%else
-# ppc64 builds need the ppc crt1.o
-BuildRequires:  %{_exec_prefix}/lib/crt1.o glibc-static
-%endif
-BuildRequires:  autoconf automake autogen device-mapper-devel
-BuildRequires:  freetype-devel gettext-devel git
+BuildRequires:  autoconf automake device-mapper-devel
+BuildRequires:  gettext-devel git
 BuildRequires:  texinfo
-BuildRequires:  help2man
+BuildRequires:  xssign-macros
 %{?_cov_buildrequires}
 
-Requires:       gettext os-prober which file
-Requires:       %{name}-tools = %{epoch}:%{version}-%{release}
-Requires(pre):  dracut
-Requires(post): dracut
+# Although there's no grub-efi rpm, we still provide grub-efi for install-image
+Provides: %{name}-efi = %{epoch}:%{version}-%{release}
 
-ExcludeArch:    s390 s390x %{arm}
-Obsoletes:      grub2 <= 2.00-20%{?dist}
+ExcludeArch:    s390 s390x %{arm} %{ix86}
 
 %description
 The GRand Unified Bootloader (GRUB) is a highly configurable and customizable
 bootloader with modular architecture.  It support rich varietyof kernel formats,
-file systems, computer architectures and hardware devices.  This subpackage
-provides support for PC BIOS systems.
+file systems, computer architectures and hardware devices.
+This package provides support for EFI systems.
 
-%ifarch %{efiarchs}
-%package efi
-Summary:        GRUB for EFI systems.
-Group:          System Environment/Base
-Requires:       %{name}-tools = %{epoch}:%{version}-%{release}
-Obsoletes:      grub2-efi <= 2.00-20%{?dist}
-
-%description efi
-The GRand Unified Bootloader (GRUB) is a highly configurable and customizable
-bootloader with modular architecture.  It support rich varietyof kernel formats,
-file systems, computer architectures and hardware devices.  This subpackage
-provides support for EFI systems.
-%endif
-
-%package tools
-Summary:        Support tools for GRUB.
-Group:          System Environment/Base
-Requires:       gettext os-prober which file system-logos
-
-%description tools
-The GRand Unified Bootloader (GRUB) is a highly configurable and customizable
-bootloader with modular architecture.  It support rich varietyof kernel formats,
-file systems, computer architectures and hardware devices.  This subpackage
-provides tools for support of all platforms.
 
 %prep
 %autosetup -p1
 tar -zxf %{SOURCE1}
-mkdir ../%{name}-efi-%{version}
-cp -a . ../%{name}-efi-%{version}
 %{?_cov_prepare}
 
 %build
-. /opt/rh/devtoolset-10/enable
 
-%ifarch %{efiarchs}
-pushd ../%{name}-efi-%{version}
 ./bootstrap
 %configure \
     CFLAGS="$(echo $RPM_OPT_FLAGS | sed \
-        -e 's/-O.//g' \
+        -e 's/-O. /-Os /g' \
         -e 's/-fstack-protector[[:alpha:]-]\+//g' \
         -e 's/-fstack-protector//g' \
         -e 's/--param=ssp-buffer-size=4//g' \
@@ -146,6 +87,7 @@ pushd ../%{name}-efi-%{version}
         -e 's/-fexceptions//g' \
         -e 's/-fasynchronous-unwind-tables//g' \
         -e 's/-m64//g' \
+        -e 's/-fcf-protection//g' \
         -e 's/^/ -fno-strict-aliasing /' \
         -e 's/^/ -fno-stack-protector /' \
                 )"                                              \
@@ -157,68 +99,45 @@ pushd ../%{name}-efi-%{version}
     --disable-werror
 %{?_cov_wrap} make %{?_smp_mflags}
 
-GRUB_MODULES="all_video boot btrfs cat chain configfile echo efifwsetup \
-        efinet ext2 fat font gfxmenu gfxterm gzio halt hfsplus http iso9660 \
-        jpeg linux loadenv lsefimmap lsmmap lvm minicmd normal part_apple part_msdos \
-        part_gpt password_pbkdf2 png reboot search search_fs_uuid \
-        search_fs_file search_label serial sleep test video xfs \
-        mdraid09 mdraid1x multiboot2 multiboot tftp"
-./grub-mkimage -O %{grubefiarch} -o %{grubeficdname} -p /EFI/BOOT \
-        -d grub-core ${GRUB_MODULES}
+sed -e 's/@@VERSION@@/%{version}/g' -e 's/@@RELEASE@@/%{release}/g' < %{SOURCE2} > sbat.csv
+
+# The following modules are needed for UEFI booting and are included in the
+# GRUB UEFI binary.
+# Note that these modules may have dependencies on other modules so this is
+# not the entire list of included modules, only the direct dependencies.
+GRUB_MODULES="\
+    boot            $(: Needed to boot) \
+    chain           $(: Needed for chainloading, e.g. during testing) \
+    configfile      $(: Load config files) \
+    efifwsetup      $(: Allow rebooting into the firmware setup menu) \
+    efinet          $(: Allow GRUB to load files from the network when PXE booting) \
+    ext2            $(: Load xen, kernel from /boot) \
+    fat             $(: Load grub.cfg from ESP) \
+    gzio            $(: Decompress xen.gz) \
+    halt            $(: Allow shutting down from GRUB) \
+    iso9660         $(: Load xen, kernel from ISO during installation) \
+    loadenv         $(: Load an environment file, used during upgrade) \
+    minicmd         $(: Provides a few basic GRUB commands) \
+    multiboot2      $(: Used for booting xen.gz) \
+    normal          $(: Basic GRUB functionality) \
+    part_gpt        $(: Allow reading GPT partition tables) \
+    reboot          $(: Allow rebooting from GRUB) \
+    search          $(: Support for the search command to set the root variable as needed) \
+    search_fs_file  $(: Used for setting the root based on the presence of a file when installing from USB) \
+    search_label    $(: Used for setting the root on an installed system based on a filesystem label) \
+    serial          $(: Configure the serial console) \
+    test            $(: Provides the test command which is used to evaluate an expression) \
+    tftp            $(: Allow GRUB to load files from a TFTP server when PXE booting) \
+    xen_boot        $(: Used for booting xen.efi) \
+"
 ./grub-mkimage -O %{grubefiarch} -o %{grubefiname} -p /EFI/%{efidir} \
-        -d grub-core ${GRUB_MODULES}
-popd
-%endif
+        -d grub-core --sbat sbat.csv ${GRUB_MODULES}
+%sign -c GRUB_SIGN_KEY_XS9 -i %{grubefiname} -o %{grubefiname}.signed
 
-./bootstrap
-# -static is needed so that autoconf script is able to link
-# test that looks for _start symbol on 64 bit platforms
-%ifarch %{sparc} ppc ppc64
-%define platform ieee1275
-%else
-%define platform pc
-%endif
-%configure \
-    CFLAGS="$(echo $RPM_OPT_FLAGS | sed \
-        -e 's/-O.//g' \
-        -e 's/-fstack-protector[[:alpha:]-]\+//g' \
-        -e 's/-fstack-protector//g' \
-        -e 's/--param=ssp-buffer-size=4//g' \
-        -e 's/-mregparm=3/-mregparm=4/g' \
-        -e 's/-fexceptions//g' \
-        -e 's/-m64//g' \
-        -e 's/-fasynchronous-unwind-tables//g' \
-        -e 's/-mcpu=power7/-mcpu=power6/g' \
-        -e 's/^/ -fno-strict-aliasing /' )" \
-    TARGET_LDFLAGS=-static \
-        --with-platform=%{platform} \
-    --with-grubdir=%{name} \
-        --program-transform-name=s,grub,%{name}, \
-    --enable-man-pages \
-    --disable-grub-mount \
-    --disable-werror
-%{?_cov_wrap} make %{?_smp_mflags}
-
-sed -i -e 's,(grub),(%{name}),g' \
-    -e 's,grub.info,%{name}.info,g' \
-    -e 's,\* GRUB:,* GRUB2:,g' \
-    -e 's,/boot/grub/,/boot/%{name}/,g' \
-    -e 's,\([^-]\)grub-\([a-z]\),\1%{name}-\2,g' \
-    docs/grub.info
-sed -i -e 's,grub-dev,%{name}-dev,g' docs/grub-dev.info
-
-/usr/bin/makeinfo --html --no-split -I docs -o grub-dev.html docs/grub-dev.texi
-/usr/bin/makeinfo --html --no-split -I docs -o grub.html docs/grub.texi
-sed -i    -e 's,/boot/grub/,/boot/%{name}/,g' \
-    -e 's,\([^-]\)grub-\([a-z]\),\1%{name}-\2,g' \
-    grub.html
 
 %install
 set -e
-rm -fr $RPM_BUILD_ROOT
 
-%ifarch %{efiarchs}
-pushd ../%{name}-efi-%{version}
 make DESTDIR=$RPM_BUILD_ROOT install
 find $RPM_BUILD_ROOT -iname "*.module" -exec chmod a-x {} \;
 
@@ -240,22 +159,7 @@ do
         TGT=$(echo $MODULE |sed "s,$RPM_BUILD_ROOT,.debugroot,")
 #        install -m 755 -D $BASE$EXT $TGT
 done
-install -m 755 %{grubefiname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efidir}/%{grubefiname}
-install -m 755 %{grubeficdname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efidir}/%{grubeficdname}
-# XCP-ng: Add fallback for when all boot entries fail
-# (buggy UEFI implementation, NVRAM error, user error in configuring boot entries, etc... could all cause this)
-# It's a copy of grubx64.efi so the binary will still look at its cfg file in `EFI/xenserver`
-mkdir -p $RPM_BUILD_ROOT/boot/efi/EFI/%{efibootdir}/
-install -m 755 %{grubefiname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efibootdir}/%{grubefibootname}
-popd
-%endif
-
-make DESTDIR=$RPM_BUILD_ROOT install
-
-# Ghost config file
-install -d $RPM_BUILD_ROOT/boot/%{name}
-touch $RPM_BUILD_ROOT/boot/%{name}/grub.cfg
-ln -s ../boot/%{name}/grub.cfg $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.cfg
+install -m 755 %{grubefiname}.signed $RPM_BUILD_ROOT/boot/efi/EFI/%{efidir}/%{grubefiname}
 
 # Install ELF files modules and images were created from into
 # the shadow root, where debuginfo generator will grab them from
@@ -271,145 +175,119 @@ do
 #        install -m 755 -D $BASE$EXT $TGT
 done
 
-rm $RPM_BUILD_ROOT%{_infodir}/dir
+rm -rf $RPM_BUILD_ROOT%{_infodir}/dir
 
-# Defaults
-mkdir ${RPM_BUILD_ROOT}%{_sysconfdir}/default
-touch ${RPM_BUILD_ROOT}%{_sysconfdir}/default/grub
-mkdir ${RPM_BUILD_ROOT}%{_sysconfdir}/sysconfig
-ln -sf %{_sysconfdir}/default/grub \
-    ${RPM_BUILD_ROOT}%{_sysconfdir}/sysconfig/grub
+# Remove grub files
+rm -rf $RPM_BUILD_ROOT%{_libdir}/grub
+rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.cfg
+rm -rf $RPM_BUILD_ROOT/boot/%{name}/grub.cfg
 
-# Make selinux happy with exec stack binaries.
-mkdir ${RPM_BUILD_ROOT}%{_sysconfdir}/prelink.conf.d/
-cat << EOF > ${RPM_BUILD_ROOT}%{_sysconfdir}/prelink.conf.d/grub2.conf
-# these have execstack, and break under selinux
--b /usr/bin/grub2-script-check
--b /usr/bin/grub2-mkrelpath
--b /usr/bin/grub2-fstest
--b /usr/sbin/grub2-bios-setup
--b /usr/sbin/grub2-probe
--b /usr/sbin/grub2-sparc64-setup
-EOF
+# Remove tools files
+rm -rf $RPM_BUILD_ROOT%{_datarootdir}/grub/*
+rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-bios-setup
+rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-install
+rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-macbless
+rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-mkconfig
+rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-ofpathname
+rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-probe
+rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-reboot
+rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-set-default
+rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-sparc64-setup
+rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-file
+rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-fstest
+rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-glue-efi
+rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-kbdcomp
+rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-menulst2cfg
+rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-mkimage
+rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-mklayout
+rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-mknetdir
+rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-mkpasswd-pbkdf2
+rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-mkrelpath
+rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-mkrescue
+rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-mkstandalone
+rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-render-label
+rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-script-check
+rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-syslinux2cfg
+rm -rf $RPM_BUILD_ROOT%{_datadir}/bash-completion/completions
+rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/prelink.conf.d/grub2.conf
+rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/grub.d/*
+rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/default/grub
+rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/grub
+rm -rf $RPM_BUILD_ROOT%{_infodir}/%{name}*
+rm -rf $RPM_BUILD_ROOT%{_mandir}/man1/*
+rm -rf $RPM_BUILD_ROOT%{_mandir}/man8/*
 
 %{?_cov_install}
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-%post
-if [ "$1" = 1 ]; then
-    /sbin/install-info --info-dir=%{_infodir} %{_infodir}/%{name}.info.gz || :
-    /sbin/install-info --info-dir=%{_infodir} %{_infodir}/%{name}-dev.info.gz || :
-fi
-
-%triggerun -- grub2 < 1:1.99-4
-# grub2 < 1.99-4 removed a number of essential files in postun. To fix upgrades
-# from the affected grub2 packages, we first back up the files in triggerun and
-# later restore them in triggerpostun.
-# https://bugzilla.redhat.com/show_bug.cgi?id=735259
-
-# Back up the files before uninstalling old grub2
-mkdir -p /boot/grub2.tmp &&
-mv -f /boot/grub2/*.mod \
-      /boot/grub2/*.img \
-      /boot/grub2/*.lst \
-      /boot/grub2/device.map \
-      /boot/grub2.tmp/ || :
-
-%triggerpostun -- grub2 < 1:1.99-4
-# ... and restore the files.
-test ! -f /boot/grub2/device.map &&
-test -d /boot/grub2.tmp &&
-mv -f /boot/grub2.tmp/*.mod \
-      /boot/grub2.tmp/*.img \
-      /boot/grub2.tmp/*.lst \
-      /boot/grub2.tmp/device.map \
-      /boot/grub2/ &&
-rm -r /boot/grub2.tmp/ || :
-
-%preun
-if [ "$1" = 0 ]; then
-    /sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/%{name}.info.gz || :
-    /sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/%{name}-dev.info.gz || :
-fi
-
 %files
 %defattr(-,root,root,-)
-%{_libdir}/grub/*-%{platform}/
-%config(noreplace) %{_sysconfdir}/%{name}.cfg
-%ghost %config(noreplace) /boot/%{name}/grub.cfg
-%doc COPYING
-
-%ifarch %{efiarchs}
-%files efi
-%defattr(-,root,root,-)
-%{_libdir}/grub/%{grubefiarch}
+%{_bindir}/%{name}-editenv
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
 %dir /boot/efi/EFI/%{efidir}
 %attr(0755,root,root) /boot/efi/EFI/%{efidir}/*.efi
-%dir /boot/efi/EFI/%{efibootdir}
-%attr(0755,root,root) /boot/efi/EFI/%{efibootdir}/%{grubefibootname}
 %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
 %doc COPYING
-%endif
-
-%files tools
-%defattr(-,root,root,-)
-%dir %{_libdir}/grub/
-%dir %{_datarootdir}/grub/
-%{_datarootdir}/grub/*
-%{_sbindir}/%{name}-bios-setup
-%{_sbindir}/%{name}-install
-%{_sbindir}/%{name}-macbless
-%{_sbindir}/%{name}-mkconfig
-%{_sbindir}/%{name}-ofpathname
-%{_sbindir}/%{name}-probe
-%{_sbindir}/%{name}-reboot
-%{_sbindir}/%{name}-set-default
-%{_sbindir}/%{name}-sparc64-setup
-%{_bindir}/%{name}-editenv
-%{_bindir}/%{name}-file
-%{_bindir}/%{name}-fstest
-%{_bindir}/%{name}-glue-efi
-%{_bindir}/%{name}-kbdcomp
-%{_bindir}/%{name}-menulst2cfg
-%{_bindir}/%{name}-mkfont
-%{_bindir}/%{name}-mkimage
-%{_bindir}/%{name}-mklayout
-%{_bindir}/%{name}-mknetdir
-%{_bindir}/%{name}-mkpasswd-pbkdf2
-%{_bindir}/%{name}-mkrelpath
-%ifnarch %{sparc}
-%{_bindir}/%{name}-mkrescue
-%endif
-%{_bindir}/%{name}-mkstandalone
-%{_bindir}/%{name}-render-label
-%{_bindir}/%{name}-script-check
-%{_bindir}/%{name}-syslinux2cfg
-%{_sysconfdir}/bash_completion.d/grub
-%{_sysconfdir}/prelink.conf.d/grub2.conf
-%attr(0700,root,root) %dir %{_sysconfdir}/grub.d
-%config %{_sysconfdir}/grub.d/??_*
-%{_sysconfdir}/grub.d/README
-%attr(0644,root,root) %ghost %config(noreplace) %{_sysconfdir}/default/grub
-%{_sysconfdir}/sysconfig/grub
-%dir /boot/%{name}
-%{_infodir}/%{name}*
-%doc COPYING INSTALL
-%doc NEWS README
-%doc THANKS TODO
-%doc grub.html
-%doc grub-dev.html docs/font_char_metrics.png
-%{_mandir}/man1/*
-%exclude %{_mandir}/man1/*syslinux2cfg.1*
-%{_mandir}/man8/*
 
 %{?_cov_results_package}
 
 %changelog
-* Wed Sep 25 2024 Thierry Escande <thierry.escande@vates.tech> - 2.06-4.0.2.1
-- Backport VLAN networking support for UEFI PXE boot
+* Wed Oct 08 2025 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.12-14
+- CP-47917: Re-sign with new key
+
+* Tue Sep 16 2025 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.12-13
+- CP-309737: Remove fallback path
+- Remove obsolete cruft
+
+* Mon Aug 18 2025 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.12-12
+- CP-308091: Drop old NX patches
+- Remove duplicate grub_file_open call
+
+* Wed Aug 06 2025 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.12-11
+- CA-414792: Fix issues with xen_boot unload
+
+* Tue Jul 29 2025 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.12-10
+- CP-308937: Add xen_boot module for booting xen.efi
+- CP-308937: Remove multiboot PE support
+
+* Tue Jul 29 2025 Alex Brett <alex.brett@cloud.com> - 2.12-9
+- CP-309224: Add chain module
+
+* Thu Jul 10 2025 Alex Brett <alex.brett@cloud.com> - 2.12-8
+- CA-405659: Include test module in grub image
+
+* Fri Jul 04 2025 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.12-7
+- Update SBAT email address
+
+* Tue Jun 24 2025 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.12-6
+- CP-308443: Update to grub development snapshot from 2025-06-24
+
+* Wed May 21 2025 Frediano Ziglio <frediano.ziglio@cloud.com> - 2.12-5
+- CP-308117: Rebuild due to signature issue
+
+* Thu Apr 17 2025 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.12-4
+- CP-49469: Depend on python3-xssign
+
+* Fri Apr 11 2025 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.12-3
+- CP-45134: Add Secure Boot support
+
+* Wed Jan 22 2025 Alex Brett <alex.brett@cloud.com> - 2.12-2
+- CA-405116: Fix build in the absence of tools to make info docs
+
+* Thu Jan 09 2025 Lin Liu <Lin.Liu01@cloud.com> - 2.12-1.0.2
+- Package grub-editenv and remove lib files
+
+* Mon Nov 11 2024 Stephen Cheng <stephen.cheng@cloud.com> - 2.12-1.0.1
+- CP-50676: Remove gettext
+- CP-50552: Remove BIOS support from grub
+
+* Wed Aug 14 2024 Gerald Elder-Vass <gerald.elder-vass@cloud.com> - 2.12-1.0.0
+- Update to grub 2.12 and gnulib_cset stable-202201
+
+* Thu May 30 2024 Deli Zhang <deli.zhang@cloud.com> - 2.06-4.0.4
+- CP-46111: Remove build require freetype-devel
+
+* Thu Apr 11 2024 Frediano Ziglio <frediano.ziglio@cloud.com> - 2.06-4.0.3
+- CP-47745: compatibilities for XS9, optimize back some code
 
 * Wed May 17 2023 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.06-4.0.2
 - HP-1153: always enforce requested allocation alignment

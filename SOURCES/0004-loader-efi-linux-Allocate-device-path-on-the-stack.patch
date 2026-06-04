@@ -1,0 +1,47 @@
+From 808e55904537fcf2207d9952dedf1ff5e7964a14 Mon Sep 17 00:00:00 2001
+From: Ross Lagerwall <ross.lagerwall@citrix.com>
+Date: Thu, 24 Jul 2025 11:19:07 +0100
+Subject: [PATCH 4/7] loader/efi/linux: Allocate device path on the stack
+
+The structure is relatively small and will be copied when calling
+LoadImage() anyway so it is simpler to allocate it on the stack.
+
+Signed-off-by: Ross Lagerwall <ross.lagerwall@citrix.com>
+---
+ grub-core/loader/efi/linux.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/grub-core/loader/efi/linux.c b/grub-core/loader/efi/linux.c
+index 32312d870554..b5bf9551fc76 100644
+--- a/grub-core/loader/efi/linux.c
++++ b/grub-core/loader/efi/linux.c
+@@ -185,11 +185,7 @@ failure:
+ grub_err_t
+ grub_arch_efi_linux_boot_image (grub_addr_t addr, grub_size_t size, const char *args)
+ {
+-  grub_efi_memory_mapped_device_path_t *mempath;
+-
+-  mempath = grub_malloc (2 * sizeof (grub_efi_memory_mapped_device_path_t));
+-  if (!mempath)
+-    return grub_errno;
++  grub_efi_memory_mapped_device_path_t mempath[2];
+ 
+   mempath[0].header.type = GRUB_EFI_HARDWARE_DEVICE_PATH_TYPE;
+   mempath[0].header.subtype = GRUB_EFI_MEMORY_MAPPED_DEVICE_PATH_SUBTYPE;
+@@ -225,13 +221,10 @@ grub_arch_efi_linux_boot_image_dp (grub_addr_t addr, grub_size_t size, const cha
+ 				    (void *) addr, size, &image_handle);
+       if (status != GRUB_EFI_SUCCESS)
+ 	{
+-	  grub_free (dp);
+ 	  return grub_error (GRUB_ERR_BAD_OS, "cannot load image");
+ 	}
+     }
+ 
+-  grub_free (dp);
+-
+   grub_dprintf ("linux", "linux command line: '%s'\n", args);
+ 
+   /* Convert command line to UTF-16. */
+-- 
+2.50.1
+
