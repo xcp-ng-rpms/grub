@@ -47,14 +47,15 @@ Patch6: 0006-sb-Verify-Xen-hypevisor-and-don-t-verify-modules.patch
 Patch7: 0007-Add-xen_boot-module-for-x86_64_efi.patch
 Patch8: wait-before-drain.patch
 
-BuildRequires:  flex bison binutils python
+BuildRequires:  gcc flex bison binutils python
 BuildRequires:  ncurses-devel xz-devel
 BuildRequires:  libusb1-devel
-BuildRequires:  %{_exec_prefix}/lib64/crt1.o glibc-static
+BuildRequires:  glibc-devel glibc-static
 BuildRequires:  autoconf automake device-mapper-devel
 BuildRequires:  gettext-devel git
 BuildRequires:  texinfo
-BuildRequires:  xssign-macros
+BuildRequires:  xcpsign-macros-test
+BuildRequires:  sbsigntools
 %{?_cov_buildrequires}
 
 # Although there's no grub-efi rpm, we still provide grub-efi for install-image
@@ -132,7 +133,7 @@ GRUB_MODULES="\
 "
 ./grub-mkimage -O %{grubefiarch} -o %{grubefiname} -p /EFI/%{efidir} \
         -d grub-core --sbat sbat.csv ${GRUB_MODULES}
-%sign -c GRUB_SIGN_KEY_XS9 -i %{grubefiname} -o %{grubefiname}.signed
+%sign -c GRUB_SIGN_KEY_XCP9 -i %{grubefiname} -o %{grubefiname}.signed
 
 
 %install
@@ -231,6 +232,10 @@ rm -rf $RPM_BUILD_ROOT%{_mandir}/man8/*
 %{?_cov_results_package}
 
 %changelog
+* Wed Jun 10 2026 Coretin Oparowski <corentin.oparowski@vates.tech> - 2.12-14.cop.1
+- Change certs & deps to test SB with xcp-ng
+- Update sbat.csv.in for xcp-ng grub
+
 * Wed Oct 08 2025 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.12-14
 - CP-47917: Re-sign with new key
 
