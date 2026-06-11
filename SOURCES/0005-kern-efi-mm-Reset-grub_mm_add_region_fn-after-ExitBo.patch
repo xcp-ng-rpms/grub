@@ -1,0 +1,86 @@
+From 224aefd0574fa9325e5e0682b6b96f77084798ce Mon Sep 17 00:00:00 2001
+From: Ruihan Li <lrh2000@pku.edu.cn>
+Date: Mon, 16 Dec 2024 12:26:58 +0800
+Subject: [PATCH 5/5] kern/efi/mm: Reset grub_mm_add_region_fn after
+ ExitBootServices() call
+
+The EFI Boot Services can be used after ExitBootServices() call because
+the GRUB code still may allocate memory.
+
+An example call stack is:
+
+  grub_multiboot_boot
+    grub_multiboot2_make_mbi
+      grub_efi_finish_boot_services
+        b->exit_boot_services
+    normal_boot
+      grub_relocator32_boot
+        grub_relocator_alloc_chunk_align_safe
+          grub_relocator_alloc_chunk_align
+            grub_malloc
+              grub_memalign
+                grub_mm_add_region_fn
+                [= grub_efi_mm_add_regions]
+                  grub_efi_allocate_any_pages
+                    grub_efi_allocate_pages_real
+                      b->allocate_pages
+
+This can lead to confusing errors. After ExitBootServices() call
+b->allocate_pages may point to the NULL address resulting in something like:
+
+  !!!! X64 Exception Type - 01(#DB - Debug)  CPU Apic ID - 00000000 !!!!
+  RIP  - 000000000000201F, CS  - 0000000000000038, RFLAGS - 0000000000200002
+  RAX  - 000000007F9EE010, RCX - 0000000000000001, RDX - 0000000000000002
+  RBX  - 0000000000000006, RSP - 00000000001CFBEC, RBP - 0000000000000000
+  RSI  - 0000000000000000, RDI - 00000000FFFFFFFF
+  R8   - 0000000000000006, R9  - 000000007FEDFFB8, R10 - 0000000000000000
+  R11  - 0000000000000475, R12 - 0000000000000001, R13 - 0000000000000002
+  R14  - 00000000FFFFFFFF, R15 - 000000007E432C08
+  DS   - 0000000000000030, ES  - 0000000000000030, FS  - 0000000000000030
+  GS   - 0000000000000030, SS  - 0000000000000030
+  CR0  - 0000000080010033, CR2 - 0000000000000000, CR3 - 000000007FC01000
+  CR4  - 0000000000000668, CR8 - 0000000000000000
+  DR0  - 0000000000000000, DR1 - 0000000000000000, DR2 - 0000000000000000
+  DR3  - 0000000000000000, DR6 - 00000000FFFF0FF0, DR7 - 0000000000000400
+  GDTR - 000000007F9DE000 0000000000000047, LDTR - 0000000000000000
+  IDTR - 000000007F470018 0000000000000FFF,   TR - 0000000000000000
+  FXSAVE_STATE - 00000000001CF840
+
+Ideally we would like to avoid all memory allocations after exiting EFI
+Boot Services altogether but that requires significant code changes. This
+patch adds a simple workaround that resets grub_mm_add_region_fn to NULL
+after ExitBootServices() call, so:
+
+  - Memory allocations have a better chance of succeeding because grub_memalign()
+    will try to reclaim the disk cache if it sees a NULL in grub_mm_add_region_fn.
+
+  - At worst it will fail to allocate memory but it will explicitly tell users
+    that it's out of memory, which is still much better than the current
+    situation where it fails in a fairly random way and triggers a CPU fault.
+
+Signed-off-by: Ruihan Li <lrh2000@pku.edu.cn>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/kern/efi/mm.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/grub-core/kern/efi/mm.c b/grub-core/kern/efi/mm.c
+index bc97ecd4799a..df238b165e06 100644
+--- a/grub-core/kern/efi/mm.c
++++ b/grub-core/kern/efi/mm.c
+@@ -297,6 +297,12 @@ grub_efi_finish_boot_services (grub_efi_uintn_t *outbuf_size, void *outbuf,
+   if (efi_desc_version)
+     *efi_desc_version = finish_desc_version;
+ 
++  /*
++   * We cannot request new memory regions from the EFI Boot Services anymore.
++   * FIXME: Can we completely avoid memory allocations after this?
++   */
++  grub_mm_add_region_fn = NULL;
++
+ #if defined (__i386__) || defined (__x86_64__)
+   if (is_apple)
+     stop_broadcom ();
+-- 
+2.53.0
+

@@ -1,0 +1,34 @@
+From 61f1d0a612a01c2f48f718ff04590ff481e028f8 Mon Sep 17 00:00:00 2001
+From: Mate Kukri <mate.kukri@canonical.com>
+Date: Wed, 12 Jun 2024 16:10:50 +0100
+Subject: [PATCH 3/3] kern/efi/mm: Change grub_efi_allocate_pages_real() to
+ call semantically correct free function
+
+If the firmware happens to return 0 as an address of allocated pages,
+grub_efi_allocate_pages_real() tries to allocate a new set of pages,
+and then free the ones at address 0.
+
+However at that point grub_efi_store_alloc() wasn't yet called, so
+freeing the pages at 0 using grub_efi_free_pages() which calls
+grub_efi_drop_alloc() isn't necessary, so let's call b->free_pages()
+instead.
+
+The call to grub_efi_drop_alloc() doesn't seem particularly harmful,
+because it seems to do nothing if the allocation it is asked to drop
+isn't on the list, but the call to it is obviously unnecessary here.
+
+Signed-off-by: Mate Kukri <mate.kukri@canonical.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+diff --git a/grub-core/kern/efi/mm.c b/grub-core/kern/efi/mm.c
+index e6c30af04a89..76c123d90ecd 100644
+--- a/grub-core/kern/efi/mm.c
++++ b/grub-core/kern/efi/mm.c
+@@ -152,7 +152,7 @@ grub_efi_allocate_pages_real (grub_efi_physical_address_t address,
+ 	 so reallocate another one.  */
+       address = GRUB_EFI_MAX_USABLE_ADDRESS;
+       status = efi_call_4 (b->allocate_pages, alloctype, memtype, pages, &address);
+-      grub_efi_free_pages (0, pages);
++      efi_call_2 (b->free_pages, 0, pages);
+       if (status != GRUB_EFI_SUCCESS)
+ 	{
+ 	  grub_error (GRUB_ERR_OUT_OF_MEMORY, N_("out of memory"));
