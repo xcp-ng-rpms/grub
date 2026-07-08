@@ -28,7 +28,7 @@
 Name:           grub
 Epoch:          0
 Version:        2.12
-Release: %{?xsrel}%{?dist}
+Release: %{?xsrel}.0.secureboot3.1%{?dist}
 Summary:        Bootloader with support for Linux, Multiboot and more
 
 Group:          System Environment/Base
