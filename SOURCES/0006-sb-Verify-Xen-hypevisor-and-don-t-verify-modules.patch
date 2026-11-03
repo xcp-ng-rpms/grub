@@ -1,0 +1,39 @@
+From 0ef5feaf7ed8605e190fc99e00cf85627cdbb3d2 Mon Sep 17 00:00:00 2001
+From: Ross Lagerwall <ross.lagerwall@citrix.com>
+Date: Wed, 23 Jul 2025 10:39:56 +0100
+Subject: [PATCH 6/7] sb: Verify Xen hypevisor and don't verify modules
+
+Since the Xen hypervisor is code that GRUB will execute, it must be
+verified.
+
+Xen is responsible for verifying the modules passed to it so skip
+verification of its modules.
+
+Signed-off-by: Ross Lagerwall <ross.lagerwall@citrix.com>
+---
+ grub-core/kern/efi/sb.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/grub-core/kern/efi/sb.c b/grub-core/kern/efi/sb.c
+index 4409e03c5194..d1ee95875500 100644
+--- a/grub-core/kern/efi/sb.c
++++ b/grub-core/kern/efi/sb.c
+@@ -136,6 +136,7 @@ shim_lock_verifier_init (grub_file_t io __attribute__ ((unused)),
+     case GRUB_FILE_TYPE_XNU_KERNEL:
+     case GRUB_FILE_TYPE_PLAN9_KERNEL:
+     case GRUB_FILE_TYPE_EFI_CHAINLOADED_IMAGE:
++    case GRUB_FILE_TYPE_XEN_HYPERVISOR:
+       *flags = GRUB_VERIFY_FLAGS_SINGLE_CHUNK;
+       return GRUB_ERR_NONE;
+ 
+@@ -167,6 +168,7 @@ shim_lock_verifier_init (grub_file_t io __attribute__ ((unused)),
+     case GRUB_FILE_TYPE_LOADENV:
+     case GRUB_FILE_TYPE_SAVEENV:
+     case GRUB_FILE_TYPE_VERIFY_SIGNATURE:
++    case GRUB_FILE_TYPE_XEN_MODULE:
+       *flags = GRUB_VERIFY_FLAGS_SKIP_VERIFICATION;
+       return GRUB_ERR_NONE;
+ 
+-- 
+2.50.1
+
