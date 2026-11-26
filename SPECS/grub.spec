@@ -55,10 +55,11 @@ Patch8: wait-before-drain.patch
 Patch9: fix-oob-write-in-chainloader.patch
 Patch10: sb-fix-nested-shim.patch
 
+BuildRequires:  gcc
 BuildRequires:  flex, bison, binutils, python
 BuildRequires:  ncurses-devel, xz-devel
 BuildRequires:  libusb1-devel
-BuildRequires:  %{_exec_prefix}/lib64/crt1.o, glibc-static
+BuildRequires:  glibc-devel, glibc-static
 BuildRequires:  autoconf, automake, device-mapper-devel
 BuildRequires:  gettext-devel, git
 BuildRequires:  texinfo
@@ -282,6 +283,7 @@ install -D -m 755 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/grub.d/02_memtest86
 - Remove VLAN networking patches now part of upstream grub 2.12
 - Keep EFI/BOOT/BOOTX64.EFI fallback for now, moved to shim by XenServer
 - Disable XenServer SB signing when building for XCP-ng
+- Add gcc to BuildRequires, replace crt1.o file dependency with glibc-devel
 - *** Upstream changelog ***
   * Tue Sep 29 2026 Tim Smith <tim.smith@citrix.com> - 2.12-17
   - CA-432037 Use the corrrect filename for the debug hypervisor
