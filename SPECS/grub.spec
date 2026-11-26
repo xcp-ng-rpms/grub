@@ -62,7 +62,9 @@ BuildRequires:  %{_exec_prefix}/lib64/crt1.o, glibc-static
 BuildRequires:  autoconf, automake, device-mapper-devel
 BuildRequires:  gettext-devel, git
 BuildRequires:  texinfo
+%if ! 0%{?xcpng}
 BuildRequires:  xssign-macros
+%endif
 %{?_cov_buildrequires}
 
 # Although there's no grub-efi rpm, we still provide grub-efi for install-image
@@ -140,7 +142,9 @@ GRUB_MODULES="\
 "
 ./grub-mkimage -O %{grubefiarch} -o %{grubefiname} -p /EFI/%{efidir} \
         -d grub-core --sbat sbat.csv ${GRUB_MODULES}
+%if ! 0%{?xcpng}
 %sign -c GRUB_SIGN_KEY_XS9 -i %{grubefiname} -o %{grubefiname}.signed
+%endif
 
 
 %install
@@ -167,7 +171,12 @@ do
         TGT=$(echo $MODULE |sed "s,$RPM_BUILD_ROOT,.debugroot,")
 #        install -m 755 -D $BASE$EXT $TGT
 done
+%if 0%{?xcpng}
+# XCP-ng: install the unsigned image, XenServer SB signing key is not available
+install -m 755 %{grubefiname} $RPM_BUILD_ROOT/boot/efi/EFI/%{efidir}/%{grubefiname}
+%else
 install -m 755 %{grubefiname}.signed $RPM_BUILD_ROOT/boot/efi/EFI/%{efidir}/%{grubefiname}
+%endif
 # XCP-ng: Add fallback for when all boot entries fail
 # (buggy UEFI implementation, NVRAM error, user error in configuring boot entries, etc... could all cause this)
 # It's a copy of grubx64.efi so the binary will still look at its cfg file in `EFI/xenserver`
@@ -272,6 +281,7 @@ install -D -m 755 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/grub.d/02_memtest86
 - Sync with XenServer 2.12-17
 - Remove VLAN networking patches now part of upstream grub 2.12
 - Keep EFI/BOOT/BOOTX64.EFI fallback for now, moved to shim by XenServer
+- Disable XenServer SB signing when building for XCP-ng
 - *** Upstream changelog ***
   * Tue Sep 29 2026 Tim Smith <tim.smith@citrix.com> - 2.12-17
   - CA-432037 Use the corrrect filename for the debug hypervisor
