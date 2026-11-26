@@ -55,12 +55,12 @@ Patch8: wait-before-drain.patch
 Patch9: fix-oob-write-in-chainloader.patch
 Patch10: sb-fix-nested-shim.patch
 
-BuildRequires:  flex bison binutils python
-BuildRequires:  ncurses-devel xz-devel
+BuildRequires:  flex, bison, binutils, python
+BuildRequires:  ncurses-devel, xz-devel
 BuildRequires:  libusb1-devel
-BuildRequires:  %{_exec_prefix}/lib64/crt1.o glibc-static
-BuildRequires:  autoconf automake device-mapper-devel
-BuildRequires:  gettext-devel git
+BuildRequires:  %{_exec_prefix}/lib64/crt1.o, glibc-static
+BuildRequires:  autoconf, automake, device-mapper-devel
+BuildRequires:  gettext-devel, git
 BuildRequires:  texinfo
 BuildRequires:  xssign-macros
 %{?_cov_buildrequires}
