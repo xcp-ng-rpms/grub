@@ -8,9 +8,11 @@ set -eu
 # Values set in /etc/grub.d/xs_settings may not contain substitutions;
 # the process of modifying them would likely destroy the substitution.
 #
-# XS__GRUB_TEST_ONLY:       Not used here; if non-empty, update-grub will
-#                           not install the grub config, but will leave it
-#                           as a .test file for manual inspection.
+# XS__GRUB_TEST_ONLY:       If non-empty, update-grub will not install the grub config,
+#                           but will leave it as a .test file for manual inspection.
+#                           Also if non-empty, the RPU handling will NOT call
+#                           grub-editenv to set the next boot to the one-time installer
+#                           entry it has created.
 # XS__MENUENTRY_DEFAULT:    Selects the default menu entry to boot from
 #                           the Zeroth menu group (which is always the greatest)
 #                           Xen/Kernel version installed.
@@ -56,15 +58,27 @@ export XS__KERNEL_MAIN_PARAMS="root=LABEL=${XS__ROOTDISK_LABEL} ${XS__KERNEL_CON
 export XS__KERNEL_SERIAL_PARAMS="root=LABEL=${XS__ROOTDISK_LABEL} ${XS__KERNEL_CONSOLE_SERIAL} ${XS__KERNEL_CORE}"
 export XS__KERNEL_SAFEMODE_PARAMS="root=LABEL=${XS__ROOTDISK_LABEL} ${XS__KERNEL_CONSOLE_SERIAL} ${XS__KERNEL_SAFEMODE}"
 
-# Header. For a default we always want the Zeroth menu as that
-# will be the highest Xen/Kernel version pair installed. The
-# Zeroth entry in that menu will be the VGA boot and the Oneth
-# will be the Serial console
+##################################################
+# Main bootloader section. This always runs and
+# generates the primary bootloader config
+##################################################
+
+# This is used to count top-level menu entries which we have
+# created in this fragment. Later this is used by the
+# RPU installer support to set override_entry (unless we are
+# in test mode). Thus, there is an implicit assumption that this
+# fragment is the first to create any menu entries.
+MENUCOUNT=0
+
+# Header. We duplicate main VGA and Serial boot entries outside
+# the submenu structure so that the default does not need to be
+# in a submenu. There are libraries which parse the GRUB config
+# looking for them but those libraries do not understand submenus.
 cat << EOF
 serial --unit=${XS__SERIAL_PORT} --speed=${XS__SERIAL_BAUD}
 terminal_input serial console
 terminal_output serial console
-set default='0>${XS__MENUENTRY_DEFAULT}'
+set default='${XS__MENUENTRY_DEFAULT}'
 set timeout=${XS__MENU_TIMEOUT}
 EOF
 
@@ -93,8 +107,10 @@ EOF
 }
 
 function menuentry_serial {
+# The menuentry for serial boot must end with the string "(Serial)" exactly
+# because there are libraries which parse the GRUB config looking for it.
 cat << EOF
-menuentry "XenServer (Serial) - Xen ${XEN_VERSION}, Linux ${LINUX_VERSION}" {
+menuentry "XenServer - Xen ${XEN_VERSION}, Linux ${LINUX_VERSION} - (Serial)" {
     search --label --set root ${XS__ROOTDISK_LABEL}
     xen_hypervisor ${XEN_IMG}.${XEN_FMT} ${XS__XEN_SERIAL_PARAMS}
     xen_module ${VMLINUZ} ${XS__KERNEL_SERIAL_PARAMS}
@@ -104,8 +120,10 @@ EOF
 }
 
 function menuentry_safe {
+# The menuentry for "safe mode" must end with the string "Safe Mode" exactly
+# because there are libraries which parse the GRUB config looking for it.
 cat << EOF
-menuentry "XenServer (Safe Mode) - Xen ${XEN_VERSION}, Linux ${LINUX_VERSION}" {
+menuentry "XenServer - Xen ${XEN_VERSION}, Linux ${LINUX_VERSION} - Safe Mode" {
     search --label --set root ${XS__ROOTDISK_LABEL}
     xen_hypervisor ${XEN_IMG}.${XEN_FMT} ${XS__XEN_SAFEMODE_PARAMS}
     xen_module ${VMLINUZ} ${XS__KERNEL_SAFEMODE_PARAMS}
@@ -114,6 +132,7 @@ menuentry "XenServer (Safe Mode) - Xen ${XEN_VERSION}, Linux ${LINUX_VERSION}" {
 EOF
 }
 
+##################################################
 XEN_FMT=efi
 # There is only one "latest" Xen for legacy boot symlinks
 XEN_LN=""
@@ -169,19 +188,40 @@ do
 
         XEN_VERSION=${XEN_FOUND_VERSION}
         XEN_IMG="/boot/xen-${XEN_VERSION}"
+
+        # Two initial entries which are used to cover the usual default boot.
+        # These are present so that we don't have to put the default entry into
+        # a submenu (though it is duplicated there). There are libraries which
+        # parse the GRUB config looking for these defaults which do not understand
+        # submenus.
+        if [ $MENUCOUNT -lt 1 ]; then
+            menuentry_main
+            MENUCOUNT=$(( ${MENUCOUNT} + 1 ))
+            menuentry_serial
+            MENUCOUNT=$(( ${MENUCOUNT} + 1 ))
+        fi
+
         echo "submenu \"[MENU] Xen ${XEN_FOUND_VERSION},  Linux ${LINUX_VERSION}\" {"
+        echo
             menuentry_main
             menuentry_serial
             menuentry_safe
+        echo
         echo "}"
+        # We made a submenu, bump MENUCOUNT
+        MENUCOUNT=$(( ${MENUCOUNT} + 1 ))
 
         # Menu for the debug version
         XEN_VERSION="${XEN_FOUND_VERSION}-debug"
         XEN_IMG="/boot/xen-${XEN_VERSION}"
         echo "submenu \"[MENU] Xen ${XEN_FOUND_VERSION}-debug,  Linux ${LINUX_VERSION}\" {"
+        echo
             menuentry_main
             menuentry_serial
+        echo
         echo "}"
+        # We made a submenu, bump MENUCOUNT
+        MENUCOUNT=$(( ${MENUCOUNT} + 1 ))
 
         # If there is a vmlinuz-fallback present, make a special extra menu just the fallback
         # kernel, but only for the kernel; we might have multiboot Xen but not multiboot
@@ -193,10 +233,119 @@ do
             VMLINUZ="/boot/vmlinuz-${LINUX_VERSION}"
             INITRD="/boot/initrd-${LINUX_VERSION}.img"
             echo "submenu \"[MENU] Xen ${XEN_FOUND_VERSION},  Linux (Fallback)\" {"
+            echo
                 menuentry_main
                 menuentry_serial
                 menuentry_safe
+            echo
             echo "}"
+            # We made a submenu, bump MENUCOUNT
+            MENUCOUNT=$(( ${MENUCOUNT} + 1 ))
         fi
     done
 done
+
+##################################################
+# RPU Support. This runs only if /etc/grub.d/xs_settings_rpu exists,
+# and adds a bootloader configuration for RPU using the additional
+# information found therein. It also removes the /etc/grub.d/xs_settings_rpu
+# file so that the next time the update-grub action is invoked, the
+# RPU bootloader entry will no longer be present
+#
+# It is here rather than in a separate script fragment so we can
+# re-use information computed from /etc/grub.d/xs_settings without
+# having to compute it twice.
+#
+# The installer menu entry is set up and then made the default using
+# grub-editenv to set override_entry, and the guard variable
+# is set to make this two-stage; the first time it goes through
+# the chainloader (and unsets the chain guard variable), causing
+# the second time to go through the "real" installer entry, which
+# unsets the override_entry value to let the coded default take
+# over after the installer is done.
+##################################################
+
+##################################################
+# Rules for /etc/grub.d/xs_settings_rpu
+#
+# Variables set in /etc/grub.d/xs_settings_rpu may not contain
+# substitutions
+#
+# XS__RPU_MENUNAME:         The name to be used for the menu entry.
+#                           Usually something like "Rolling pool upgrade"
+#                           Given in setup so the caller can know which
+#                           menuentry name to use when setting override_entry
+#                           to set the default boot.
+# XS__RPU_CHAINGUARD:       The name of the chainloader guard variable
+#                           Typically set to "RPU_CHAINLOAD"
+# XS__RPU_CHAIN:            The chainloader
+# XS__RPU_CHAINROOT:        The disk label for the root disk used for
+#                           the chainloader
+# XS__RPU_HYPERVISOR:       The RPU hypervisor
+# XS__RPU_HYPERVISOR_ARGS:  The RPU hypervisor args
+# XS__RPU_KERNEL:           The RPU kernel
+# XS__RPU_KERNEL_ARGS:      The RPU kernel args
+# XS__RPU_INITRD:           The RPU initrd
+#
+# These are all explicitly set because they are computed by the RPU plugin
+# from information in the GRUB config in the installation ISO
+
+# Make sure we have some guess at the grubenv (this should have been
+# set before we were called)
+[ ! -v XS__GRUB_ENVBLOCK ] && XS__GRUB_ENVBLOCK="/boot/efi/EFI/xenserver/grubenv"
+[ ! -v XS__GRUB_TEST_ONLY ] && XS__GRUB_TEST_ONLY=""
+if [ -z "${XS__GRUB_TEST_ONLY}" ]; then
+    # Clear the override_entry value. We will set it again if needed. We only use this
+    # for RPU; this is not how we manage the normal default boot.
+    # This ensures that if someone prepares for RPU and then changes their mind and
+    # writes a new bootloader config, they don't end up with a default that doesn't
+    # exist. The XS__RPU_CHAINGUARD value doesn't matter because it is only used in RPU.
+    /usr/bin/grub-editenv "${XS__GRUB_ENVBLOCK}" unset override_entry
+    echo "# CLEARED /usr/bin/grub-editenv '${XS__GRUB_ENVBLOCK}' unset override_entry"
+else
+    echo "# SKIPPED CLEARING /usr/bin/grub-editenv '${XS__GRUB_ENVBLOCK}' unset override_entry"
+fi
+
+[ -f "/etc/grub.d/xs_settings_rpu" ] || exit 0
+source /etc/grub.d/xs_settings_rpu
+# Remove the RPU settings file so that
+/usr/bin/rm -f /etc/grub.d/xs_settings_rpu
+
+# Select VGA or serial console for the RPU entry
+if [ "${XS__MENUENTRY_DEFAULT}" == "0" ]; then
+    XS__RPU_XEN_CONSOLE="${XS__XEN_CONSOLE_VGA}"
+    XS__RPU_KERNEL_CONSOLE="${XS__KERNEL_CONSOLE_VGA}"
+else
+    XS__RPU_XEN_CONSOLE="${XS__XEN_CONSOLE_SERIAL}"
+    XS__RPU_KERNEL_CONSOLE="${XS__KERNEL_CONSOLE_SERIAL}"
+fi
+# Putting shell-like variables into the grub.cfg here, note
+# escape character.
+cat <<END
+menuentry '${XS__RPU_MENUNAME}' {
+    if [ "\${${XS__RPU_CHAINGUARD}}" = "1" ]; then
+        unset ${XS__RPU_CHAINGUARD}
+        save_env ${XS__RPU_CHAINGUARD}
+        search --label --set root ${XS__RPU_CHAINROOT}
+        chainloader ${XS__RPU_CHAIN}
+    else
+        unset override_entry
+        save_env override_entry
+        search --label --set root ${XS__ROOTDISK_LABEL}
+        xen_hypervisor ${XS__RPU_HYPERVISOR} ${XS__RPU_XEN_CONSOLE} ${XS__RPU_HYPERVISOR_ARGS}
+        xen_module ${XS__RPU_KERNEL} ${XS__RPU_KERNEL_CONSOLE} ${XS__RPU_KERNEL_ARGS}
+        xen_module ${XS__RPU_INITRD}
+    fi
+}
+END
+# We made an RPU entry, so we want to boot into it on the next boot,
+# unless we are in test mode
+if [ -z "${XS__GRUB_TEST_ONLY}" ]; then
+    /usr/bin/grub-editenv "${XS__GRUB_ENVBLOCK}" set "override_entry=${MENUCOUNT}"
+    echo "# SET /usr/bin/grub-editenv '${XS__GRUB_ENVBLOCK}' set 'override_entry=${MENUCOUNT}'"
+    /usr/bin/grub-editenv "${XS__GRUB_ENVBLOCK}" set "${XS__RPU_CHAINGUARD}=1"
+    echo "# SET /usr/bin/grub-editenv '${XS__GRUB_ENVBLOCK}' set '${XS__RPU_CHAINGUARD}=1'"
+else
+    echo "# SKIPPED /usr/bin/grub-editenv '${XS__GRUB_ENVBLOCK}' set 'override_entry=${MENUCOUNT}'"
+    echo "# SKIPPED /usr/bin/grub-editenv '${XS__GRUB_ENVBLOCK}' set '${XS__RPU_CHAINGUARD}=1'"
+fi

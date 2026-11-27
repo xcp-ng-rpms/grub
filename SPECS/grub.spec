@@ -1,6 +1,6 @@
-%global package_speccommit 1c9316154da658ea65c8eab0ca301d49dcbb24ee
+%global package_speccommit 7454b1ba4249f5614c98bb82cc1b1d70c6100b2f
 %global usver 2.12
-%global xsver 15
+%global xsver 16
 %global xsrel %{xsver}%{?xscount}%{?xshash}
 # This package calls binutils components directly and would need to pass
 # in flags to enable the LTO plugins
@@ -258,6 +258,9 @@ install -D -m 755 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/grub.d/02_memtest86
 %{_sbindir}/update-grub || :
 
 %changelog
+* Thu Aug 27 2026 Tim Smith <tim.smith@citrix.com> - 2.12-16
+- CP-313557 RPU Support
+
 * Wed Jul 01 2026 Tim Smith <tim.smith@citrix.com> - 2.12-15
 - CP-53030: Fix chainload nested shim in secure boot mode
 - CP-313261 Teach grub-mkconfig to handle Xenserver
