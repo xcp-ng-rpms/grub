@@ -1,0 +1,202 @@
+#!/usr/bin/bash
+
+set -eu
+
+##################################################
+# Rules for /etc/grub.d/xs_settings
+#
+# Values set in /etc/grub.d/xs_settings may not contain substitutions;
+# the process of modifying them would likely destroy the substitution.
+#
+# XS__GRUB_TEST_ONLY:       Not used here; if non-empty, update-grub will
+#                           not install the grub config, but will leave it
+#                           as a .test file for manual inspection.
+# XS__MENUENTRY_DEFAULT:    Selects the default menu entry to boot from
+#                           the Zeroth menu group (which is always the greatest)
+#                           Xen/Kernel version installed.
+#                               0 is the VGA console, 1 is the Serial console
+# XS__MENU_TIMEOUT          Sets the timeout before automatic boot, in seconds.
+# XS__SERIAL_PORT           Sets the serial port number.
+# XS__SERIAL_BAUD           Sets the serial BAUD rate. Because this affects both
+#                           GRUB and Xen, it requires special treatment.
+# XS__ROOTDISK_LABEL        Sets the root disk label. Because this affects both
+#                           GRUB and the Dom0 kernel, it requires special treatment.
+#
+# XS__XEN_CORE              Xen arguments which affect all boots. Arguments found here
+#                           can be modified by use of xen-cmdline, but cannot be added
+#                           or removed.
+# XS__XEN_SHARED            Xen arguments which affect normal VGA and Serial boots, but not
+#                           "Safe mode". xen-cmdline can add, remove and modify arguments
+#                           found here.
+# XS__XEN_SAFEMODE          A curated set of Xen arguments applied to a Serial "Safe Mode" boot
+#                           instead of those in XS__XEN_SHARED. Cannot be modified by
+#                           xen-cmdline.
+#
+# XS__KERNEL_CORE           Arguments for the Dom0 kernel which affect normal VGA and Serial
+#                           boots, but not "Safe mode". xen-cmdline can add, remove and modify
+#                           arguments found here.
+# XS__KERNEL_SAFEMODE       A curated set of Dom0 kernel arguments applied to a Serial "Safe mode"
+#                           boot instead of those in XS__KERNEL_CORE. Cannot be modified by
+#                           xen-cmdline
+
+source /etc/grub.d/xs_settings
+
+
+export XS__XEN_CONSOLE_VGA="console=vga"
+# Serial port specification is 0-based for GRUB, but 1-based for the kernel
+COM_PORT="com$(( ${XS__SERIAL_PORT} + 1 ))"
+export XS__XEN_CONSOLE_SERIAL="${COM_PORT}=${XS__SERIAL_BAUD},8n1 console=${COM_PORT},vga"
+export XS__XEN_MAIN_PARAMS="${XS__XEN_CORE} ${XS__XEN_CONSOLE_VGA} ${XS__XEN_SHARED}"
+export XS__XEN_SERIAL_PARAMS="${XS__XEN_CORE} ${XS__XEN_CONSOLE_SERIAL} ${XS__XEN_SHARED}"
+export XS__XEN_SAFEMODE_PARAMS="${XS__XEN_CORE} ${XS__XEN_CONSOLE_SERIAL} ${XS__XEN_SAFEMODE}"
+
+export XS__KERNEL_CONSOLE_VGA="console=hvc0 console=tty0"
+export XS__KERNEL_CONSOLE_SERIAL="console=tty0 console=hvc0"
+export XS__KERNEL_MAIN_PARAMS="root=LABEL=${XS__ROOTDISK_LABEL} ${XS__KERNEL_CONSOLE_VGA} ${XS__KERNEL_CORE}"
+export XS__KERNEL_SERIAL_PARAMS="root=LABEL=${XS__ROOTDISK_LABEL} ${XS__KERNEL_CONSOLE_SERIAL} ${XS__KERNEL_CORE}"
+export XS__KERNEL_SAFEMODE_PARAMS="root=LABEL=${XS__ROOTDISK_LABEL} ${XS__KERNEL_CONSOLE_SERIAL} ${XS__KERNEL_SAFEMODE}"
+
+# Header. For a default we always want the Zeroth menu as that
+# will be the highest Xen/Kernel version pair installed. The
+# Zeroth entry in that menu will be the VGA boot and the Oneth
+# will be the Serial console
+cat << EOF
+serial --unit=${XS__SERIAL_PORT} --speed=${XS__SERIAL_BAUD}
+terminal_input serial console
+terminal_output serial console
+set default='0>${XS__MENUENTRY_DEFAULT}'
+set timeout=${XS__MENU_TIMEOUT}
+EOF
+
+# $prefix and $override_entry are to be evaluted by GRUB
+# so don't attempt to expand them here.
+cat << 'EOF'
+if [ -s $prefix/grubenv ]; then
+        load_env
+fi
+
+if [ -n "$override_entry" ]; then
+        set default=$override_entry
+fi
+
+EOF
+
+function menuentry_main {
+cat << EOF
+menuentry "XenServer - Xen ${XEN_VERSION}, Linux ${LINUX_VERSION}" {
+    search --label --set root ${XS__ROOTDISK_LABEL}
+    xen_hypervisor ${XEN_IMG}.${XEN_FMT} ${XS__XEN_MAIN_PARAMS}
+    xen_module ${VMLINUZ} ${XS__KERNEL_MAIN_PARAMS}
+    xen_module ${INITRD}
+}
+EOF
+}
+
+function menuentry_serial {
+cat << EOF
+menuentry "XenServer (Serial) - Xen ${XEN_VERSION}, Linux ${LINUX_VERSION}" {
+    search --label --set root ${XS__ROOTDISK_LABEL}
+    xen_hypervisor ${XEN_IMG}.${XEN_FMT} ${XS__XEN_SERIAL_PARAMS}
+    xen_module ${VMLINUZ} ${XS__KERNEL_SERIAL_PARAMS}
+    xen_module ${INITRD}
+}
+EOF
+}
+
+function menuentry_safe {
+cat << EOF
+menuentry "XenServer (Safe Mode) - Xen ${XEN_VERSION}, Linux ${LINUX_VERSION}" {
+    search --label --set root ${XS__ROOTDISK_LABEL}
+    xen_hypervisor ${XEN_IMG}.${XEN_FMT} ${XS__XEN_SAFEMODE_PARAMS}
+    xen_module ${VMLINUZ} ${XS__KERNEL_SAFEMODE_PARAMS}
+    xen_module ${INITRD}
+}
+EOF
+}
+
+XEN_FMT=efi
+# There is only one "latest" Xen for legacy boot symlinks
+XEN_LN=""
+# If the kernel shortversion changes we may need more
+# than one "latest" kernel legacy boot symlink, depending on
+# timing, so use an associative array for that
+declare -A KERNEL_LN=()
+# This using -r --sort=version on ls will produce a
+# "natural" rather than a lexical sort, with the highest
+# version number first.
+for xen in $(/usr/bin/ls -1 -r --sort=version /boot/xen-*-d.${XEN_FMT})
+do
+    [ -e "$xen" ] || continue
+    [[ $xen =~ /boot/xen-(.*)-d\.${XEN_FMT} ]]
+    XEN_FOUND_VERSION=${BASH_REMATCH[1]}
+    # If we have not updated the legacy sylinks, do so, and set the
+    # flag. This ensures that they always point to the latest version
+    # of xen
+    if [ -z "${XEN_LN}" ]; then
+        (
+            cd /boot
+            /usr/bin/ln -sf "xen-${XEN_FOUND_VERSION}.${XEN_FMT}" xen-release.efi
+            /usr/bin/ln -sf "xen-${XEN_FOUND_VERSION}.${XEN_FMT}" xen.efi
+            /usr/bin/ln -sf "xen-${XEN_FOUND_VERSION}-d.${XEN_FMT}" xen-debug.efi
+        )
+        XEN_LN="done"
+    fi
+
+    # Find all the kernels which have a number somewhere in their version part
+    for vmlinuz in $(/usr/bin/ls -1 -r --sort=version /boot/vmlinuz-*[0-9]*)
+    do
+        [ -e "$vmlinuz" ] || continue
+        [ -h "$vmlinuz" ] && continue
+
+        # Find the kernel version, for identifying its files
+        [[ $vmlinuz =~ /boot/vmlinuz-(.*) ]]
+        LINUX_VERSION=${BASH_REMATCH[1]}
+
+        # Find the "shortversion" as well, for maintaining the legacy symlinks
+        [[ $vmlinuz =~ /boot/vmlinuz-([0-9]+\.[0-9]+).* ]]
+        LINUX_SHORT_VERSION=${BASH_REMATCH[1]}
+        if [[  ! -v KERNEL_LN[$LINUX_SHORT_VERSION] ]]; then
+            (
+                cd /boot
+                /usr/bin/ln -sf "vmlinuz-${LINUX_VERSION}" "vmlinuz-${LINUX_SHORT_VERSION}-xen"
+                /usr/bin/ln -sf "initrd-${LINUX_VERSION}.img" "initrd-${LINUX_SHORT_VERSION}-xen.img"
+            )
+            KERNEL_LN[$LINUX_SHORT_VERSION]="done"
+        fi
+
+        VMLINUZ="/boot/vmlinuz-${LINUX_VERSION}"
+        INITRD="/boot/initrd-${LINUX_VERSION}.img"
+
+        XEN_VERSION=${XEN_FOUND_VERSION}
+        XEN_IMG="/boot/xen-${XEN_VERSION}"
+        echo "submenu \"[MENU] Xen ${XEN_FOUND_VERSION},  Linux ${LINUX_VERSION}\" {"
+            menuentry_main
+            menuentry_serial
+            menuentry_safe
+        echo "}"
+
+        # Menu for the debug version
+        XEN_VERSION="${XEN_FOUND_VERSION}-debug"
+        XEN_IMG="/boot/xen-${XEN_VERSION}"
+        echo "submenu \"[MENU] Xen ${XEN_FOUND_VERSION}-debug,  Linux ${LINUX_VERSION}\" {"
+            menuentry_main
+            menuentry_serial
+        echo "}"
+
+        # If there is a vmlinuz-fallback present, make a special extra menu just the fallback
+        # kernel, but only for the kernel; we might have multiboot Xen but not multiboot
+        # kernel, but until we have multiboot Xen we don't use this yet anyway.
+        if [ -e "/boot/vmlinuz-fallback" ]; then
+            XEN_VERSION=${XEN_FOUND_VERSION}
+            XEN_IMG="/boot/xen-${XEN_VERSION}"
+            LINUX_VERSION="fallback"
+            VMLINUZ="/boot/vmlinuz-${LINUX_VERSION}"
+            INITRD="/boot/initrd-${LINUX_VERSION}.img"
+            echo "submenu \"[MENU] Xen ${XEN_FOUND_VERSION},  Linux (Fallback)\" {"
+                menuentry_main
+                menuentry_serial
+                menuentry_safe
+            echo "}"
+        fi
+    done
+done

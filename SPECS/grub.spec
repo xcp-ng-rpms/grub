@@ -1,6 +1,6 @@
-%global package_speccommit 5a0928cc7e5b0d008bdfdebdd80db2e839948011
+%global package_speccommit 1c9316154da658ea65c8eab0ca301d49dcbb24ee
 %global usver 2.12
-%global xsver 14
+%global xsver 15
 %global xsrel %{xsver}%{?xscount}%{?xshash}
 # This package calls binutils components directly and would need to pass
 # in flags to enable the LTO plugins
@@ -34,9 +34,13 @@ Summary:        Bootloader with support for Linux, Multiboot and more
 Group:          System Environment/Base
 License:        GPLv3+
 URL:            http://www.gnu.org/software/grub/
-Source0: grub-2.12-0e367796c0f4.tar.gz
-Source1: gnulib.tar.gz
+Source0: grub-2.12.tar.gz
+Source1: gnulib-stable-202201.tar.gz
 Source2: sbat.csv.in
+Source3: update-grub
+Source4: xs_settings
+Source5: 01_xenserver
+Source6: 02_memtest86
 Patch0: 00045-efi-disallow-fallback-to-legacy-Linux-loader-when-shim.patch
 Patch1: 0001-efi-Add-EFI-string-comparison-function.patch
 Patch2: 0002-efi-Add-filesystem-definitions.patch
@@ -46,6 +50,8 @@ Patch5: 0005-loader-efi-linux-Set-device-path-when-loading-via-sh.patch
 Patch6: 0006-sb-Verify-Xen-hypevisor-and-don-t-verify-modules.patch
 Patch7: 0007-Add-xen_boot-module-for-x86_64_efi.patch
 Patch8: wait-before-drain.patch
+Patch9: fix-oob-write-in-chainloader.patch
+Patch10: sb-fix-nested-shim.patch
 
 BuildRequires:  flex bison binutils python
 BuildRequires:  ncurses-devel xz-devel
@@ -183,13 +189,10 @@ rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.cfg
 rm -rf $RPM_BUILD_ROOT/boot/%{name}/grub.cfg
 
 # Remove tools files
-rm -rf $RPM_BUILD_ROOT%{_datarootdir}/grub/*
 rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-bios-setup
 rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-install
 rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-macbless
-rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-mkconfig
 rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-ofpathname
-rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-probe
 rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-reboot
 rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-set-default
 rm -rf $RPM_BUILD_ROOT%{_sbindir}/%{name}-sparc64-setup
@@ -206,10 +209,10 @@ rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-mkrelpath
 rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-mkrescue
 rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-mkstandalone
 rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-render-label
-rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-script-check
 rm -rf $RPM_BUILD_ROOT%{_bindir}/%{name}-syslinux2cfg
 rm -rf $RPM_BUILD_ROOT%{_datadir}/bash-completion/completions
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/prelink.conf.d/grub2.conf
+# This removes all the grub-config generators. We add our own back later
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/grub.d/*
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/default/grub
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/grub
@@ -217,11 +220,26 @@ rm -rf $RPM_BUILD_ROOT%{_infodir}/%{name}*
 rm -rf $RPM_BUILD_ROOT%{_mandir}/man1/*
 rm -rf $RPM_BUILD_ROOT%{_mandir}/man8/*
 
+# Install xenserver grub-config generators
+install -D -m 755 %{SOURCE3} ${RPM_BUILD_ROOT}%{_sbindir}/update-grub
+install -D -m 644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/grub.d/xs_settings
+install -D -m 755 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/grub.d/01_xenserver
+install -D -m 755 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/grub.d/02_memtest86
+
+
 %{?_cov_install}
 
 %files
 %defattr(-,root,root,-)
 %{_bindir}/%{name}-editenv
+%{_sysconfdir}/grub.d/01_xenserver
+%{_sysconfdir}/grub.d/02_memtest86
+%config(noreplace) %{_sysconfdir}/grub.d/xs_settings
+%{_sbindir}/update-grub
+%{_sbindir}/%{name}-mkconfig
+%{_sbindir}/%{name}-probe
+%{_bindir}/%{name}-script-check
+%{_datarootdir}/grub
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
 %dir /boot/efi/EFI/%{efidir}
 %attr(0755,root,root) /boot/efi/EFI/%{efidir}/*.efi
@@ -230,7 +248,20 @@ rm -rf $RPM_BUILD_ROOT%{_mandir}/man8/*
 
 %{?_cov_results_package}
 
+%posttrans
+%{_sbindir}/update-grub || :
+
+%transfiletriggerin -- /boot
+%{_sbindir}/update-grub || :
+
+%transfiletriggerpostun -- /boot
+%{_sbindir}/update-grub || :
+
 %changelog
+* Wed Jul 01 2026 Tim Smith <tim.smith@citrix.com> - 2.12-15
+- CP-53030: Fix chainload nested shim in secure boot mode
+- CP-313261 Teach grub-mkconfig to handle Xenserver
+
 * Wed Oct 08 2025 Ross Lagerwall <ross.lagerwall@citrix.com> - 2.12-14
 - CP-47917: Re-sign with new key
 

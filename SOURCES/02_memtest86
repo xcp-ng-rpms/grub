@@ -1,0 +1,12 @@
+#!/usr/bin/bash
+
+set -eu
+
+source /etc/grub.d/xs_settings
+
+cat << EOF
+menuentry 'Memtest86+ (UEFI)' {
+    search --label --set root ${XS__ROOTDISK_LABEL}
+    linux /boot/memtest86+x64.efi
+}
+EOF

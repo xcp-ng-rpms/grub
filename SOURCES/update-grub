@@ -1,0 +1,19 @@
+#!/usr/bin/sh
+
+set -eu
+
+# Avoid running grub-mkconfig when there's no settings
+XS_SETTINGS="/etc/grub.d/xs_settings"
+if [ ! -f "${XS_SETTINGS}" ]; then
+    echo "grub.cfg generation failed: ${XS_SETTINGS} not found."
+    exit 1
+fi
+source "${XS_SETTINGS}"
+[ ! -v XS__GRUB_TEST_ONLY ] && XS__GRUB_TEST_ONLY=""
+
+# Only EFI boot is supported now
+CFG="/boot/efi/EFI/xenserver/grub.cfg"
+/usr/sbin/grub-mkconfig -o "${CFG}.new"
+[ -n "${XS__GRUB_TEST_ONLY}" ] && /usr/bin/mv "${CFG}.new" "${CFG}.test"
+[ -z "${XS__GRUB_TEST_ONLY}" ] && /usr/bin/mv "${CFG}.new" "${CFG}"
+
