@@ -201,6 +201,15 @@ done
 
 rm -rf $RPM_BUILD_ROOT%{_infodir}/dir
 
+# XCP-ng: ship the GRUB modules on the ESP, under the image prefix, so that
+# they can be loaded with insmod when Secure Boot is disabled.
+# With Secure Boot enabled, lockdown and the shim verifier refuse to load
+# modules from disk: only the modules built into the image are usable.
+install -m 755 -d $RPM_BUILD_ROOT/boot/efi/EFI/%{efidir}/%{grubefiarch}
+install -m 644 $RPM_BUILD_ROOT%{_libdir}/grub/%{grubefiarch}/*.mod \
+        $RPM_BUILD_ROOT%{_libdir}/grub/%{grubefiarch}/*.lst \
+        $RPM_BUILD_ROOT/boot/efi/EFI/%{efidir}/%{grubefiarch}/
+
 # Remove grub files
 rm -rf $RPM_BUILD_ROOT%{_libdir}/grub
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.cfg
@@ -261,6 +270,7 @@ install -D -m 755 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/grub.d/02_memtest86
 %config(noreplace) %{_sysconfdir}/%{name}-efi.cfg
 %dir /boot/efi/EFI/%{efidir}
 %attr(0755,root,root) /boot/efi/EFI/%{efidir}/*.efi
+/boot/efi/EFI/%{efidir}/%{grubefiarch}/
 %dir /boot/efi/EFI/%{efibootdir}
 %attr(0755,root,root) /boot/efi/EFI/%{efibootdir}/%{grubefibootname}
 %ghost %config(noreplace) /boot/efi/EFI/%{efidir}/grub.cfg
@@ -283,6 +293,7 @@ install -D -m 755 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/grub.d/02_memtest86
 - Remove VLAN networking patches now part of upstream grub 2.12
 - Keep EFI/BOOT/BOOTX64.EFI fallback for now, moved to shim by XenServer
 - Disable XenServer SB signing when building for XCP-ng
+- Ship GRUB modules on the ESP so they can be loaded when Secure Boot is disabled
 - Add gcc to BuildRequires, replace crt1.o file dependency with glibc-devel
 - *** Upstream changelog ***
   * Tue Sep 29 2026 Tim Smith <tim.smith@citrix.com> - 2.12-17
