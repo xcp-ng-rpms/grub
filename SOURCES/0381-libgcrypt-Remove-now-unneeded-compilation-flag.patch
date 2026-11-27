@@ -1,0 +1,40 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Vladimir Serbinenko <phcoder@gmail.com>
+Date: Mon, 7 Jul 2025 14:52:14 +0000
+Subject: [PATCH] libgcrypt: Remove now unneeded compilation flag
+
+HAVE_STRTOUL is now defined in stdlib.h. Include it in g10lib.h rather
+than defining on command line.
+
+Signed-off-by: Vladimir Serbinenko <phcoder@gmail.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ conf/Makefile.common | 2 +-
+ util/import_gcry.py  | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/conf/Makefile.common b/conf/Makefile.common
+index c11ab27..5344a08 100644
+--- a/conf/Makefile.common
++++ b/conf/Makefile.common
+@@ -85,7 +85,7 @@ CFLAGS_POSIX = -fno-builtin
+ CPPFLAGS_POSIX = -I$(top_srcdir)/grub-core/lib/posix_wrap
+ 
+ CFLAGS_GCRY = -Wno-error=sign-compare -Wno-missing-field-initializers -Wno-redundant-decls -Wno-undef $(CFLAGS_POSIX)
+-CPPFLAGS_GCRY = -I$(top_srcdir)/grub-core/lib/libgcrypt_wrap $(CPPFLAGS_POSIX) -D_GCRYPT_IN_LIBGCRYPT=1 -D_GCRYPT_CONFIG_H_INCLUDED=1 -DHAVE_STRTOUL=1 -I$(top_srcdir)/include/grub/gcrypt
++CPPFLAGS_GCRY = -I$(top_srcdir)/grub-core/lib/libgcrypt_wrap $(CPPFLAGS_POSIX) -D_GCRYPT_IN_LIBGCRYPT=1 -D_GCRYPT_CONFIG_H_INCLUDED=1 -I$(top_srcdir)/include/grub/gcrypt
+ 
+ CPPFLAGS_EFIEMU = -I$(top_srcdir)/grub-core/efiemu/runtime
+ 
+diff --git a/util/import_gcry.py b/util/import_gcry.py
+index 489356d..1be18cf 100644
+--- a/util/import_gcry.py
++++ b/util/import_gcry.py
+@@ -617,6 +617,7 @@ for src in sorted (os.listdir (os.path.join (indir, "src"))):
+     if src == "g10lib.h":
+         fw.write("#include <cipher_wrap.h>\n")
+         fw.write("#include <grub/crypto.h>\n")
++        fw.write("#include <stdlib.h>\n")
+         fw.write (f.read ().replace ("(printf,f,a)", "(__printf__,f,a)").replace ("#include \"../compat/libcompat.h\"", "").replace("#define N_(a) (a)", ""))
+         f.close ()
+         fw.close ()

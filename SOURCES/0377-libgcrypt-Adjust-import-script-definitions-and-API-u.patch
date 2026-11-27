@@ -1,0 +1,2255 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Vladimir Serbinenko <phcoder@gmail.com>
+Date: Mon, 7 Jul 2025 14:52:10 +0000
+Subject: [PATCH] libgcrypt: Adjust import script, definitions and API users
+ for libgcrypt 1.11
+
+This patches modifies the GRUB-libgcrypt API to match new libgcrypt 1.11.
+
+Signed-off-by: Vladimir Serbinenko <phcoder@gmail.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ .gitignore                                         |   2 +-
+ autogen.sh                                         |   5 +
+ conf/Makefile.common                               |   4 +-
+ grub-core/Makefile.core.def                        |  20 +-
+ grub-core/commands/hashsum.c                       |   2 +-
+ grub-core/commands/legacycfg.c                     |   6 +-
+ grub-core/commands/pgp.c                           |  89 +++----
+ grub-core/commands/xnu_uuid.c                      |   2 +-
+ grub-core/disk/cryptodisk.c                        |   2 +-
+ grub-core/io/gzio.c                                |   2 +-
+ grub-core/io/lzopio.c                              |   2 +-
+ grub-core/lib/adler32.c                            |  21 +-
+ grub-core/lib/crc64.c                              |  24 +-
+ grub-core/lib/crypto.c                             | 245 ++++++++++++++++++-
+ grub-core/lib/libgcrypt-patches/01_md.patch        | 124 ++++++++++
+ grub-core/lib/libgcrypt-patches/04_aria.patch      |  22 ++
+ .../libgcrypt-patches/05_disable_rsa_shake.patch   |  36 +++
+ grub-core/lib/libgcrypt/src/gcrypt-int.h           |  51 ----
+ grub-core/lib/libgcrypt_wrap/cipher_wrap.h         |  21 +-
+ grub-core/lib/libgcrypt_wrap/mem.c                 |  83 ++++++-
+ grub-core/lib/posix_wrap/sys/types.h               |   4 +
+ grub-core/lib/xzembed/xz_dec_stream.c              |  18 +-
+ include/grub/crypto.h                              | 262 +++++++++++++++++----
+ include/grub/gcrypt/gpg-error.h                    |   9 +
+ util/grub-fstest.c                                 |   2 +-
+ util/import_gcry.py                                | 186 ++++++++++-----
+ util/import_gcrypt_inth.sed                        |  17 ++
+ util/import_gcrypth.sed                            |   2 -
+ 28 files changed, 1005 insertions(+), 258 deletions(-)
+ create mode 100644 grub-core/lib/libgcrypt-patches/01_md.patch
+ create mode 100644 grub-core/lib/libgcrypt-patches/04_aria.patch
+ create mode 100644 grub-core/lib/libgcrypt-patches/05_disable_rsa_shake.patch
+ create mode 100644 util/import_gcrypt_inth.sed
+
+diff --git a/.gitignore b/.gitignore
+index c603c15..e22c621 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -294,7 +294,7 @@ widthspec.bin
+ # things very common editors create that we never want
+ *~
+ .*.sw?
+-*.patch
++# *.patch
+ 
+ # stuff you're likely to make while building test trees
+ grub.cfg
+diff --git a/autogen.sh b/autogen.sh
+index 195daa5..05bc9b2 100755
+--- a/autogen.sh
++++ b/autogen.sh
+@@ -35,6 +35,7 @@ ${PYTHON} util/import_unicode.py unicode/UnicodeData.txt unicode/BidiMirroring.t
+ echo "Importing libgcrypt..."
+ ${PYTHON} util/import_gcry.py grub-core/lib/libgcrypt/ grub-core
+ sed -n -f util/import_gcrypth.sed < grub-core/lib/libgcrypt/src/gcrypt.h.in > include/grub/gcrypt/gcrypt.h
++sed -n -f util/import_gcrypt_inth.sed < grub-core/lib/libgcrypt/src/gcrypt-int.h >> include/grub/gcrypt/gcrypt.h
+ if [ -f include/grub/gcrypt/g10lib.h ]; then
+     rm include/grub/gcrypt/g10lib.h
+ fi
+@@ -51,6 +52,10 @@ for x in mpi-asm-defs.h mpih-add1.c mpih-sub1.c mpih-mul1.c mpih-mul2.c mpih-mul
+     cp grub-core/lib/libgcrypt-grub/mpi/generic/"$x" grub-core/lib/libgcrypt-grub/mpi/"$x"
+ done
+ 
++for x in grub-core/lib/libgcrypt-patches/*.patch; do
++    patch -i $x -p1
++done
++
+ echo "Generating Automake input..."
+ 
+ # Automake doesn't like including files from a path outside the project.
+diff --git a/conf/Makefile.common b/conf/Makefile.common
+index f8c2f6b..c11ab27 100644
+--- a/conf/Makefile.common
++++ b/conf/Makefile.common
+@@ -84,8 +84,8 @@ CPPFLAGS_GNULIB = -I$(top_builddir)/grub-core/lib/gnulib -I$(top_srcdir)/grub-co
+ CFLAGS_POSIX = -fno-builtin
+ CPPFLAGS_POSIX = -I$(top_srcdir)/grub-core/lib/posix_wrap
+ 
+-CFLAGS_GCRY = -Wno-error -Wno-missing-field-initializers -Wno-redundant-decls -Wno-undef $(CFLAGS_POSIX)
+-CPPFLAGS_GCRY = -I$(top_srcdir)/grub-core/lib/libgcrypt_wrap $(CPPFLAGS_POSIX) -D_GCRYPT_IN_LIBGCRYPT=1 -I$(top_srcdir)/include/grub/gcrypt
++CFLAGS_GCRY = -Wno-error=sign-compare -Wno-missing-field-initializers -Wno-redundant-decls -Wno-undef $(CFLAGS_POSIX)
++CPPFLAGS_GCRY = -I$(top_srcdir)/grub-core/lib/libgcrypt_wrap $(CPPFLAGS_POSIX) -D_GCRYPT_IN_LIBGCRYPT=1 -D_GCRYPT_CONFIG_H_INCLUDED=1 -DHAVE_STRTOUL=1 -I$(top_srcdir)/include/grub/gcrypt
+ 
+ CPPFLAGS_EFIEMU = -I$(top_srcdir)/grub-core/efiemu/runtime
+ 
+diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
+index 728ef8a..4ba5d94 100644
+--- a/grub-core/Makefile.core.def
++++ b/grub-core/Makefile.core.def
+@@ -1012,8 +1012,8 @@ module = {
+ module = {
+   name = pgp;
+   common = commands/pgp.c;
+-  cflags = '$(CFLAGS_POSIX)';
+-  cppflags = '-I$(srcdir)/lib/posix_wrap';
++  cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls -Wno-sign-compare';
++  cppflags = '$(CPPFLAGS_GCRY)';
+ };
+ 
+ module = {
+@@ -2585,7 +2585,23 @@ module = {
+   common = lib/libgcrypt-grub/mpi/mpicoder.c;
+   common = lib/libgcrypt-grub/mpi/mpih-rshift.c;
+   common = lib/libgcrypt-grub/mpi/mpi-inline.c;
++  common = lib/libgcrypt-grub/mpi/mpih-const-time.c;
++  common = lib/libgcrypt-grub/mpi/mpi-scan.c;
++  common = lib/libgcrypt-grub/src/const-time.c;
+   common = lib/libgcrypt_wrap/mem.c;
++  common = lib/libgcrypt-grub/cipher/md.c;
++
++  cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls -Wno-sign-compare -Wno-unused-but-set-variable';
++  cppflags = '$(CPPFLAGS_GCRY)';
++};
++
++module = {
++  name = pubkey;
++  common = lib/libgcrypt-grub/cipher/pubkey-util.c;
++  common = lib/libgcrypt-grub/cipher/rsa-common.c;
++  common = lib/libgcrypt-grub/cipher/dsa-common.c;
++  common = lib/libgcrypt-grub/src/sexp.c;
++  common = lib/b64dec.c;
+ 
+   cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls -Wno-sign-compare';
+   cppflags = '$(CPPFLAGS_GCRY)';
+diff --git a/grub-core/commands/hashsum.c b/grub-core/commands/hashsum.c
+index d56b5b0..b6f8e3d 100644
+--- a/grub-core/commands/hashsum.c
++++ b/grub-core/commands/hashsum.c
+@@ -73,7 +73,7 @@ hash_file (grub_file_t file, const gcry_md_spec_t *hash, void *result)
+   if (!readbuf || !context)
+     goto fail;
+ 
+-  hash->init (context);
++  hash->init (context, 0);
+   while (1)
+     {
+       grub_ssize_t r;
+diff --git a/grub-core/commands/legacycfg.c b/grub-core/commands/legacycfg.c
+index 86bcda6..ff0b8a6 100644
+--- a/grub-core/commands/legacycfg.c
++++ b/grub-core/commands/legacycfg.c
+@@ -625,7 +625,7 @@ check_password_md5_real (const char *entered,
+   if (!ctx)
+     return 0;
+ 
+-  GRUB_MD_MD5->init (ctx);
++  GRUB_MD_MD5->init (ctx, 0);
+   GRUB_MD_MD5->write (ctx, entered, enteredlen);
+   GRUB_MD_MD5->write (ctx, pw->salt + 3, pw->saltlen - 3);
+   GRUB_MD_MD5->write (ctx, entered, enteredlen);
+@@ -633,7 +633,7 @@ check_password_md5_real (const char *entered,
+   GRUB_MD_MD5->final (ctx);
+   grub_memcpy (alt_result, digest, MD5_HASHLEN);
+ 
+-  GRUB_MD_MD5->init (ctx);
++  GRUB_MD_MD5->init (ctx, 0);
+   GRUB_MD_MD5->write (ctx, entered, enteredlen);
+   GRUB_MD_MD5->write (ctx, pw->salt, pw->saltlen); /* include the $1$ header */
+   for (i = enteredlen; i > 16; i -= 16)
+@@ -649,7 +649,7 @@ check_password_md5_real (const char *entered,
+     {
+       grub_memcpy (alt_result, digest, 16);
+ 
+-      GRUB_MD_MD5->init (ctx);
++      GRUB_MD_MD5->init (ctx, 0);
+       if ((i & 1) != 0)
+ 	GRUB_MD_MD5->write (ctx, entered, enteredlen);
+       else
+diff --git a/grub-core/commands/pgp.c b/grub-core/commands/pgp.c
+index fa3ef5c..87381d8 100644
+--- a/grub-core/commands/pgp.c
++++ b/grub-core/commands/pgp.c
+@@ -137,37 +137,23 @@ struct signature_v4_header
+   grub_uint16_t hashed_sub;
+ } GRUB_PACKED;
+ 
+-const char *hashes[] = {
+-  [0x01] = "md5",
+-  [0x02] = "sha1",
+-  [0x03] = "ripemd160",
+-  [0x08] = "sha256",
+-  [0x09] = "sha384",
+-  [0x0a] = "sha512",
+-  [0x0b] = "sha224"
+-};
+-
+-static int
+-dsa_pad (gcry_mpi_t *hmpi, grub_uint8_t *hval,
+-	 const gcry_md_spec_t *hash, struct grub_public_subkey *sk);
+-static int
+-rsa_pad (gcry_mpi_t *hmpi, grub_uint8_t *hval,
+-	 const gcry_md_spec_t *hash, struct grub_public_subkey *sk);
+-
+ struct
+ {
+   const char *name;
++  const char *sigsexp;
+   grub_size_t nmpisig;
++  const char *pubsexp;
+   grub_size_t nmpipub;
+   struct gcry_pk_spec **algo;
+-  int (*pad) (gcry_mpi_t *hmpi, grub_uint8_t *hval,
+-	      const gcry_md_spec_t *hash, struct grub_public_subkey *sk);
++  const char *padding;
+   const char *module;
+ } pkalgos[] =
+   {
+-    [1] = { "rsa", 1, 2, &grub_crypto_pk_rsa, rsa_pad, "gcry_rsa" },
+-    [3] = { "rsa", 1, 2, &grub_crypto_pk_rsa, rsa_pad, "gcry_rsa" },
+-    [17] = { "dsa", 2, 4, &grub_crypto_pk_dsa, dsa_pad, "gcry_dsa" },
++    [1] = { "rsa", "(sig-val (rsa (s %M)))", 1, "(public-key (dsa (n %M) (e %M)))", 2, &grub_crypto_pk_rsa, "pkcs1", "gcry_rsa" },
++    [3] = { "rsa", "(sig-val (rsa (s %M)))", 1, "(public-key (dsa (n %M) (e %M)))", 2, &grub_crypto_pk_rsa, "pkcs1", "gcry_rsa" },
++    [17] = { "dsa", "(sig-val (dsa (r %M) (s %M)))", 2,
++	     "(public-key (dsa (p %M) (q %M) (g %M) (y %M)))",
++	     4, &grub_crypto_pk_dsa, "raw", "gcry_dsa" },
+   };
+ 
+ struct grub_public_key
+@@ -193,7 +179,7 @@ free_pk (struct grub_public_key *pk)
+       grub_size_t i;
+       for (i = 0; i < ARRAY_SIZE (sk->mpis); i++)
+ 	if (sk->mpis[i])
+-	  gcry_mpi_release (sk->mpis[i]);
++	  _gcry_mpi_release (sk->mpis[i]);
+       nsk = sk->next;
+       grub_free (sk);
+     }
+@@ -300,7 +286,7 @@ grub_load_public_key (grub_file_t f)
+ 	goto fail;
+ 
+       grub_memset (fingerprint_context, 0, GRUB_MD_SHA1->contextsize);
+-      GRUB_MD_SHA1->init (fingerprint_context);
++      GRUB_MD_SHA1->init (fingerprint_context, 0);
+       GRUB_MD_SHA1->write (fingerprint_context, "\x99", 1);
+       len_be = grub_cpu_to_be16 (len);
+       GRUB_MD_SHA1->write (fingerprint_context, &len_be, sizeof (len_be));
+@@ -333,7 +319,7 @@ grub_load_public_key (grub_file_t f)
+ 
+ 	  GRUB_MD_SHA1->write (fingerprint_context, buffer, lb + sizeof (grub_uint16_t));
+ 
+-	  if (gcry_mpi_scan (&sk->mpis[i], GCRYMPI_FMT_PGP,
++	  if (_gcry_mpi_scan (&sk->mpis[i], GCRYMPI_FMT_PGP,
+ 			     buffer, lb + sizeof (grub_uint16_t), 0))
+ 	    {
+ 	      grub_error (GRUB_ERR_BAD_SIGNATURE, N_("bad signature"));
+@@ -391,26 +377,6 @@ grub_crypto_pk_locate_subkey_in_trustdb (grub_uint64_t keyid)
+   return 0;
+ }
+ 
+-
+-static int
+-dsa_pad (gcry_mpi_t *hmpi, grub_uint8_t *hval,
+-	 const gcry_md_spec_t *hash, struct grub_public_subkey *sk)
+-{
+-  unsigned nbits = gcry_mpi_get_nbits (sk->mpis[1]);
+-  grub_dprintf ("crypt", "must be %u bits got %d bits\n", nbits,
+-		(int)(8 * hash->mdlen));
+-  return gcry_mpi_scan (hmpi, GCRYMPI_FMT_USG, hval,
+-			nbits / 8 < (unsigned) hash->mdlen ? nbits / 8
+-			: (unsigned) hash->mdlen, 0);
+-}
+-
+-static int
+-rsa_pad (gcry_mpi_t *hmpi, grub_uint8_t *hval,
+-	 const gcry_md_spec_t *hash, struct grub_public_subkey *sk)
+-{
+-  return grub_crypto_rsa_pad(hmpi, hval, hash, sk->mpis[0]);
+-}
+-
+ struct grub_pubkey_context
+ {
+   grub_file_t sig;
+@@ -455,15 +421,12 @@ grub_verify_signature_init (struct grub_pubkey_context *ctxt, grub_file_t sig)
+   if (t != 0)
+     return grub_error (GRUB_ERR_BAD_SIGNATURE, N_("bad signature"));
+ 
+-  if (h >= ARRAY_SIZE (hashes) || hashes[h] == NULL)
+-    return grub_error (GRUB_ERR_BAD_SIGNATURE, "unknown hash");
+-
+   if (pk >= ARRAY_SIZE (pkalgos) || pkalgos[pk].name == NULL)
+     return grub_error (GRUB_ERR_BAD_SIGNATURE, N_("bad signature"));
+ 
+-  ctxt->hash = grub_crypto_lookup_md_by_name (hashes[h]);
++  ctxt->hash = grub_crypto_lookup_md_by_algo (h);
+   if (!ctxt->hash)
+-    return grub_error (GRUB_ERR_BAD_SIGNATURE, "hash `%s' not loaded", hashes[h]);
++    return grub_error (GRUB_ERR_BAD_SIGNATURE, "hash `%d' not loaded", h);
+ 
+   grub_dprintf ("crypt", "alive\n");
+ 
+@@ -471,7 +434,7 @@ grub_verify_signature_init (struct grub_pubkey_context *ctxt, grub_file_t sig)
+   if (!ctxt->hash_context)
+     return grub_errno;
+ 
+-  ctxt->hash->init (ctxt->hash_context);
++  ctxt->hash->init (ctxt->hash_context, 0);
+   ctxt->sig = sig;
+ 
+   return GRUB_ERR_NONE;
+@@ -500,7 +463,6 @@ grub_verify_signature_real (struct grub_pubkey_context *ctxt,
+   grub_uint16_t unhashed_sub;
+   grub_ssize_t r;
+   grub_uint8_t hash_start[2];
+-  gcry_mpi_t hmpi;
+   grub_uint64_t keyid = 0;
+   struct grub_public_subkey *sk;
+ 
+@@ -592,7 +554,7 @@ grub_verify_signature_real (struct grub_pubkey_context *ctxt,
+       grub_memcpy (readbuf, &l, sizeof (l));
+       grub_dprintf ("crypt", "alive\n");
+ 
+-      if (gcry_mpi_scan (&mpis[i], GCRYMPI_FMT_PGP,
++      if (_gcry_mpi_scan (&mpis[i], GCRYMPI_FMT_PGP,
+ 			 readbuf, lb + sizeof (grub_uint16_t), 0))
+ 	goto fail;
+       grub_dprintf ("crypt", "alive\n");
+@@ -610,8 +572,6 @@ grub_verify_signature_real (struct grub_pubkey_context *ctxt,
+       goto fail;
+     }
+ 
+-  if (pkalgos[pk].pad (&hmpi, hval, ctxt->hash, sk))
+-    goto fail;
+   if (!*pkalgos[pk].algo)
+     {
+       grub_dl_load (pkalgos[pk].module);
+@@ -624,7 +584,24 @@ grub_verify_signature_real (struct grub_pubkey_context *ctxt,
+ 		  pkalgos[pk].module);
+       goto fail;
+     }
+-  if ((*pkalgos[pk].algo)->verify (0, hmpi, mpis, sk->mpis, 0, 0))
++
++  gcry_sexp_t hsexp, pubkey, sig;
++  grub_size_t errof;
++
++  if(_gcry_sexp_build(&hsexp, &errof, "(data (flags %s) (hash %s %b))", pkalgos[pk].padding, ctxt->hash->name, ctxt->hash->mdlen, hval))
++    goto fail;
++
++  if(_gcry_sexp_build(&pubkey, &errof, pkalgos[pk].pubsexp, sk->mpis[0], sk->mpis[1], sk->mpis[2], sk->mpis[3]))
++    goto fail;
++
++  if(_gcry_sexp_build(&sig, &errof, pkalgos[pk].sigsexp, mpis[0], mpis[1]))
++    goto fail;
++
++  _gcry_sexp_dump(sig);
++  _gcry_sexp_dump(hsexp);
++  _gcry_sexp_dump(pubkey);
++
++  if ((*pkalgos[pk].algo)->verify (sig, hsexp, pubkey))
+     goto fail;
+ 
+   grub_free (readbuf);
+diff --git a/grub-core/commands/xnu_uuid.c b/grub-core/commands/xnu_uuid.c
+index ae4b3a4..1406c43 100644
+--- a/grub-core/commands/xnu_uuid.c
++++ b/grub-core/commands/xnu_uuid.c
+@@ -68,7 +68,7 @@ grub_cmd_xnu_uuid (grub_command_t cmd __attribute__ ((unused)),
+   ctx = grub_zalloc (GRUB_MD_MD5->contextsize);
+   if (!ctx)
+     return grub_errno;
+-  GRUB_MD_MD5->init (ctx);
++  GRUB_MD_MD5->init (ctx, 0);
+   GRUB_MD_MD5->write (ctx, hash_prefix, sizeof (hash_prefix));
+   GRUB_MD_MD5->write (ctx, &serial, sizeof (serial));
+   GRUB_MD_MD5->final (ctx);
+diff --git a/grub-core/disk/cryptodisk.c b/grub-core/disk/cryptodisk.c
+index 8727760..04cf61e 100644
+--- a/grub-core/disk/cryptodisk.c
++++ b/grub-core/disk/cryptodisk.c
+@@ -297,7 +297,7 @@ grub_cryptodisk_endecrypt (struct grub_cryptodisk *dev,
+ 	      return GPG_ERR_OUT_OF_MEMORY;
+ 
+ 	    tmp = grub_cpu_to_le64 (sector << log_sector_size);
+-	    dev->iv_hash->init (ctx);
++	    dev->iv_hash->init (ctx, 0);
+ 	    dev->iv_hash->write (ctx, dev->iv_prefix, dev->iv_prefix_len);
+ 	    dev->iv_hash->write (ctx, &tmp, sizeof (tmp));
+ 	    dev->iv_hash->final (ctx);
+diff --git a/grub-core/io/gzio.c b/grub-core/io/gzio.c
+index ca93557..30c863e 100644
+--- a/grub-core/io/gzio.c
++++ b/grub-core/io/gzio.c
+@@ -1184,7 +1184,7 @@ initialize_tables (grub_gzio_t gzio)
+   gzio->td = NULL;
+ 
+   if (gzio->hcontext)
+-    gzio->hdesc->init(gzio->hcontext);
++    gzio->hdesc->init(gzio->hcontext, 0);
+ }
+ 
+ 
+diff --git a/grub-core/io/lzopio.c b/grub-core/io/lzopio.c
+index a7d4425..cea9423 100644
+--- a/grub-core/io/lzopio.c
++++ b/grub-core/io/lzopio.c
+@@ -345,7 +345,7 @@ test_header (grub_file_t file)
+     if (! context)
+       return 0;
+ 
+-    hcheck->init(context);
++    hcheck->init(context, 0);
+ 
+     /* MAGIC is not included in check calculation.  */
+     hcheck->write(context, &header.lzop_version, sizeof(header)- LZOP_MAGIC_SIZE);
+diff --git a/grub-core/lib/adler32.c b/grub-core/lib/adler32.c
+index 43b68af..f849cce 100644
+--- a/grub-core/lib/adler32.c
++++ b/grub-core/lib/adler32.c
+@@ -29,10 +29,12 @@ struct adler32_context
+ };
+ 
+ static void
+-adler32_init (void *context)
++adler32_init (void *context, unsigned int flags)
+ {
+   struct adler32_context *ctx = context;
+ 
++  (void) flags;
++
+   ctx->a = 1;
+   ctx->b = 0;
+ }
+@@ -81,13 +83,22 @@ adler32_read (void *context)
+ 
+ static gcry_md_spec_t spec_adler32 =
+   {
+-    "ADLER32", 0, 0, 0, 4,
+-    adler32_init, adler32_write, adler32_final, adler32_read,
+-    sizeof (struct adler32_context),
++    .algo = GCRY_MD_ADLER32,
++    .flags = {.disabled = 0, .fips = 0},
++    .name = "ADLER32",
++    .asnoid = NULL,
++    .asnlen = 0,
++    .oids = NULL,
++    .mdlen = 4,
++    .init = adler32_init,
++    .write = adler32_write,
++    .final = adler32_final,
++    .read = adler32_read,
++    .contextsize = sizeof (struct adler32_context),
++    .blocksize = 64,
+ #ifdef GRUB_UTIL
+     .modname = "adler32",
+ #endif
+-    .blocksize = 64
+   };
+ 
+ 
+diff --git a/grub-core/lib/crc64.c b/grub-core/lib/crc64.c
+index 4960f3f..c231fa9 100644
+--- a/grub-core/lib/crc64.c
++++ b/grub-core/lib/crc64.c
+@@ -61,8 +61,10 @@ init_crc64_table (void)
+ }
+ 
+ static void
+-crc64_init (void *context)
++crc64_init (void *context, unsigned int flags)
+ {
++  (void) flags;
++
+   if (! crc64_table[1])
+     init_crc64_table ();
+   *(grub_uint64_t *) context = 0;
+@@ -97,10 +99,22 @@ crc64_final (void *context __attribute__ ((unused)))
+ 
+ gcry_md_spec_t _gcry_digest_spec_crc64 =
+   {
+-    "CRC64", 0, 0, 0, 8,
+-    crc64_init, crc64_write, crc64_final, crc64_read,
+-    sizeof (grub_uint64_t),
+-    .blocksize = 64
++    .algo = GCRY_MD_CRC64,
++    .flags = {.disabled = 0, .fips = 0},
++    .name = "CRC64",
++    .asnoid = NULL,
++    .asnlen = 0,
++    .oids = NULL,
++    .mdlen = 8,
++    .init = crc64_init,
++    .write = crc64_write,
++    .final = crc64_final,
++    .read = crc64_read,
++    .contextsize = sizeof (grub_uint64_t),
++    .blocksize = 64,
++#ifdef GRUB_UTIL
++    .modname = "crc64",
++#endif
+   };
+ 
+ GRUB_MOD_INIT(crc64)
+diff --git a/grub-core/lib/crypto.c b/grub-core/lib/crypto.c
+index d53ddbe..292b747 100644
+--- a/grub-core/lib/crypto.c
++++ b/grub-core/lib/crypto.c
+@@ -37,6 +37,8 @@ struct grub_crypto_hmac_handle
+ static gcry_cipher_spec_t *grub_ciphers = NULL;
+ static gcry_md_spec_t *grub_digests = NULL;
+ 
++int _gcry_no_fips_mode_required = 1;
++
+ void (*grub_crypto_autoload_hook) (const char *name) = NULL;
+ 
+ /* Based on libgcrypt-1.4.4/src/misc.c.  */
+@@ -56,6 +58,17 @@ _gcry_burn_stack (int size)
+   grub_burn_stack (size);
+ }
+ 
++void
++__gcry_burn_stack (unsigned int size)
++{
++  grub_burn_stack (size);
++}
++
++void
++__gcry_burn_stack_dummy (void)
++{
++}
++
+ void __attribute__ ((noreturn))
+ _gcry_assert_failed (const char *expr, const char *file, int line,
+ 		     const char *func)
+@@ -64,6 +77,12 @@ _gcry_assert_failed (const char *expr, const char *file, int line,
+   grub_fatal ("assertion %s at %s:%d (%s) failed\n", expr, file, line, func);
+ }
+ 
++void
++_gcry_bug( const char *file, int line, const char *func )
++{
++    grub_fatal ("... this is a bug (%s:%d:%s)\n", file, line, func);
++}
++
+ 
+ void _gcry_log_error (const char *fmt, ...)
+ {
+@@ -83,6 +102,36 @@ void _gcry_log_error (const char *fmt, ...)
+     }
+ }
+ 
++void _gcry_log_info (const char *fmt, ...)
++{
++  va_list args;
++  const char *debug = grub_env_get ("debug");
++
++  if (! debug)
++    return;
++
++  if (grub_strword (debug, "all") || grub_strword (debug, "gcrypt"))
++    {
++      grub_printf ("gcrypt info: ");
++      va_start (args, fmt);
++      grub_vprintf (fmt, args);
++      va_end (args);
++      grub_refresh ();
++    }
++}
++
++void
++_gcry_fast_wipememory2 (void *ptr, int set, grub_size_t len)
++{
++  grub_memset(ptr, set, len);
++}
++
++void
++_gcry_fast_wipememory (void *ptr, grub_size_t len)
++{
++  grub_memset(ptr, 0, len);
++}
++
+ void
+ grub_cipher_register (gcry_cipher_spec_t *cipher)
+ {
+@@ -133,7 +182,7 @@ grub_crypto_hash (const gcry_md_spec_t *hash, void *out, const void *in,
+ 
+   if (hash->contextsize > sizeof (ctx))
+     grub_fatal ("Too large md context");
+-  hash->init (&ctx);
++  hash->init (&ctx, 0);
+   hash->write (&ctx, in, inlen);
+   hash->final (&ctx);
+   grub_memcpy (out, hash->read (&ctx), hash->mdlen);
+@@ -157,6 +206,91 @@ grub_crypto_lookup_md_by_name (const char *name)
+     }
+ }
+ 
++const gcry_md_spec_t *
++grub_crypto_lookup_md_by_oid (const char *oid)
++{
++  const gcry_md_spec_t *md;
++
++  if (!oid)
++    return NULL;
++
++  if (grub_strncmp (oid, "oid.", 4) == 0 || grub_strncmp (oid, "OID.", 4) == 0)
++    oid += 4;
++
++
++  for (md = grub_digests; md; md = md->next)
++    {
++      const gcry_md_oid_spec_t *oid_specs = md->oids;
++      if (oid_specs)
++        {
++          for (int j = 0; oid_specs[j].oidstring; j++)
++            if (grub_strcasecmp (oid, oid_specs[j].oidstring) == 0)
++              return md;
++        }
++    }
++
++  return NULL;
++}
++
++static const char *md_algos[] = {
++    [1] = "MD5",
++    [2] = "SHA1",
++    [3] = "RIPEMD160",
++    [6] = "TIGER",
++    [8] = "SHA256",
++    [9] = "SHA384",
++    [10] = "SHA512",
++    [11] = "SHA224",
++
++    [301] = "MD4",
++    [302] = "CRC32",
++    [303] = "CRC32RFC1510",
++    [304] = "CRC24RFC2440",
++    [305] = "WHIRLPOOL",
++    [306] = "TIGER1",
++    [307] = "TIGER2",
++    [308] = "GOSTR3411_94",
++    [309] = "STRIBOG256",
++    [310] = "STRIBOG512",
++    [311] = "GOSTR3411_CP",
++    [312] = "SHA3-224",
++    [313] = "SHA3-256",
++    [314] = "SHA3-384",
++    [315] = "SHA3-512",
++    [316] = "SHAKE128",
++    [317] = "SHAKE256",
++    [318] = "BLAKE2B_512",
++    [319] = "BLAKE2B_384",
++    [320] = "BLAKE2B_256",
++    [321] = "BLAKE2B_160",
++    [322] = "BLAKE2S_256",
++    [323] = "BLAKE2S_224",
++    [324] = "BLAKE2S_160",
++    [325] = "BLAKE2S_128",
++    [326] = "SM3",
++    [327] = "SHA512_256",
++    [328] = "SHA512_224",
++};
++
++
++const gcry_md_spec_t *
++grub_crypto_lookup_md_by_algo (int algo)
++{
++  const gcry_md_spec_t *md;
++  int first = 1;
++  while (1)
++    {
++      for (md = grub_digests; md; md = md->next)
++	if (algo == md->algo)
++	  return md;
++      if (grub_crypto_autoload_hook && first && algo > 0 && algo < (int)ARRAY_SIZE(md_algos) && md_algos[algo]) {
++	grub_crypto_autoload_hook (md_algos[algo]);
++      } else
++	return NULL;
++      first = 0;
++    }
++}
++
+ const gcry_cipher_spec_t *
+ grub_crypto_lookup_cipher_by_name (const char *name)
+ {
+@@ -200,7 +334,9 @@ grub_crypto_cipher_set_key (grub_crypto_cipher_handle_t cipher,
+ 			    const unsigned char *key,
+ 			    unsigned keylen)
+ {
+-  return cipher->cipher->setkey (cipher->ctx, key, keylen);
++  /* TODO: Fix this. It's ugly as hell.  */
++  void *bulk_ops[100];
++  return cipher->cipher->setkey (cipher->ctx, key, keylen, (void *) bulk_ops);
+ }
+ 
+ gcry_err_code_t
+@@ -347,7 +483,7 @@ grub_crypto_hmac_init (const struct gcry_md_spec *md,
+   grub_free (helpkey);
+   helpkey = NULL;
+ 
+-  md->init (ctx);
++  md->init (ctx, 0);
+ 
+   md->write (ctx, ipad, md->blocksize); /* inner pad */
+   grub_memset (ipad, 0, md->blocksize);
+@@ -394,7 +530,7 @@ grub_crypto_hmac_fini (struct grub_crypto_hmac_handle *hnd, void *out)
+   hnd->md->read (hnd->ctx);
+   p = hnd->md->read (hnd->ctx);
+ 
+-  hnd->md->init (ctx2);
++  hnd->md->init (ctx2, 0);
+   hnd->md->write (ctx2, hnd->opad, hnd->md->blocksize);
+   hnd->md->write (ctx2, p, hnd->md->mdlen);
+   hnd->md->final (ctx2);
+@@ -437,19 +573,106 @@ grub_crypto_gcry_error (gcry_err_code_t in)
+   return GRUB_ACCESS_DENIED;
+ }
+ 
++
++/*
++ * Compare byte arrays of length LEN, return 1 if it's not same,
++ * 0, otherwise.
++ */
+ int
+-grub_crypto_memcmp (const void *a, const void *b, grub_size_t n)
++grub_crypto_memcmp (const void *b1, const void *b2, grub_size_t len)
+ {
+-  register grub_size_t counter = 0;
+-  const grub_uint8_t *pa, *pb;
++  const grub_uint8_t *a = b1;
++  const grub_uint8_t *b = b2;
++  int ab, ba;
++  grub_size_t i;
+ 
+-  for (pa = a, pb = b; n; pa++, pb++, n--)
++  /* Constant-time compare. */
++  for (i = 0, ab = 0, ba = 0; i < len; i++)
+     {
+-      if (*pa != *pb)
+-	counter++;
++      /* If a[i] != b[i], either ab or ba will be negative. */
++      ab |= a[i] - b[i];
++      ba |= b[i] - a[i];
+     }
+ 
+-  return !!counter;
++  /* 'ab | ba' is negative when buffers are not equal, extract sign bit.  */
++  return ((unsigned int)(ab | ba) >> (sizeof(unsigned int) * 8 - 1)) & 1;
++}
++
++
++void *
++_gcry_malloc_secure (grub_size_t n)
++{
++  return grub_malloc(n);
++}
++
++void *
++_gcry_malloc (grub_size_t n)
++{
++  return grub_malloc(n);
++}
++
++void *
++_gcry_xmalloc(grub_size_t n)
++{
++  void *ret = grub_malloc(n);
++  if (ret == NULL)
++    grub_fatal("_gcry_xmalloc failed");
++  return ret;
++}
++
++void *
++_gcry_xmalloc_secure(grub_size_t n)
++{
++  void *ret = grub_malloc(n);
++  if (ret == NULL)
++    grub_fatal("_gcry_xmalloc_secure failed");
++  return ret;
++}
++
++void _gcry_free (void *p)
++{
++  grub_free (p);
++}
++
++void *
++_gcry_xrealloc (void *a, grub_size_t n)
++{
++  void *ret = grub_realloc(a, n);
++  if (ret == NULL)
++    grub_fatal("_gcry_xrealloc failed");
++  return ret;
++}
++
++void *
++_gcry_xcalloc (grub_size_t n, grub_size_t m)
++{
++  void *ret = grub_calloc(n, m);
++  if (ret == NULL)
++    grub_fatal("_gcry_xcalloc failed");
++  return ret;
++}
++
++void *
++_gcry_xcalloc_secure (grub_size_t n, grub_size_t m)
++{
++  void *ret = grub_calloc(n, m);
++  if (ret == NULL)
++    grub_fatal("_gcry_xcalloc_secure failed");
++  return ret;
++}
++
++
++int
++_gcry_is_secure (const void *a)
++{
++  (void) a;
++
++  return 0;
++}
++
++void _gcry_divide_by_zero (void)
++{
++  grub_fatal("gcrypt division by zero");
+ }
+ 
+ #ifndef GRUB_UTIL
+diff --git a/grub-core/lib/libgcrypt-patches/01_md.patch b/grub-core/lib/libgcrypt-patches/01_md.patch
+new file mode 100644
+index 0000000..8ac902a
+--- /dev/null
++++ b/grub-core/lib/libgcrypt-patches/01_md.patch
+@@ -0,0 +1,124 @@
++--- a/grub-core/lib/libgcrypt-grub/cipher/md.c
+++++ b/grub-core/lib/libgcrypt-grub/cipher/md.c
++@@ -20,11 +20,25 @@
++  * You should have received a copy of the GNU Lesser General Public
++  * License along with this program; if not, see <http://www.gnu.org/licenses/>.
++  */
+++#include <config.h>
+++#include <stdio.h>
+++#include <stdlib.h>
+++#include <string.h>
+++#include <errno.h>
++ 
++ 
++ #include "g10lib.h"
++ #include "cipher.h"
++ 
+++#define _gcry_md_selftest(a,b,c) 0
+++typedef struct gcry_md_list
+++{
+++  const gcry_md_spec_t *spec;
+++  struct gcry_md_list *next;
+++  size_t actual_struct_size;     /* Allocated size of this structure. */
+++  PROPERLY_ALIGNED_TYPE context[1];
+++} GcryDigestEntry;
+++
++ 
++ /* This is the list of the digest implementations included in
++    libgcrypt.  */
++@@ -53,7 +67,6 @@
++ static void md_close (gcry_md_hd_t a);
++ static void md_write (gcry_md_hd_t a, const void *inbuf, size_t inlen);
++ static byte *md_read( gcry_md_hd_t a, int algo );
++-static int md_get_algo( gcry_md_hd_t a );
++ static int md_digest_length( int algo );
++ static void md_start_debug ( gcry_md_hd_t a, const char *suffix );
++ static void md_stop_debug ( gcry_md_hd_t a );
++@@ -186,9 +199,6 @@
++ 
++   if (! err)
++     {
++-      /* Hmmm, should we really do that? - yes [-wk] */
++-      _gcry_fast_random_poll ();
++-
++       if (algo)
++ 	{
++ 	  err = md_enable (hd, algo);
++@@ -437,14 +447,6 @@
++ {
++   GcryDigestEntry *r;
++ 
++-  if (a->ctx->debug)
++-    {
++-      if (a->bufpos && fwrite (a->buf, a->bufpos, 1, a->ctx->debug) != 1)
++-	BUG();
++-      if (inlen && fwrite (inbuf, inlen, 1, a->ctx->debug) != 1)
++-	BUG();
++-    }
++-
++   for (r = a->ctx->list; r; r = r->next)
++     {
++       if (a->bufpos)
++@@ -695,6 +697,7 @@
++       return;
++     }
++ 
+++#if 0
++   if (spec->hash_buffers != NULL)
++     {
++       gcry_buffer_t iov;
++@@ -711,6 +714,7 @@
++       spec->hash_buffers (digest, spec->mdlen, &iov, 1);
++     }
++   else
+++#endif
++     {
++       /* For the others we do not have a fast function, so we use the
++          normal functions. */
++@@ -893,43 +896,15 @@
++ static void
++ md_start_debug ( gcry_md_hd_t md, const char *suffix )
++ {
++-  static int idx=0;
++-  char buf[50];
++-
++-  if (fips_mode ())
++-    return;
++-
++-  if ( md->ctx->debug )
++-    {
++-      log_debug("Oops: md debug already started\n");
++-      return;
++-    }
++-  idx++;
++-  snprintf (buf, DIM(buf)-1, "dbgmd-%05d.%.10s", idx, suffix );
++-  md->ctx->debug = fopen(buf, "w");
++-  if ( !md->ctx->debug )
++-    log_debug("md debug: can't open %s\n", buf );
+++  (void) md;
+++  (void) suffix;
++ }
++ 
++ 
++ static void
++ md_stop_debug( gcry_md_hd_t md )
++ {
++-  if ( md->ctx->debug )
++-    {
++-      if ( md->bufpos )
++-        md_write ( md, NULL, 0 );
++-      fclose (md->ctx->debug);
++-      md->ctx->debug = NULL;
++-    }
++-
++-  {  /* a kludge to pull in the __muldi3 for Solaris */
++-    volatile u32 a = (u32)(uintptr_t)md;
++-    volatile u64 b = 42;
++-    volatile u64 c;
++-    c = a * b;
++-    (void)c;
++-  }
+++  (void) md;
++ }
++ 
++ 
+diff --git a/grub-core/lib/libgcrypt-patches/04_aria.patch b/grub-core/lib/libgcrypt-patches/04_aria.patch
+new file mode 100644
+index 0000000..b2f6e88
+--- /dev/null
++++ b/grub-core/lib/libgcrypt-patches/04_aria.patch
+@@ -0,0 +1,22 @@
++diff --git a/grub-core/lib/libgcrypt/cipher/aria.c b/grub-core/lib/libgcrypt/cipher/aria.c
++index bc2d43841..cfc5a74f2 100644
++--- a/grub-core/lib/libgcrypt-grub/cipher/aria.c
+++++ b/grub-core/lib/libgcrypt-grub/cipher/aria.c
++@@ -1013,7 +1013,7 @@ aria_crypt(ARIA_context *ctx, byte *out, const byte *in,
++   return 4 * sizeof(void *) + 4 * sizeof(u32); /* stack burn depth */
++ }
++ 
++-unsigned int
+++static unsigned int
++ aria_encrypt(void *c, byte *outbuf, const byte *inbuf)
++ {
++   ARIA_context *ctx = (ARIA_context *)c;
++@@ -1023,7 +1023,7 @@ aria_encrypt(void *c, byte *outbuf, const byte *inbuf)
++   return aria_crypt (ctx, outbuf, inbuf, ctx->enc_key);
++ }
++ 
++-unsigned int
+++static unsigned int
++ aria_decrypt(void *c, byte *outbuf, const byte *inbuf)
++ {
++   ARIA_context *ctx = (ARIA_context *)c;
+diff --git a/grub-core/lib/libgcrypt-patches/05_disable_rsa_shake.patch b/grub-core/lib/libgcrypt-patches/05_disable_rsa_shake.patch
+new file mode 100644
+index 0000000..aaddb4e
+--- /dev/null
++++ b/grub-core/lib/libgcrypt-patches/05_disable_rsa_shake.patch
+@@ -0,0 +1,36 @@
++diff --git a/grub-core/lib/libgcrypt/cipher/rsa-common.c b/grub-core/lib/libgcrypt/cipher/rsa-common.c
++index 1920eedd8..c4819208b 100644
++--- a/grub-core/lib/libgcrypt-grub/cipher/rsa-common.c
+++++ b/grub-core/lib/libgcrypt-grub/cipher/rsa-common.c
++@@ -912,6 +912,7 @@ _gcry_rsa_pss_encode (gcry_mpi_t *r_result, unsigned int nbits, int algo,
++   memcpy (p, salt, saltlen);
++ 
++   /* Step 9: dbmask = MGF(H, emlen - hlen - 1).  */
+++#if 0
++   if (algo == GCRY_MD_SHAKE128 || algo == GCRY_MD_SHAKE256)
++     {
++       gcry_buffer_t iov;
++@@ -925,6 +926,7 @@ _gcry_rsa_pss_encode (gcry_mpi_t *r_result, unsigned int nbits, int algo,
++                                      &iov, 1);
++     }
++   else
+++#endif
++     mgf1 (dbmask, emlen - hlen - 1, h, hlen, algo);
++ 
++   /* Step 10: maskedDB = DB ^ dbMask */
++@@ -1086,6 +1088,7 @@ _gcry_rsa_pss_verify (gcry_mpi_t value, int hashed_already,
++     }
++ 
++   /* Step 7: dbmask = MGF(H, emlen - hlen - 1).  */
+++#if 0
++   if (algo == GCRY_MD_SHAKE128 || algo == GCRY_MD_SHAKE256)
++     {
++       gcry_buffer_t iov;
++@@ -1099,6 +1202,7 @@ _gcry_rsa_pss_verify (gcry_mpi_t value, int hashed_already,
++                                      &iov, 1);
++     }
++   else
+++#endif
++     mgf1 (dbmask, emlen - hlen - 1, h, hlen, algo);
++ 
++   /* Step 8: maskedDB = DB ^ dbMask.  */
+diff --git a/grub-core/lib/libgcrypt/src/gcrypt-int.h b/grub-core/lib/libgcrypt/src/gcrypt-int.h
+index 1b44928..7010816 100644
+--- a/grub-core/lib/libgcrypt/src/gcrypt-int.h
++++ b/grub-core/lib/libgcrypt/src/gcrypt-int.h
+@@ -297,57 +297,6 @@ void _gcry_set_log_handler (gcry_handler_log_t f, void *opaque);
+ void _gcry_set_gettext_handler (const char *(*f)(const char*));
+ void _gcry_set_progress_handler (gcry_handler_progress_t cb, void *cb_data);
+ 
+-
+-/* Return a pointer to a string containing a description of the error
+-   code in the error value ERR.  */
+-static inline const char *
+-_gcry_strerror (gcry_error_t err)
+-{
+-  return gpg_strerror (err);
+-}
+-
+-/* Return a pointer to a string containing a description of the error
+-   source in the error value ERR.  */
+-static inline const char *
+-_gcry_strsource (gcry_error_t err)
+-{
+-  return gpg_strsource (err);
+-}
+-
+-/* Retrieve the error code for the system error ERR.  This returns
+-   GPG_ERR_UNKNOWN_ERRNO if the system error is not mapped (report
+-   this).  */
+-static inline gcry_err_code_t
+-_gcry_err_code_from_errno (int err)
+-{
+-  return gpg_err_code_from_errno (err);
+-}
+-
+-/* Retrieve the system error for the error code CODE.  This returns 0
+-   if CODE is not a system error code.  */
+-static inline int
+-_gcry_err_code_to_errno (gcry_err_code_t code)
+-{
+-  return gpg_err_code_to_errno (code);
+-}
+-
+-/* Return an error value with the error source SOURCE and the system
+-   error ERR.  */
+-static inline gcry_error_t
+-_gcry_err_make_from_errno (gpg_err_source_t source, int err)
+-{
+-  return gpg_err_make_from_errno (source, err);
+-}
+-
+-
+-/* Return an error value with the system error ERR.  */
+-static inline gcry_error_t
+-_gcry_error_from_errno (int err)
+-{
+-  return gpg_error (gpg_err_code_from_errno (err));
+-}
+-
+-
+ 
+ gpg_err_code_t _gcry_sexp_new (gcry_sexp_t *retsexp,
+                                const void *buffer, size_t length,
+diff --git a/grub-core/lib/libgcrypt_wrap/cipher_wrap.h b/grub-core/lib/libgcrypt_wrap/cipher_wrap.h
+index 4283549..30ba698 100644
+--- a/grub-core/lib/libgcrypt_wrap/cipher_wrap.h
++++ b/grub-core/lib/libgcrypt_wrap/cipher_wrap.h
+@@ -19,6 +19,8 @@
+ #ifndef GRUB_GCRY_WRAP_HEADER
+ #define GRUB_GCRY_WRAP_HEADER 1
+ 
++#define USE_SHA512 1
++
+ #include <grub/types.h>
+ #include <grub/mm.h>
+ #include <grub/misc.h>
+@@ -35,10 +37,12 @@
+ #undef __GNU_LIBRARY__
+ #define __GNU_LIBRARY__ 1
+ 
++#undef HAVE_U64
++#undef U64_C
++#define HAVE_U64 1
++#define UINT64_C(c) (c ## ULL)
+ #define U64_C(c) (c ## ULL)
+ 
+-#define PUBKEY_FLAG_NO_BLINDING    (1 << 0)
+-
+ #define CIPHER_INFO_NO_WEAK_KEY    1
+ 
+ #define HAVE_U64_TYPEDEF 1
+@@ -74,4 +78,17 @@ _gcry_fips_mode (void)
+ 
+ #define gcry_mpi_mod _gcry_mpi_mod
+ 
++#define strtol grub_strtol
++#define strtoul grub_strtoul
++#define atoi(nptr) (strtol((nptr), NULL, 10))
++
++#define stpcpy grub_stpcpy
++
++#define spec_from_algo grub_crypto_lookup_md_by_algo
++
++struct gcry_cshake_customization;
++
++gpg_err_code_t
++_gcry_cshake_customize (void *context, struct gcry_cshake_customization *p);
++
+ #endif
+diff --git a/grub-core/lib/libgcrypt_wrap/mem.c b/grub-core/lib/libgcrypt_wrap/mem.c
+index 74c6eaf..e947dc9 100644
+--- a/grub-core/lib/libgcrypt_wrap/mem.c
++++ b/grub-core/lib/libgcrypt_wrap/mem.c
+@@ -46,6 +46,15 @@ gcry_xcalloc (size_t n, size_t m)
+   return ret;
+ }
+ 
++void *
++_gcry_calloc (size_t n, size_t m)
++{
++  size_t sz;
++  if (grub_mul (n, m, &sz))
++    return NULL;
++  return grub_zalloc (sz);
++}
++
+ void *
+ gcry_xmalloc_secure (size_t n)
+ {
+@@ -69,6 +78,15 @@ gcry_xcalloc_secure (size_t n, size_t m)
+   return ret;
+ }
+ 
++void *
++_gcry_calloc_secure (size_t n, size_t m)
++{
++  size_t sz;
++  if (grub_mul (n, m, &sz))
++    return NULL;
++  return grub_zalloc (sz);
++}
++
+ void *
+ gcry_xmalloc (size_t n)
+ {
+@@ -89,10 +107,10 @@ gcry_xrealloc (void *a, size_t n)
+   return ret;
+ }
+ 
+-void
+-_gcry_check_heap (const void *a __attribute__ ((unused)))
++void *
++_gcry_realloc (void *a, size_t n)
+ {
+-
++  return grub_realloc (a, n);
+ }
+ 
+ void _gcry_log_printf (const char *fmt, ...)
+@@ -113,6 +131,24 @@ void _gcry_log_printf (const char *fmt, ...)
+     }
+ }
+ 
++void _gcry_log_debug (const char *fmt, ...)
++{
++  va_list args;
++  const char *debug = grub_env_get ("debug");
++
++  if (! debug)
++    return;
++
++  if (grub_strword (debug, "all") || grub_strword (debug, "gcrypt"))
++    {
++      grub_printf ("gcrypt: ");
++      va_start (args, fmt);
++      grub_vprintf (fmt, args);
++      va_end (args);
++      grub_refresh ();
++    }
++}
++
+ void _gcry_log_bug (const char *fmt, ...)
+ {
+   va_list args;
+@@ -126,9 +162,9 @@ void _gcry_log_bug (const char *fmt, ...)
+ }
+ 
+ gcry_err_code_t
+-gpg_error_from_syserror (void)
++gpg_err_code_from_errno (int err)
+ {
+-  switch (grub_errno)
++  switch (err)
+     {
+     case GRUB_ERR_NONE:
+       return GPG_ERR_NO_ERROR;
+@@ -138,3 +174,40 @@ gpg_error_from_syserror (void)
+       return GPG_ERR_GENERAL;
+     }
+ }
++
++gcry_err_code_t
++gpg_error_from_syserror (void)
++{
++  return gpg_err_code_from_errno(grub_errno);
++}
++
++gcry_err_code_t
++gpg_err_code_from_syserror (void)
++{
++  return gpg_error_from_syserror ();
++}
++
++void _gcry_fatal_error(int rc, const char *text )
++{
++  grub_fatal("gcry fatal %d: %s", rc, text);
++}
++
++
++void _gcry_randomize (void *buffer __attribute__((unused)), size_t length __attribute__((unused)),
++                      enum gcry_random_level level __attribute__((unused)))
++{
++  grub_fatal("Attempt to get secure random numbers");
++}
++
++
++void *_gcry_random_bytes_secure (size_t nbytes __attribute__((unused)), enum gcry_random_level level __attribute__((unused)))
++{
++  grub_fatal("Attempt to get secure random numbers");
++}
++
++const char *gpg_strerror (gpg_error_t err)
++{
++  static char buf[256];
++  grub_snprintf(buf, sizeof(buf) - 5, "gpg error %d\n", err);
++  return buf;
++}
+diff --git a/grub-core/lib/posix_wrap/sys/types.h b/grub-core/lib/posix_wrap/sys/types.h
+index 2f3e865..73775c9 100644
+--- a/grub-core/lib/posix_wrap/sys/types.h
++++ b/grub-core/lib/posix_wrap/sys/types.h
+@@ -39,12 +39,16 @@ typedef grub_int32_t int32_t;
+ typedef grub_int64_t int64_t;
+ 
+ #define HAVE_U64_TYPEDEF 1
++#define HAVE_TYPE_U64 1
+ typedef grub_uint64_t u64;
+ #define HAVE_U32_TYPEDEF 1
++#define HAVE_TYPE_U32 1
+ typedef grub_uint32_t u32;
+ #define HAVE_U16_TYPEDEF 1
++#define HAVE_TYPE_U16 1
+ typedef grub_uint16_t u16;
+ #define HAVE_BYTE_TYPEDEF 1
++#define HAVE_TYPE_BYTE 1
+ typedef grub_uint8_t byte;
+ 
+ typedef grub_addr_t uintptr_t;
+diff --git a/grub-core/lib/xzembed/xz_dec_stream.c b/grub-core/lib/xzembed/xz_dec_stream.c
+index 832d8af..f2dd42d 100644
+--- a/grub-core/lib/xzembed/xz_dec_stream.c
++++ b/grub-core/lib/xzembed/xz_dec_stream.c
+@@ -425,9 +425,9 @@ static enum xz_ret hash_validate(struct xz_dec *s, struct xz_buf *b,
+ 
+ #ifndef GRUB_EMBED_DECOMPRESSOR
+ 	if (s->hash)
+-		s->hash->init(s->hash_context);
++		s->hash->init(s->hash_context, 0);
+ 	if (s->crc32)
+-		s->crc32->init(s->crc32_context);
++		s->crc32->init(s->crc32_context, 0);
+ #endif
+ 	s->have_hash_value = 0;
+ 	s->pos = 0;
+@@ -493,7 +493,7 @@ static enum xz_ret dec_stream_header(struct xz_dec *s)
+ 		s->crc32_context = kmalloc(s->crc32->contextsize, GFP_KERNEL);
+ 		if (s->crc32_context == NULL)
+ 			return XZ_MEMLIMIT_ERROR;
+-		s->crc32->init(s->crc32_context);
++		s->crc32->init(s->crc32_context, 0);
+ 	}
+ #endif
+ 
+@@ -531,9 +531,9 @@ static enum xz_ret dec_stream_header(struct xz_dec *s)
+ 				return XZ_MEMLIMIT_ERROR;
+ 			}
+ 
+-			s->hash->init(s->hash_context);
+-			s->hash->init(s->index.hash.hash_context);
+- 			s->hash->init(s->block.hash.hash_context);
++			s->hash->init(s->hash_context, 0);
++			s->hash->init(s->index.hash.hash_context, 0);
++ 			s->hash->init(s->block.hash.hash_context, 0);
+ 		}
+ #endif
+ 	}
+@@ -1014,9 +1014,9 @@ void xz_dec_reset(struct xz_dec *s)
+ #ifndef GRUB_EMBED_DECOMPRESSOR
+ 	if (s->hash)
+ 	{
+-		s->hash->init(s->hash_context);
+-		s->hash->init(s->index.hash.hash_context);
+-		s->hash->init(s->block.hash.hash_context);
++		s->hash->init(s->hash_context, 0);
++		s->hash->init(s->index.hash.hash_context, 0);
++		s->hash->init(s->block.hash.hash_context, 0);
+ 	}
+ #endif
+ 	s->have_hash_value = 0;
+diff --git a/include/grub/crypto.h b/include/grub/crypto.h
+index 31c87c3..25b1188 100644
+--- a/include/grub/crypto.h
++++ b/include/grub/crypto.h
+@@ -65,7 +65,32 @@ typedef enum
+     GPG_ERR_WRONG_PUBKEY_ALGO,
+     GPG_ERR_OUT_OF_MEMORY,
+     GPG_ERR_TOO_LARGE,
+-    GPG_ERR_ENOMEM
++    GPG_ERR_ENOMEM,
++    GPG_ERR_CHECKSUM,
++    GPG_ERR_INV_LENGTH,
++    GPG_ERR_VALUE_NOT_FOUND,
++    GPG_ERR_ERANGE,
++    GPG_ERR_INV_DATA,
++    GPG_ERR_ENCODING_PROBLEM,
++    GPG_ERR_BUFFER_TOO_SHORT,
++    GPG_ERR_SYNTAX,
++    GPG_ERR_SEXP_INV_LEN_SPEC,
++    GPG_ERR_SEXP_UNMATCHED_DH,
++    GPG_ERR_SEXP_UNMATCHED_PAREN,
++    GPG_ERR_SEXP_ZERO_PREFIX,
++    GPG_ERR_SEXP_NESTED_DH,
++    GPG_ERR_SEXP_UNEXPECTED_PUNC,
++    GPG_ERR_SEXP_BAD_CHARACTER,
++    GPG_ERR_SEXP_NOT_CANONICAL,
++    GPG_ERR_SEXP_STRING_TOO_LONG,
++    GPG_ERR_SEXP_BAD_QUOTATION,
++    GPG_ERR_SEXP_ODD_HEX_NUMBERS,
++    GPG_ERR_SEXP_BAD_HEX_CHAR,
++    GPG_ERR_LIMIT_REACHED,
++    GPG_ERR_EOF,
++    GPG_ERR_BAD_DATA,
++    GPG_ERR_EINVAL,
++    GPG_ERR_INV_STATE,
+   } gpg_err_code_t;
+ typedef gpg_err_code_t gpg_error_t;
+ typedef gpg_error_t gcry_error_t;
+@@ -84,37 +109,60 @@ enum gcry_cipher_modes
+   };
+ #endif
+ 
++/* Extra algo IDs not coming from gcrypt.  */
++#define GCRY_MD_ADLER32 10301
++#define GCRY_MD_CRC64 10302
++
+ /* Don't rely on this. Check!  */
+ #define GRUB_CRYPTO_MAX_MDLEN 64
+ #define GRUB_CRYPTO_MAX_CIPHER_BLOCKSIZE 16
+ #define GRUB_CRYPTO_MAX_MD_CONTEXT_SIZE 256
+ 
+ /* Type for the cipher_setkey function.  */
++struct cipher_bulk_ops;
++
+ typedef gcry_err_code_t (*gcry_cipher_setkey_t) (void *c,
+ 						 const unsigned char *key,
+-						 unsigned keylen);
++						 unsigned keylen,
++						 struct cipher_bulk_ops *bulk_ops);
+ 
+ /* Type for the cipher_encrypt function.  */
+-typedef void (*gcry_cipher_encrypt_t) (void *c,
+-				       unsigned char *outbuf,
+-				       const unsigned char *inbuf);
++typedef unsigned int (*gcry_cipher_encrypt_t) (void *c,
++					       unsigned char *outbuf,
++					       const unsigned char *inbuf);
+ 
+ /* Type for the cipher_decrypt function.  */
+-typedef void (*gcry_cipher_decrypt_t) (void *c,
+-				       unsigned char *outbuf,
+-				       const unsigned char *inbuf);
++typedef unsigned int (*gcry_cipher_decrypt_t) (void *c,
++					       unsigned char *outbuf,
++					       const unsigned char *inbuf);
+ 
+ /* Type for the cipher_stencrypt function.  */
+ typedef void (*gcry_cipher_stencrypt_t) (void *c,
+ 					 unsigned char *outbuf,
+ 					 const unsigned char *inbuf,
+-					 unsigned int n);
++					 grub_size_t n);
+ 
+ /* Type for the cipher_stdecrypt function.  */
+ typedef void (*gcry_cipher_stdecrypt_t) (void *c,
+ 					 unsigned char *outbuf,
+ 					 const unsigned char *inbuf,
+-					 unsigned int n);
++					 grub_size_t n);
++
++typedef void (*selftest_report_func_t)(const char *domain,
++                                       int algo,
++                                       const char *what,
++                                       const char *errdesc);
++
++/* The type used to convey additional information to a cipher.  */
++typedef gpg_err_code_t (*gcry_cipher_set_extra_info_t)
++     (void *c, int what, const void *buffer, grub_size_t buflen);
++
++/* The type used to set an IV directly in the algorithm module.  */
++typedef void (*gcry_cipher_setiv_func_t)(void *c, const grub_uint8_t *iv, grub_size_t ivlen);
++
++/* Definition of the selftest functions.  */
++typedef gpg_err_code_t (*gcry_selftest_func_t)
++     (int algo, int extended, selftest_report_func_t report);
+ 
+ typedef struct gcry_cipher_oid_spec
+ {
+@@ -125,9 +173,14 @@ typedef struct gcry_cipher_oid_spec
+ /* Module specification structure for ciphers.  */
+ typedef struct gcry_cipher_spec
+ {
++  int algo;
++  struct {
++    unsigned int disabled:1;
++    unsigned int fips:1;
++  } flags;
+   const char *name;
+   const char **aliases;
+-  gcry_cipher_oid_spec_t *oids;
++  const gcry_cipher_oid_spec_t *oids;
+   grub_size_t blocksize;
+   grub_size_t keylen;
+   grub_size_t contextsize;
+@@ -136,6 +189,10 @@ typedef struct gcry_cipher_spec
+   gcry_cipher_decrypt_t decrypt;
+   gcry_cipher_stencrypt_t stencrypt;
+   gcry_cipher_stdecrypt_t stdecrypt;
++  gcry_selftest_func_t selftest;
++  gcry_cipher_set_extra_info_t set_extra_info;
++  gcry_cipher_setiv_func_t setiv;
++
+ #ifdef GRUB_UTIL
+   const char *modname;
+ #endif
+@@ -143,7 +200,7 @@ typedef struct gcry_cipher_spec
+ } gcry_cipher_spec_t;
+ 
+ /* Type for the md_init function.  */
+-typedef void (*gcry_md_init_t) (void *c);
++typedef void (*gcry_md_init_t) (void *c, unsigned int flags);
+ 
+ /* Type for the md_write function.  */
+ typedef void (*gcry_md_write_t) (void *c, const void *buf, grub_size_t nbytes);
+@@ -162,16 +219,24 @@ typedef struct gcry_md_oid_spec
+ /* Module specification structure for message digests.  */
+ typedef struct gcry_md_spec
+ {
++  int algo;
++  struct {
++    unsigned int disabled:1;
++    unsigned int fips:1;
++  } flags;
+   const char *name;
+-  unsigned char *asnoid;
++  const unsigned char *asnoid;
+   int asnlen;
+-  gcry_md_oid_spec_t *oids;
++  const gcry_md_oid_spec_t *oids;
+   grub_size_t mdlen;
+   gcry_md_init_t init;
+   gcry_md_write_t write;
+   gcry_md_final_t final;
+   gcry_md_read_t read;
++  void *extract;
++  void *hash_buffers;
+   grub_size_t contextsize; /* allocate this amount of context */
++
+   /* Block size, needed for HMAC.  */
+   grub_size_t blocksize;
+ #ifdef GRUB_UTIL
+@@ -180,54 +245,123 @@ typedef struct gcry_md_spec
+   struct gcry_md_spec *next;
+ } gcry_md_spec_t;
+ 
++typedef struct gcry_md_handle*gcry_md_hd_t;
++
+ struct gcry_mpi;
+ typedef struct gcry_mpi *gcry_mpi_t;
+ 
++struct gcry_sexp;
++typedef struct gcry_sexp *gcry_sexp_t;
++
++
++#define PUBKEY_FLAG_NO_BLINDING    (1 << 0)
++#define PUBKEY_FLAG_RFC6979        (1 << 1)
++#define PUBKEY_FLAG_FIXEDLEN       (1 << 2)
++#define PUBKEY_FLAG_LEGACYRESULT   (1 << 3)
++#define PUBKEY_FLAG_RAW_FLAG       (1 << 4)
++#define PUBKEY_FLAG_TRANSIENT_KEY  (1 << 5)
++#define PUBKEY_FLAG_USE_X931       (1 << 6)
++#define PUBKEY_FLAG_USE_FIPS186    (1 << 7)
++#define PUBKEY_FLAG_USE_FIPS186_2  (1 << 8)
++#define PUBKEY_FLAG_PARAM          (1 << 9)
++#define PUBKEY_FLAG_COMP           (1 << 10)
++#define PUBKEY_FLAG_NOCOMP         (1 << 11)
++#define PUBKEY_FLAG_EDDSA          (1 << 12)
++#define PUBKEY_FLAG_GOST           (1 << 13)
++#define PUBKEY_FLAG_NO_KEYTEST     (1 << 14)
++#define PUBKEY_FLAG_DJB_TWEAK      (1 << 15)
++#define PUBKEY_FLAG_SM2            (1 << 16)
++#define PUBKEY_FLAG_PREHASH        (1 << 17)
++
++enum pk_operation
++  {
++    PUBKEY_OP_ENCRYPT,
++    PUBKEY_OP_DECRYPT,
++    PUBKEY_OP_SIGN,
++    PUBKEY_OP_VERIFY
++  };
++
++enum pk_encoding
++  {
++    PUBKEY_ENC_RAW,
++    PUBKEY_ENC_PKCS1,
++    PUBKEY_ENC_PKCS1_RAW,
++    PUBKEY_ENC_OAEP,
++    PUBKEY_ENC_PSS,
++    PUBKEY_ENC_UNKNOWN
++  };
++
++struct pk_encoding_ctx
++{
++  enum pk_operation op;
++  unsigned int nbits;
++
++  enum pk_encoding encoding;
++  int flags;
++
++  int hash_algo;
++
++  /* for OAEP */
++  unsigned char *label;
++  grub_size_t labellen;
++
++  /* for PSS */
++  grub_size_t saltlen;
++
++  int (* verify_cmp) (void *opaque, gcry_mpi_t tmp);
++  void *verify_arg;
++};
++
+ /* Type for the pk_generate function.  */
+-typedef gcry_err_code_t (*gcry_pk_generate_t) (int algo,
+-					       unsigned int nbits,
+-					       unsigned long use_e,
+-					       gcry_mpi_t *skey,
+-					       gcry_mpi_t **retfactors);
++typedef gcry_err_code_t (*gcry_pk_generate_t) (gcry_sexp_t genparms,
++                                               gcry_sexp_t *r_skey);
+ 
+ /* Type for the pk_check_secret_key function.  */
+-typedef gcry_err_code_t (*gcry_pk_check_secret_key_t) (int algo,
+-						       gcry_mpi_t *skey);
++typedef gcry_err_code_t (*gcry_pk_check_secret_key_t) (gcry_sexp_t keyparms);
+ 
+ /* Type for the pk_encrypt function.  */
+-typedef gcry_err_code_t (*gcry_pk_encrypt_t) (int algo,
+-					      gcry_mpi_t *resarr,
+-					      gcry_mpi_t data,
+-					      gcry_mpi_t *pkey,
+-					      int flags);
++typedef gcry_err_code_t (*gcry_pk_encrypt_t) (gcry_sexp_t *r_ciph,
++                                              gcry_sexp_t s_data,
++                                              gcry_sexp_t keyparms);
+ 
+ /* Type for the pk_decrypt function.  */
+-typedef gcry_err_code_t (*gcry_pk_decrypt_t) (int algo,
+-					      gcry_mpi_t *result,
+-					      gcry_mpi_t *data,
+-					      gcry_mpi_t *skey,
+-					      int flags);
++typedef gcry_err_code_t (*gcry_pk_decrypt_t) (gcry_sexp_t *r_plain,
++                                              gcry_sexp_t s_data,
++                                              gcry_sexp_t keyparms);
+ 
+ /* Type for the pk_sign function.  */
+-typedef gcry_err_code_t (*gcry_pk_sign_t) (int algo,
+-					   gcry_mpi_t *resarr,
+-					   gcry_mpi_t data,
+-					   gcry_mpi_t *skey);
++typedef gcry_err_code_t (*gcry_pk_sign_t) (gcry_sexp_t *r_sig,
++                                           gcry_sexp_t s_data,
++                                           gcry_sexp_t keyparms);
+ 
+ /* Type for the pk_verify function.  */
+-typedef gcry_err_code_t (*gcry_pk_verify_t) (int algo,
+-					     gcry_mpi_t hash,
+-					     gcry_mpi_t *data,
+-					     gcry_mpi_t *pkey,
+-					     int (*cmp) (void *, gcry_mpi_t),
+-					     void *opaquev);
++typedef gcry_err_code_t (*gcry_pk_verify_t) (gcry_sexp_t s_sig,
++                                             gcry_sexp_t s_data,
++                                             gcry_sexp_t keyparms);
+ 
+ /* Type for the pk_get_nbits function.  */
+-typedef unsigned (*gcry_pk_get_nbits_t) (int algo, gcry_mpi_t *pkey);
++typedef unsigned (*gcry_pk_get_nbits_t) (gcry_sexp_t keyparms);
++
++/* The type used to compute the keygrip.  */
++typedef gpg_err_code_t (*pk_comp_keygrip_t) (gcry_md_hd_t md,
++                                             gcry_sexp_t keyparm);
++
++/* The type used to query an ECC curve name.  */
++typedef const char *(*pk_get_curve_t)(gcry_sexp_t keyparms, int iterator,
++                                      unsigned int *r_nbits);
++
++/* The type used to query ECC curve parameters by name.  */
++typedef gcry_sexp_t (*pk_get_curve_param_t)(const char *name);
+ 
+ /* Module specification structure for message digests.  */
+ typedef struct gcry_pk_spec
+ {
++  int algo;
++  struct {
++    unsigned int disabled:1;
++    unsigned int fips:1;
++  } flags;
++  int use;
+   const char *name;
+   const char **aliases;
+   const char *elements_pkey;
+@@ -235,7 +369,6 @@ typedef struct gcry_pk_spec
+   const char *elements_enc;
+   const char *elements_sig;
+   const char *elements_grip;
+-  int use;
+   gcry_pk_generate_t generate;
+   gcry_pk_check_secret_key_t check_secret_key;
+   gcry_pk_encrypt_t encrypt;
+@@ -243,6 +376,10 @@ typedef struct gcry_pk_spec
+   gcry_pk_sign_t sign;
+   gcry_pk_verify_t verify;
+   gcry_pk_get_nbits_t get_nbits;
++  pk_comp_keygrip_t comp_keygrip;
++  pk_get_curve_t get_curve;
++  pk_get_curve_param_t get_curve_param;
++
+ #ifdef GRUB_UTIL
+   const char *modname;
+ #endif
+@@ -345,6 +482,10 @@ grub_crypto_hash (const gcry_md_spec_t *hash, void *out, const void *in,
+ 		  grub_size_t inlen);
+ const gcry_md_spec_t *
+ grub_crypto_lookup_md_by_name (const char *name);
++const gcry_md_spec_t *
++grub_crypto_lookup_md_by_algo (int algo);
++const gcry_md_spec_t *
++grub_crypto_lookup_md_by_oid (const char *oid);
+ 
+ grub_err_t
+ grub_crypto_gcry_error (gcry_err_code_t in);
+@@ -408,8 +549,36 @@ void _gcry_assert_failed (const char *expr, const char *file, int line,
+ 
+ void _gcry_burn_stack (int bytes);
+ void _gcry_log_error( const char *fmt, ... )  __attribute__ ((format (__printf__, 1, 2)));
++void _gcry_log_info (const char *fmt, ...);
++void __gcry_burn_stack (unsigned int size);
++void __gcry_burn_stack_dummy (void);
++void _gcry_bug( const char *file, int line, const char *func );
++void
++_gcry_fast_wipememory (void *ptr, grub_size_t len);
++void
++_gcry_fast_wipememory2 (void *ptr, int set, grub_size_t len);
++unsigned int
++_gcry_ct_memequal (const void *b1, const void *b2, grub_size_t len);
++unsigned int
++_gcry_ct_not_memequal (const void *b1, const void *b2, grub_size_t len);
+ 
+ 
++static inline unsigned int _gcry_get_hw_features(void)
++{
++  return 0;
++}
++
++void *_gcry_malloc(grub_size_t n);
++void *_gcry_malloc_secure(grub_size_t n);
++void *_gcry_xmalloc(grub_size_t n);
++void *_gcry_xmalloc_secure(grub_size_t n);
++void _gcry_free (void *p);
++void *_gcry_xrealloc (void *a, grub_size_t n);
++int _gcry_is_secure (const void *a);
++void *_gcry_xcalloc (grub_size_t n, grub_size_t m);
++void *_gcry_xcalloc_secure (grub_size_t n, grub_size_t m);
++void _gcry_divide_by_zero (void);
++
+ #ifdef GRUB_UTIL
+ void grub_gcry_init_all (void);
+ void grub_gcry_fini_all (void);
+@@ -419,4 +588,11 @@ grub_get_random (void *out, grub_size_t len);
+ 
+ #endif
+ 
++typedef struct _gpgrt_b64state *gpgrt_b64state_t;
++gpgrt_b64state_t gpgrt_b64dec_start (const char *title);
++gpg_error_t      gpgrt_b64dec_proc (gpgrt_b64state_t state,
++				    void *buffer, grub_size_t length,
++                                    grub_size_t *r_nbytes);
++gpg_error_t      gpgrt_b64dec_finish (gpgrt_b64state_t state);
++const char *gpg_strerror (gpg_error_t err);
+ #endif
+diff --git a/include/grub/gcrypt/gpg-error.h b/include/grub/gcrypt/gpg-error.h
+index 1e42502..444bef2 100644
+--- a/include/grub/gcrypt/gpg-error.h
++++ b/include/grub/gcrypt/gpg-error.h
+@@ -29,4 +29,13 @@ gpg_err_source (gpg_error_t err __attribute__ ((unused)))
+ gcry_err_code_t
+ gpg_error_from_syserror (void);
+ 
++gcry_err_code_t
++gpg_err_code_from_syserror (void);
++
++gcry_err_code_t
++gpg_error_from_errno (int err);
++
++gcry_err_code_t
++gpg_err_code_from_errno (int err);
++
+ #endif
+diff --git a/util/grub-fstest.c b/util/grub-fstest.c
+index 982ce9e..5983c13 100644
+--- a/util/grub-fstest.c
++++ b/util/grub-fstest.c
+@@ -364,7 +364,7 @@ static void
+ cmd_crc (char *pathname)
+ {
+   grub_uint8_t *crc32_context = xmalloc (GRUB_MD_CRC32->contextsize);
+-  GRUB_MD_CRC32->init(crc32_context);
++  GRUB_MD_CRC32->init(crc32_context, 0);
+ 
+   read_file (pathname, crc_hook, crc32_context);
+   GRUB_MD_CRC32->final(crc32_context);
+diff --git a/util/import_gcry.py b/util/import_gcry.py
+index 2b3322d..489356d 100644
+--- a/util/import_gcry.py
++++ b/util/import_gcry.py
+@@ -22,6 +22,23 @@ import os
+ import datetime
+ import codecs
+ 
++def removesuffix(base: str, suffix: str) -> str:
++    """ Backport of `removesuffix` from PEP-616 (Python 3.9+) """
++
++    if base.endswith(suffix):
++        return base[:-len(suffix)]
++    else:
++        return base
++
++
++def removeprefix(base: str, prefix: str) -> str:
++    """ Backport of `removeprefix` from PEP-616 (Python 3.9+) """
++
++    if base.startswith(prefix):
++        return base[len(prefix):]
++    else:
++        return base
++
+ if len (sys.argv) < 3:
+     print ("Usage: %s SOURCE DESTINATION" % sys.argv[0])
+     exit (0)
+@@ -62,6 +79,12 @@ confutil.write ("  cflags = '$(CFLAGS_GCRY)';\n");
+ confutil.write ("  cppflags = '$(CPPFLAGS_GCRY)';\n");
+ confutil.write ("  extra_dist = grub-core/lib/libgcrypt-grub/cipher/ChangeLog;\n");
+ confutil.write ("\n");
++
++for src in ['src/const-time.c']:
++    confutil.write ("  common = grub-core/lib/libgcrypt-grub/%s;\n" % src)
++
++confutil.write ("\n");
++
+ chlog = ""
+ modules_sym_md = []
+ 
+@@ -79,10 +102,25 @@ mdblocksizes = {"_gcry_digest_spec_crc32" : 64,
+                 "_gcry_digest_spec_sha256" : 64,
+                 "_gcry_digest_spec_sha384" : 128,
+                 "_gcry_digest_spec_sha512" : 128,
++                "_gcry_digest_spec_sha512_256": 128,
++                "_gcry_digest_spec_sha512_224": 128,
+                 "_gcry_digest_spec_tiger" : 64,
+                 "_gcry_digest_spec_tiger1" : 64,
+                 "_gcry_digest_spec_tiger2" : 64,
+-                "_gcry_digest_spec_whirlpool" : 64}
++                "_gcry_digest_spec_whirlpool" : 64,
++                "_gcry_digest_spec_shake128": 64,
++                "_gcry_digest_spec_shake256": 64,
++                "_gcry_digest_spec_sm3": 64,
++                "_gcry_digest_spec_stribog_256": 64,
++                "_gcry_digest_spec_stribog_512": 64,
++                "_gcry_digest_spec_sha3_224": 1152 / 8,
++                "_gcry_digest_spec_sha3_256": 1088 / 8,
++                "_gcry_digest_spec_sha3_384": 832 / 8,
++                "_gcry_digest_spec_sha3_512": 576 / 8,
++                "_gcry_digest_spec_gost3411_94": 32,
++                "_gcry_digest_spec_gost3411_cp": 32,
++                "_gcry_digest_spec_cshake128": 64,
++                "_gcry_digest_spec_cshake256": 64}
+ 
+ cryptolist = codecs.open (os.path.join (cipher_dir_out, "crypto.lst"), "w", "utf-8")
+ 
+@@ -99,26 +137,54 @@ cryptolist.write ("AES-256: gcry_rijndael\n");
+ cryptolist.write ("ADLER32: adler32\n");
+ cryptolist.write ("CRC64: crc64\n");
+ 
++extra_files = {
++    "gcry_camellia": ["camellia.c"], # Main file is camellia-glue.c
++    "gcry_sha512"  : ["hash-common.c"],
++}
++extra_files_list = [x for xs in extra_files.values() for x in xs] + ["pubkey-util.c", "rsa-common.c", "dsa-common.c", "md.c"]
++
+ for cipher_file in cipher_files:
+     infile = os.path.join (cipher_dir_in, cipher_file)
+     outfile = os.path.join (cipher_dir_out, cipher_file)
+     if cipher_file == "ChangeLog" or cipher_file == "ChangeLog-2011":
+         continue
+     chlognew = "	* %s" % cipher_file
+-    if re.match ("(Manifest|Makefile\.am|ac\.c|cipher\.c|hash-common\.c|hmac-tests\.c|md\.c|pubkey\.c)$", cipher_file) or cipher_file == "kdf.c" or cipher_file == "elgamal.c" or cipher_file == "primegen.c" or cipher_file == "ecc.c" or cipher_file == "test-getrusage.c":
++    # Unused generic support files
++    if re.match (r"(Makefile\.am|primegen\.c|cipher\.c|cipher-.*\.c|mac-.*\.c|mac\.c|pubkey\.c)$", cipher_file):
++        chlog = "%s%s: Removed\n" % (chlog, chlognew)
++        continue
++    # TODO: Support KDF
++    if re.match (r"(kdf\.c|scrypt\.c)$", cipher_file):
++        chlog = "%s%s: Removed\n" % (chlog, chlognew)
++        continue
++    # TODO: Support chacha20 and poly1305
++    # TODO: Support ECC
++    # TODO: Support quantum-resistant
++    if cipher_file in ["poly1305.c", "chacha20.c", "ecc.c", "elgamal.c",
++                       "sntrup761.c", "mceliece6688128f.c", "kyber-common.c", "kyber.c", "kyber-kdep.c", "kem-ecc.c", "kem.c"] or re.match (r"^ecc-.*\.c$", cipher_file):
++        chlog = "%s%s: Removed\n" % (chlog, chlognew)
++        continue
++    # TODO: Use optimized versions
++    if re.match (r"(.*\.[sS]|.*-intel-shaext\.c|.*-ssse3-i386\.c|.*-ppc\.c|.*-ssse3-amd64\.c|.*-s390x\.c|rijndael-aesni\.c|crc-intel-pclmul\.c|.*-armv8-ce.c|.*-aarch64-ce\.c|.*-p10le\.c|rijndael-padlock.c|.*-ppc[89]le.c|rijndael-vaes.c|rijndael-vaes-i386.c|serpent-avx512-x86.c)$", cipher_file):
++        chlog = "%s%s: Removed\n" % (chlog, chlognew)
++        continue
++    # We use pregenerated version
++    if cipher_file == "gost-s-box.c":
+         chlog = "%s%s: Removed\n" % (chlog, chlognew)
+         continue
+     # Autogenerated files. Not even worth mentionning in ChangeLog
+-    if re.match ("Makefile\.in$", cipher_file):
++    if re.match (r"Makefile\.in$", cipher_file):
+         continue
+     nch = False
+-    if re.match (".*\.[ch]$", cipher_file):
+-        isc = re.match (".*\.c$", cipher_file)
++    if re.match (r".*\.[ch]$", cipher_file):
++        isc = re.match (r".*\.c$", cipher_file)
+         f = codecs.open (infile, "r", "utf-8")
+         fw = codecs.open (outfile, "w", "utf-8")
+         fw.write ("/* This file was automatically imported with \n")
+         fw.write ("   import_gcry.py. Please don't modify it */\n")
+-        fw.write ("#include <grub/dl.h>\n")
++        add_license = cipher_file == "pubkey-util.c" or (isc and not cipher_file in extra_files_list)
++        if add_license:
++            fw.write ("#include <grub/dl.h>\n")
+         if cipher_file == "camellia.h":
+             fw.write ("#include <grub/misc.h>\n")
+             fw.write ("void camellia_setup128(const unsigned char *key, grub_uint32_t *subkey);\n")
+@@ -132,7 +198,7 @@ for cipher_file in cipher_files:
+             fw.write ("void camellia_decrypt256(const grub_uint32_t *subkey, grub_uint32_t *io);\n")                      
+             fw.write ("#define memcpy grub_memcpy\n")
+         # Whole libgcrypt is distributed under GPLv3+ or compatible
+-        if isc:
++        if add_license:
+             fw.write ("GRUB_MOD_LICENSE (\"GPLv3+\");\n")
+ 
+         ciphernames = []
+@@ -148,14 +214,10 @@ for cipher_file in cipher_files:
+         iscipher = False
+         iscryptostart = False
+         iscomma = False
+-        isglue = False
+         skip_statement = False
++        skip_comma = False
+         if isc:
+-            modname = cipher_file [0:len(cipher_file) - 2]
+-            if re.match (".*-glue$", modname):
+-                modname = modname.replace ("-glue", "")
+-                isglue = True
+-            modname = "gcry_%s" % modname
++            modname = "gcry_%s" % removesuffix(removesuffix(cipher_file, ".c"), "-glue").replace("-", "_")
+         for line in f:
+             line = line
+             if skip_statement:
+@@ -171,7 +233,7 @@ for cipher_file in cipher_files:
+                     skip2 = False
+                 continue
+             if iscryptostart:
+-                s = re.search (" *\"([A-Z0-9_a-z]*)\"", line)
++                s = re.search (" *\"([A-Z0-9_a-z-]*)\"", line)
+                 if not s is None:
+                     sg = s.groups()[0]
+                     cryptolist.write (("%s: %s\n") % (sg, modname))
+@@ -201,7 +263,7 @@ for cipher_file in cipher_files:
+                     ispk = False
+                 iscomma = not re.search (",$", line) is None
+             # Used only for selftests.
+-            m = re.match ("(static byte|static unsigned char) (weak_keys_chksum)\[[0-9]*\] =", line)
++            m = re.match (r"(static byte|static unsigned char|static const gcry_md_spec_t \* const) (weak_keys_chksum|digest_list)\[[0-9]*\] =", line)
+             if not m is None:
+                 skip = 1
+                 fname = m.groups ()[1]
+@@ -212,11 +274,14 @@ for cipher_file in cipher_files:
+                     chlognew = "%s %s" % (chlognew, chmsg)
+                     nch = True
+                 continue
++            if (not hold) and (re.match (r"[ \t]*(run_selftests|do_tripledes_set_extra_info),?", line) is not None):
++                iscomma = True
++                line = ""
+             if hold:
+                 hold = False
+                 # We're optimising for size and exclude anything needing good
+                 # randomness.
+-                if not re.match ("(run_selftests|selftest|_gcry_aes_c.._..c|_gcry_[a-z0-9]*_hash_buffer|tripledes_set2keys|do_tripledes_set_extra_info|_gcry_rmd160_mixblock|serpent_test|dsa_generate_ext|test_keys|gen_k|sign|gen_x931_parm_xp|generate_x931|generate_key|dsa_generate|dsa_sign|ecc_sign|generate|generate_fips186|_gcry_register_pk_dsa_progress|_gcry_register_pk_ecc_progress|progress|scanval|ec2os|ecc_generate_ext|ecc_generate|compute_keygrip|ecc_get_param|_gcry_register_pk_dsa_progress|gen_x931_parm_xp|gen_x931_parm_xi|rsa_decrypt|rsa_sign|rsa_generate_ext|rsa_generate|secret|check_exponent|rsa_blind|rsa_unblind|extract_a_from_sexp|curve_free|curve_copy|point_set)", line) is None:
++                if re.match ("(_gcry_hash_selftest_check_one|bulk_selftest_setkey|run_selftests|do_tripledes_set_extra_info|selftest|sm4_selftest|_gcry_[a-z0-9_]*_hash_buffers|_gcry_sha1_hash_buffer|tripledes_set2keys|_gcry_rmd160_mixblock|serpent_test|dsa_generate_ext|test_keys|gen_k|sign|gen_x931_parm_xp|generate_x931|generate_key|dsa_generate|dsa_sign|ecc_sign|generate|generate_fips186|_gcry_register_pk_dsa_progress|_gcry_register_pk_ecc_progress|progress|scanval|ec2os|ecc_generate_ext|ecc_generate|ecc_get_param|_gcry_register_pk_dsa_progress|gen_x931_parm_xp|gen_x931_parm_xi|rsa_decrypt|rsa_sign|rsa_generate_ext|rsa_generate|secret|check_exponent|rsa_blind|rsa_unblind|extract_a_from_sexp|curve_free|curve_copy|point_set|_gcry_dsa_gen_rfc6979_k|bits2octets|int2octets|_gcry_md_debug|_gcry_md_selftest|_gcry_md_is_enabled|_gcry_md_is_secure|_gcry_md_init|_gcry_md_info|md_get_algo|md_extract|_gcry_md_get |_gcry_md_get_algo |_gcry_md_extract|_gcry_md_setkey|md_setkey|prepare_macpads|_gcry_md_algo_name|search_oid|spec_from_oid|spec_from_name|spec_from_algo|map_algo|cshake_hash_buffers)", line) is not None:
+ 
+                     skip = 1
+                     if not re.match ("selftest", line) is None and cipher_file == "idea.c":
+@@ -224,6 +289,11 @@ for cipher_file in cipher_files:
+ 
+                     if not re.match ("serpent_test", line) is None:
+                         fw.write ("static const char *serpent_test (void) { return 0; }\n");
++                    if not re.match ("sm4_selftest", line) is None:
++                        fw.write ("static const char *sm4_selftest (void) { return 0; }\n");
++                    hash_buf = re.match ("(_gcry_[a-z0-9_]*_hash_buffers)", line)
++                    if hash_buf is not None:
++                        fw.write ("#define %s 0" % (hash_buf.group(0)))
+                     if not re.match ("dsa_generate", line) is None:
+                         fw.write ("#define dsa_generate 0");
+                     if not re.match ("ecc_generate", line) is None:
+@@ -238,6 +308,10 @@ for cipher_file in cipher_files:
+                         fw.write ("#define dsa_sign 0");
+                     if not re.match ("ecc_sign", line) is None:
+                         fw.write ("#define ecc_sign 0");
++                    if not re.match ("search_oid", line) is None:
++                        fw.write ("#define search_oid(a,b) grub_crypto_lookup_md_by_oid(a)")
++                    if not re.match ("spec_from_name", line) is None:
++                        fw.write ("#define spec_from_name grub_crypto_lookup_md_by_name")
+                     fname = re.match ("[a-zA-Z0-9_]*", line).group ()
+                     chmsg = "(%s): Removed." % fname
+                     if nch:
+@@ -257,45 +331,46 @@ for cipher_file in cipher_files:
+                     chlognew = "%s: %s" % (chlognew, chmsg)
+                     nch = True
+                 continue
+-            m = re.match ("gcry_cipher_spec_t", line)
++            m = re.match ("(const )?gcry_cipher_spec_t", line)
+             if isc and not m is None:
+                 assert (not ismd)
+                 assert (not ispk)
+                 assert (not iscipher)
+                 assert (not iscryptostart)
+-                ciphername = line [len ("gcry_cipher_spec_t"):].strip ()
++                ciphername = removeprefix(removeprefix(line, "const "), "gcry_cipher_spec_t").strip ()
+                 ciphername = re.match("[a-zA-Z0-9_]*",ciphername).group ()
+                 ciphernames.append (ciphername)
+                 iscipher = True
+                 iscryptostart = True
+ 
+-            m = re.match ("gcry_pk_spec_t", line)
++            m = re.match ("(const )?gcry_pk_spec_t", line)
+             if isc and not m is None:
+                 assert (not ismd)
+                 assert (not ispk)
+                 assert (not iscipher)
+                 assert (not iscryptostart)
+-                pkname = line [len ("gcry_pk_spec_t"):].strip ()
++                pkname = removeprefix(removeprefix(line, "const "), "gcry_pk_spec_t").strip ()
+                 pkname = re.match("[a-zA-Z0-9_]*",pkname).group ()
+                 pknames.append (pkname)
+                 ispk = True
+                 iscryptostart = True
+ 
+-            m = re.match ("gcry_md_spec_t", line)
++            m = re.match ("(const )?gcry_md_spec_t", line)
+             if isc and not m is None:
+                 assert (not ismd)
+                 assert (not ispk)
+                 assert (not iscipher)
+                 assert (not iscryptostart)
+-                mdname = line [len ("gcry_md_spec_t"):].strip ()
++                line = removeprefix(line, "const ")
++                mdname = removeprefix(removeprefix(line, "const "), "gcry_md_spec_t").strip ()
+                 mdname = re.match("[a-zA-Z0-9_]*",mdname).group ()
+                 mdnames.append (mdname)
+                 ismd = True
+                 mdarg = 0
+                 iscryptostart = True
+-            m = re.match ("static const char \*selftest.*;$", line)
++            m = re.match (r"static const char \*selftest.*;$", line)
+             if not m is None:
+-                fname = line[len ("static const char \*"):]
++                fname = line[len (r"static const char \*"):]
+                 fname = re.match ("[a-zA-Z0-9_]*", fname).group ()
+                 chmsg = "(%s): Removed declaration." % fname
+                 if nch:
+@@ -331,7 +406,7 @@ for cipher_file in cipher_files:
+                     chlognew = "%s %s" % (chlognew, chmsg)
+                     nch = True
+                 continue
+-            m = re.match ("static void \(\*progress_cb\).*;$", line)
++            m = re.match (r"static void \(\*progress_cb\).*;$", line)
+             if not m is None:
+                 chmsg = "(progress_cb): Removed declaration."
+                 if nch:
+@@ -340,7 +415,7 @@ for cipher_file in cipher_files:
+                     chlognew = "%s %s" % (chlognew, chmsg)
+                     nch = True
+                 continue
+-            m = re.match ("static void \*progress_cb_data.*;$", line)
++            m = re.match (r"static void \*progress_cb_data.*;$", line)
+             if not m is None:
+                 chmsg = "(progress_cb): Removed declaration."
+                 if nch:
+@@ -350,22 +425,22 @@ for cipher_file in cipher_files:
+                     nch = True
+                 continue
+ 
+-            m = re.match ("(static const char( |)\*|static gpg_err_code_t|void|static int|static gcry_err_code_t|static gcry_mpi_t|static void|void|static elliptic_curve_t) *$", line)
++            m = re.match (r"((static )?const char( |)\*|static const gcry_md_spec_t \*|(static )?gpg_err_code_t|gpg_error_t|void|(static )?int|(static )?unsigned int|(static )?gcry_err_code_t|static gcry_mpi_t|static void|void|static elliptic_curve_t) *$", line)
+             if not m is None:
+                 hold = True
+                 holdline = line
+                 continue
+-            m = re.match ("static int tripledes_set2keys \(.*\);", line)
++            m = re.match (r"static int tripledes_set2keys \(.*\);", line)
+             if not m is None:
+                 continue
+-            m = re.match ("static int tripledes_set3keys \(.*\);", line)
++            m = re.match (r"static int tripledes_set3keys \(.*\);", line)
+             if not m is None:
+                 continue
+-            m = re.match ("static int tripledes_set2keys \(", line)
++            m = re.match (r"static int tripledes_set2keys \(", line)
+             if not m is None:
+                 skip_statement = True
+                 continue
+-            m = re.match ("static int tripledes_set3keys \(", line)
++            m = re.match (r"static int tripledes_set3keys \(", line)
+             if not m is None:
+                 skip_statement = True
+                 continue
+@@ -421,11 +496,9 @@ for cipher_file in cipher_files:
+                 continue
+             fw.write (line)
+         if len (ciphernames) > 0 or len (mdnames) > 0 or len (pknames) > 0:
+-            if isglue:
+-                modfiles = "lib/libgcrypt-grub/cipher/%s lib/libgcrypt-grub/cipher/%s" \
+-                    % (cipher_file, cipher_file.replace ("-glue.c", ".c"))
+-            else:
+-                modfiles = "lib/libgcrypt-grub/cipher/%s" % cipher_file
++            modfiles = [cipher_file]
++            if modname in extra_files.keys():
++                modfiles += extra_files[modname]
+             if len (ciphernames) > 0 or len (mdnames) > 0:
+                 modules_sym_md.append (modname)
+             chmsg = "(GRUB_MOD_INIT(%s)): New function\n" % modname
+@@ -447,7 +520,7 @@ for cipher_file in cipher_files:
+                 chlognew = "%s\n	%s" % (chlognew, chmsg)
+                 fw.write ("  grub_md_register (&%s);\n" % mdname)
+             for pkname in pknames:
+-                chmsg = "Register pk %s" % mdname
++                chmsg = "Register pk %s" % pkname
+                 chlognew = "%s\n	%s" % (chlognew, chmsg)
+                 fw.write ("  grub_crypto_pk_%s = &%s;\n"
+                           % (pkname.replace ("_gcry_pubkey_spec_", ""), pkname))
+@@ -465,17 +538,17 @@ for cipher_file in cipher_files:
+                 chlognew = "%s\n	%s" % (chlognew, chmsg)
+                 fw.write ("  grub_md_unregister (&%s);\n" % mdname)
+             for pkname in pknames:
+-                chmsg = "Unregister pk %s" % mdname
++                chmsg = "Unregister pk %s" % pkname
+                 chlognew = "%s\n	%s" % (chlognew, chmsg)
+                 fw.write ("  grub_crypto_pk_%s = 0;\n"
+                           % (pkname.replace ("_gcry_pubkey_spec_", "")))
+             fw.write ("}\n")
+             conf.write ("module = {\n")
+             conf.write ("  name = %s;\n" % modname)
+-            for src in modfiles.split():
+-                conf.write ("  common = %s;\n" % src)
++            for src in modfiles:
++                conf.write ("  common = lib/libgcrypt-grub/cipher/%s;\n" % src)
+                 if len (ciphernames) > 0 or len (mdnames) > 0:
+-                    confutil.write ("  common = grub-core/%s;\n" % src)
++                    confutil.write ("  common = grub-core/lib/libgcrypt-grub/cipher/%s;\n" % src)
+             if modname == "gcry_ecc":
+                 conf.write ("  common = lib/libgcrypt-grub/mpi/ec.c;\n")
+                 conf.write ("  cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls -Wno-sign-compare';\n")
+@@ -490,7 +563,7 @@ for cipher_file in cipher_files:
+             fw.close ()
+             if nch:
+                 chlog = "%s%s\n" % (chlog, chlognew)
+-        elif isc and cipher_file != "camellia.c":
++        elif isc and cipher_file not in extra_files_list:
+             print ("WARNING: C file isn't a module: %s" % cipher_file)
+             f.close ()
+             fw.close ()
+@@ -512,7 +585,7 @@ for src in sorted (os.listdir (os.path.join (indir, "src"))):
+             or src == "libgcrypt.vers" or src == "Makefile.am" \
+             or src == "Manifest" or src == "misc.c" \
+             or src == "missing-string.c" or src == "module.c" \
+-            or src == "secmem.c" or src == "sexp.c" \
++            or src == "secmem.c" \
+             or src == "stdmem.c" or src == "visibility.c":
+         continue
+     outfile = os.path.join (basedir, "src", src)
+@@ -534,8 +607,17 @@ for src in sorted (os.listdir (os.path.join (indir, "src"))):
+         fw.close ()
+         continue
+ 
++    if src == "cipher-proto.h":
++        fw.write("#include <grub/crypto.h>\n")
++        fw.write("typedef gcry_selftest_func_t selftest_func_t;")
++        f.close ()
++        fw.close ()
++        continue
++
+     if src == "g10lib.h":
+-        fw.write (f.read ().replace ("(printf,f,a)", "(__printf__,f,a)"))
++        fw.write("#include <cipher_wrap.h>\n")
++        fw.write("#include <grub/crypto.h>\n")
++        fw.write (f.read ().replace ("(printf,f,a)", "(__printf__,f,a)").replace ("#include \"../compat/libcompat.h\"", "").replace("#define N_(a) (a)", ""))
+         f.close ()
+         fw.close ()
+         continue
+@@ -546,7 +628,7 @@ for src in sorted (os.listdir (os.path.join (indir, "src"))):
+ 
+ for src in sorted (os.listdir (os.path.join (indir, "mpi"))):
+     if src == "config.links" or src == "ChangeLog-2011" \
+-            or src == "mpi-scan.c" or src == "Manifest" \
++            or src == "Manifest" \
+             or src == "Makefile.am":
+         continue
+     infile = os.path.join (indir, "mpi", src)
+@@ -568,17 +650,17 @@ for src in sorted (os.listdir (os.path.join (indir, "mpi"))):
+             hold = False
+             # We're optimising for size and exclude anything needing good
+             # randomness.
+-            if not re.match ("(_gcry_mpi_get_hw_config|gcry_mpi_randomize)", line) is None:
++            if not re.match ("(_gcry_mpi_get_hw_config|gcry_mpi_randomize|_gcry_mpi_randomize)", line) is None:
+                 skip = 1
+                 continue
+             else:
+                 fw.write (holdline)
+-        m = re.match ("(const char( |)\*|void) *$", line)
++        m = re.match (r"(const char( |)\*|void) *$", line)
+         if not m is None:
+             hold = True
+             holdline = line
+             continue
+-        m = re.match ("#include \"mod-source-info\.h\"", line)
++        m = re.match (r"#include \"mod-source-info\.h\"", line)
+         if not m is None:
+             continue
+         fw.write (line)
+@@ -612,9 +694,6 @@ fw.write ("#include <cipher_wrap.h>\n")
+ chlog = "%s	* g10lib.h: Likewise.\n" % chlog
+ fw.close ()
+ 
+-infile = os.path.join (cipher_dir_in, "ChangeLog")
+-outfile = os.path.join (cipher_dir_out, "ChangeLog")
+-
+ conf.close ();
+ 
+ initfile = codecs.open (os.path.join (cipher_dir_out, "init.c"), "w", "utf-8")
+@@ -643,7 +722,7 @@ confutil.write ("};\n");
+ confutil.close ();
+ 
+ 
+-f=codecs.open (infile, "r", "utf-8")
++outfile = os.path.join (cipher_dir_out, "ChangeLog")
+ fw=codecs.open (outfile, "w", "utf-8")
+ dt = datetime.date.today ()
+ fw.write ("%04d-%02d-%02d  Automatic import tool\n" % \
+@@ -653,7 +732,4 @@ fw.write ("	Imported ciphers to GRUB\n")
+ fw.write ("\n")
+ fw.write (chlog)
+ fw.write ("\n")
+-for line in f:
+-    fw.write (line)
+-f.close ()
+ fw.close ()
+diff --git a/util/import_gcrypt_inth.sed b/util/import_gcrypt_inth.sed
+new file mode 100644
+index 0000000..ebe9371
+--- /dev/null
++++ b/util/import_gcrypt_inth.sed
+@@ -0,0 +1,17 @@
++/^#@INSERT_SYS_SELECT_H@/ d
++/^@FALLBACK_SOCKLEN_T@/ d
++/^# *include <stdlib\.h>/ d
++/^# *include <string\.h>/ d
++/^# *include <winsock2\.h>/ d
++/^# *include <ws2tcpip\.h>/ d
++/^# *include <time\.h>/ d
++/^# *include <sys\/socket\.h>/ d
++/^# *include <sys\/time\.h>/ d
++/^  typedef long ssize_t;/ d
++/^  typedef int  pid_t;/ d
++/^# *include <gpg-error\.h>/ s,#include <gpg-error.h>,#include <grub/gcrypt/gpg-error.h>,
++/^typedef gpg_error_t gcry_error_t;/ d
++/^typedef gpg_err_code_t gcry_err_code_t;/ d
++/^typedef struct gcry_mpi \*gcry_mpi_t;/ d
++/^#error  gcrypt.h already included/ d
++p
+diff --git a/util/import_gcrypth.sed b/util/import_gcrypth.sed
+index fe6d1a0..503b4b5 100644
+--- a/util/import_gcrypth.sed
++++ b/util/import_gcrypth.sed
+@@ -13,6 +13,4 @@
+ /^typedef gpg_error_t gcry_error_t;/ d
+ /^typedef gpg_err_code_t gcry_err_code_t;/ d
+ /^typedef struct gcry_mpi \*gcry_mpi_t;/ d
+-/^struct gcry_thread_cbs/ d
+-s,_gcry_mpi_invm,gcry_mpi_invm,g
+ p
+\ No newline at end of file

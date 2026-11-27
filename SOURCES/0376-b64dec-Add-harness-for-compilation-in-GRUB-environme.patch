@@ -1,0 +1,42 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Vladimir Serbinenko <phcoder@gmail.com>
+Date: Mon, 7 Jul 2025 14:52:09 +0000
+Subject: [PATCH] b64dec: Add harness for compilation in GRUB environment
+
+Signed-off-by: Vladimir Serbinenko <phcoder@gmail.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/lib/gpgrt-int.h | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+ create mode 100644 grub-core/lib/gpgrt-int.h
+
+diff --git a/grub-core/lib/gpgrt-int.h b/grub-core/lib/gpgrt-int.h
+new file mode 100644
+index 0000000..45d6358
+--- /dev/null
++++ b/grub-core/lib/gpgrt-int.h
+@@ -0,0 +1,24 @@
++#include <grub/crypto.h>
++
++struct _gpgrt_b64state
++{
++  int idx;
++  int quad_count;
++  char *title;
++  unsigned char radbuf[4];
++  unsigned int crc;
++  gpg_err_code_t lasterr;
++  unsigned int flags;
++  unsigned int stop_seen:1;
++  unsigned int invalid_encoding:1;
++  unsigned int using_decoder:1;
++};
++
++#define _gpgrt_b64dec_start gpgrt_b64dec_start
++#define xtrystrdup grub_strdup
++#define xtrycalloc grub_calloc
++#define xfree grub_free
++#define _gpgrt_b64dec_finish gpgrt_b64dec_finish
++#define gpgrt_assert(expr) ((expr)? (void)0 \
++         : _gcry_assert_failed (#expr, __FILE__, __LINE__, __FUNCTION__))
++#define _gpgrt_b64dec_proc gpgrt_b64dec_proc

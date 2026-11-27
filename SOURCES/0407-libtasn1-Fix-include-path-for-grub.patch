@@ -1,0 +1,89 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Nicolas Frayer <nfrayer@redhat.com>
+Date: Wed, 19 Nov 2025 13:33:12 +0100
+Subject: [PATCH] libtasn1: Fix include path for grub
+
+Signed-off-by: Nicolas Frayer <nfrayer@redhat.com>
+---
+ grub-core/commands/appendedsig/appendedsig.c     | 2 +-
+ grub-core/commands/appendedsig/appendedsig.h     | 2 +-
+ grub-core/commands/appendedsig/asn1util.c        | 2 +-
+ grub-core/commands/appendedsig/gnutls_asn1_tab.c | 2 +-
+ grub-core/commands/appendedsig/pkix_asn1_tab.c   | 2 +-
+ grub-core/commands/appendedsig/x509.c            | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/grub-core/commands/appendedsig/appendedsig.c b/grub-core/commands/appendedsig/appendedsig.c
+index 5c53f63..1c74554 100644
+--- a/grub-core/commands/appendedsig/appendedsig.c
++++ b/grub-core/commands/appendedsig/appendedsig.c
+@@ -30,7 +30,7 @@
+ #include <grub/kernel.h>
+ #include <grub/extcmd.h>
+ #include <grub/verify.h>
+-#include <libtasn1.h>
++#include <grub/libtasn1.h>
+ #include <grub/env.h>
+ #include <grub/lockdown.h>
+ #include <grub/powerpc/ieee1275/platform_keystore.h>
+diff --git a/grub-core/commands/appendedsig/appendedsig.h b/grub-core/commands/appendedsig/appendedsig.h
+index c874654..cb0fe19 100644
+--- a/grub-core/commands/appendedsig/appendedsig.h
++++ b/grub-core/commands/appendedsig/appendedsig.h
+@@ -18,7 +18,7 @@
+  */
+ 
+ #include <grub/crypto.h>
+-#include <libtasn1.h>
++#include <grub/libtasn1.h>
+ 
+ extern asn1_node grub_gnutls_gnutls_asn;
+ extern asn1_node grub_gnutls_pkix_asn;
+diff --git a/grub-core/commands/appendedsig/asn1util.c b/grub-core/commands/appendedsig/asn1util.c
+index 9dd7898..1f50a74 100644
+--- a/grub-core/commands/appendedsig/asn1util.c
++++ b/grub-core/commands/appendedsig/asn1util.c
+@@ -17,7 +17,7 @@
+  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+-#include <libtasn1.h>
++#include <grub/libtasn1.h>
+ #include <grub/types.h>
+ #include <grub/err.h>
+ #include <grub/mm.h>
+diff --git a/grub-core/commands/appendedsig/gnutls_asn1_tab.c b/grub-core/commands/appendedsig/gnutls_asn1_tab.c
+index efc0c14..16998f2 100644
+--- a/grub-core/commands/appendedsig/gnutls_asn1_tab.c
++++ b/grub-core/commands/appendedsig/gnutls_asn1_tab.c
+@@ -1,5 +1,5 @@
+ #include <grub/mm.h>
+-#include <libtasn1.h>
++#include <grub/libtasn1.h>
+ 
+ /*
+  * Imported from gnutls.asn.
+diff --git a/grub-core/commands/appendedsig/pkix_asn1_tab.c b/grub-core/commands/appendedsig/pkix_asn1_tab.c
+index ec5f87b..fdc989a 100644
+--- a/grub-core/commands/appendedsig/pkix_asn1_tab.c
++++ b/grub-core/commands/appendedsig/pkix_asn1_tab.c
+@@ -1,5 +1,5 @@
+ #include <grub/mm.h>
+-#include <libtasn1.h>
++#include <grub/libtasn1.h>
+ 
+ /*
+  * Imported from pkix.asn.
+diff --git a/grub-core/commands/appendedsig/x509.c b/grub-core/commands/appendedsig/x509.c
+index bc15266..08846aa 100644
+--- a/grub-core/commands/appendedsig/x509.c
++++ b/grub-core/commands/appendedsig/x509.c
+@@ -17,7 +17,7 @@
+  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+-#include <libtasn1.h>
++#include <grub/libtasn1.h>
+ #include <grub/types.h>
+ #include <grub/err.h>
+ #include <grub/mm.h>

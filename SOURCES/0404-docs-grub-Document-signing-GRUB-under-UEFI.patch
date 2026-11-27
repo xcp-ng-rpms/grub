@@ -1,0 +1,44 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Daniel Axtens <dja@axtens.net>
+Date: Mon, 6 Oct 2025 12:55:03 +0530
+Subject: [PATCH] docs/grub: Document signing GRUB under UEFI
+
+Before adding information about how GRUB is signed with an appended
+signature scheme, it's worth adding some information about how it
+can currently be signed for UEFI.
+
+Signed-off-by: Daniel Axtens <dja@axtens.net>
+Signed-off-by: Sudhakar Kuppusamy <sudhakar@linux.ibm.com>
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+Reviewed-by: Avnish Chouhan <avnish@linux.ibm.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ docs/grub.texi | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/docs/grub.texi b/docs/grub.texi
+index 2d6d73a..e08aaf5 100644
+--- a/docs/grub.texi
++++ b/docs/grub.texi
+@@ -6912,6 +6912,21 @@ which increases the risk of password leakage during the process. Moreover, the
+ superuser list must be well maintained, and the password used cannot be
+ synchronized with LUKS key rotation.
+ 
++@node Signing GRUB itself
++@section Signing GRUB itself
++To ensure a complete secure-boot chain, there must be a way for the code that
++loads GRUB to verify the integrity of the core image.
++This is ultimately platform-specific and individual platforms can define their
++own mechanisms. However, there are general-purpose mechanisms that can be used
++with GRUB.
++@section Signing GRUB for UEFI secure boot
++On UEFI platforms, @file{core.img} is a PE binary. Therefore, it can be signed
++with a tool such as @command{pesign} or @command{sbsign}. Refer to the
++suggestions in @pxref{UEFI secure boot and shim} to ensure that the final
++image works under UEFI secure boot and can maintain the secure-boot chain. It
++will also be necessary to enroll the public key used into a relevant firmware
++key database.
++
+ @node Platform limitations
+ @chapter Platform limitations
+ 

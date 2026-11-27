@@ -1,0 +1,274 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Sudhakar Kuppusamy <sudhakar@linux.ibm.com>
+Date: Tue, 18 Nov 2025 16:18:32 +0100
+Subject: [PATCH] appended signatures: Parse ASN1 node
+
+This code allows us to parse ASN1 node and allocating memory to store it.
+It will work for anything where the size libtasn1 returns is right:
+ - Integers
+ - Octet strings
+ - DER encoding of other structures
+
+It will _not_ work for things where libtasn1 size requires adjustment:
+ - Strings that require an extra NULL byte at the end
+ - Bit strings because libtasn1 returns the length in bits, not bytes.
+
+If the function returns a non-NULL value, the caller must free it.
+
+Signed-off-by: Daniel Axtens <dja@axtens.net>
+Signed-off-by: Sudhakar Kuppusamy <sudhakar@linux.ibm.com>
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+Reviewed-by: Avnish Chouhan <avnish@linux.ibm.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/commands/appendedsig/appendedsig.h | 96 +++++-----------------------
+ grub-core/commands/appendedsig/asn1util.c    | 59 ++++++++---------
+ 2 files changed, 43 insertions(+), 112 deletions(-)
+
+diff --git a/grub-core/commands/appendedsig/appendedsig.h b/grub-core/commands/appendedsig/appendedsig.h
+index 9792ef3..601d616 100644
+--- a/grub-core/commands/appendedsig/appendedsig.h
++++ b/grub-core/commands/appendedsig/appendedsig.h
+@@ -1,6 +1,7 @@
+ /*
+  *  GRUB  --  GRand Unified Bootloader
+- *  Copyright (C) 2020  IBM Corporation.
++ *  Copyright (C) 2020, 2022 Free Software Foundation, Inc.
++ *  Copyright (C) 2020, 2022, 2025 IBM Corporation
+  *
+  *  GRUB is free software: you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+@@ -16,95 +17,28 @@
+  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+-#include <grub/crypto.h>
+-#include <grub/libtasn1.h>
++#include <libtasn1.h>
+ 
+-extern asn1_node _gnutls_gnutls_asn;
+-extern asn1_node _gnutls_pkix_asn;
++extern asn1_node grub_gnutls_gnutls_asn;
++extern asn1_node grub_gnutls_pkix_asn;
+ 
+-#define MAX_OID_LEN 32
++/* Do libtasn1 init. */
++extern int
++grub_asn1_init (void);
+ 
+ /*
+- * One or more x509 certificates.
+- *
+- * We do limited parsing: extracting only the serial, CN and RSA public key.
+- */
+-struct x509_certificate
+-{
+-  struct x509_certificate *next;
+-
+-  grub_uint8_t *serial;
+-  grub_size_t serial_len;
+-
+-  char *subject;
+-  grub_size_t subject_len;
+-
+-  /* We only support RSA public keys. This encodes [modulus, publicExponent] */
+-  gcry_mpi_t mpis[2];
+-};
+-
+-/*
+- * A PKCS#7 signedData message.
+- *
+- * We make no attempt to match intelligently, so we don't save any info about
+- * the signer. We also support only 1 signerInfo, so we only store a single
+- * MPI for the signature.
+- */
+-struct pkcs7_signedData
+-{
+-  const gcry_md_spec_t *hash;
+-  gcry_mpi_t sig_mpi;
+-};
+-
+-
+-/* Do libtasn1 init */
+-int asn1_init (void);
+-
+-/*
+- * Import a DER-encoded certificate at 'data', of size 'size'.
+- *
+- * Place the results into 'results', which must be already allocated.
+- */
+-grub_err_t
+-certificate_import (void *data, grub_size_t size,
+-		    struct x509_certificate *results);
+-
+-/*
+- * Release all the storage associated with the x509 certificate.
+- * If the caller dynamically allocated the certificate, it must free it.
+- * The caller is also responsible for maintenance of the linked list.
+- */
+-void certificate_release (struct x509_certificate *cert);
+-
+-/*
+- * Parse a PKCS#7 message, which must be a signedData message.
+- *
+- * The message must be in 'sigbuf' and of size 'data_size'. The result is
+- * placed in 'msg', which must already be allocated.
+- */
+-grub_err_t
+-parse_pkcs7_signedData (void *sigbuf, grub_size_t data_size,
+-			struct pkcs7_signedData *msg);
+-
+-/*
+- * Release all the storage associated with the PKCS#7 message.
+- * If the caller dynamically allocated the message, it must free it.
+- */
+-void pkcs7_signedData_release (struct pkcs7_signedData *msg);
+-
+-/*
+- * Read a value from an ASN1 node, allocating memory to store it.
+- *
+- * It will work for anything where the size libtasn1 returns is right:
++ * Read a value from an ASN1 node, allocating memory to store it. It will work
++ * for anything where the size libtasn1 returns is right:
+  *  - Integers
+  *  - Octet strings
+  *  - DER encoding of other structures
++ *
+  * It will _not_ work for things where libtasn1 size requires adjustment:
+- *  - Strings that require an extra NULL byte at the end
++ *  - Strings that require an extra null byte at the end
+  *  - Bit strings because libtasn1 returns the length in bits, not bytes.
+  *
+  * If the function returns a non-NULL value, the caller must free it.
+  */
+-void *grub_asn1_allocate_and_read (asn1_node node, const char *name,
+-				   const char *friendly_name,
+-				   int *content_size);
++extern void *
++grub_asn1_allocate_and_read (asn1_node node, const char *name, const char *friendly_name,
++                             grub_int32_t *content_size);
+diff --git a/grub-core/commands/appendedsig/asn1util.c b/grub-core/commands/appendedsig/asn1util.c
+index eff095a..9dd7898 100644
+--- a/grub-core/commands/appendedsig/asn1util.c
++++ b/grub-core/commands/appendedsig/asn1util.c
+@@ -1,6 +1,7 @@
+ /*
+  *  GRUB  --  GRand Unified Bootloader
+- *  Copyright (C) 2020  IBM Corporation.
++ *  Copyright (C) 2020, 2022 Free Software Foundation, Inc.
++ *  Copyright (C) 2020, 2022, 2025 IBM Corporation
+  *
+  *  GRUB is free software: you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+@@ -16,28 +17,29 @@
+  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+-#include <grub/libtasn1.h>
++#include <libtasn1.h>
+ #include <grub/types.h>
+ #include <grub/err.h>
+ #include <grub/mm.h>
+ #include <grub/crypto.h>
++#include <grub/misc.h>
+ #include <grub/gcrypt/gcrypt.h>
+ 
+ #include "appendedsig.h"
+ 
+-asn1_node _gnutls_gnutls_asn = ASN1_TYPE_EMPTY;
+-asn1_node _gnutls_pkix_asn = ASN1_TYPE_EMPTY;
++asn1_node grub_gnutls_gnutls_asn = NULL;
++asn1_node grub_gnutls_pkix_asn = NULL;
+ 
+-extern const ASN1_ARRAY_TYPE gnutls_asn1_tab[];
+-extern const ASN1_ARRAY_TYPE pkix_asn1_tab[];
++extern const asn1_static_node grub_gnutls_asn1_tab[];
++extern const asn1_static_node grub_pkix_asn1_tab[];
+ 
+ /*
+- * Read a value from an ASN1 node, allocating memory to store it.
+- *
+- * It will work for anything where the size libtasn1 returns is right:
++ * Read a value from an ASN1 node, allocating memory to store it. It will work
++ * for anything where the size libtasn1 returns is right:
+  *  - Integers
+  *  - Octet strings
+  *  - DER encoding of other structures
++ *
+  * It will _not_ work for things where libtasn1 size requires adjustment:
+  *  - Strings that require an extra NULL byte at the end
+  *  - Bit strings because libtasn1 returns the length in bits, not bytes.
+@@ -45,30 +47,26 @@ extern const ASN1_ARRAY_TYPE pkix_asn1_tab[];
+  * If the function returns a non-NULL value, the caller must free it.
+  */
+ void *
+-grub_asn1_allocate_and_read (asn1_node node, const char *name,
+-			     const char *friendly_name, int *content_size)
++grub_asn1_allocate_and_read (asn1_node node, const char *name, const char *friendly_name,
++                             grub_int32_t *content_size)
+ {
+-  int result;
++  grub_int32_t result;
+   grub_uint8_t *tmpstr = NULL;
+-  int tmpstr_size = 0;
++  grub_int32_t tmpstr_size = 0;
+ 
+   result = asn1_read_value (node, name, NULL, &tmpstr_size);
+   if (result != ASN1_MEM_ERROR)
+     {
+-      grub_snprintf (grub_errmsg, sizeof (grub_errmsg),
+-		     _
+-		     ("Reading size of %s did not return expected status: %s"),
+-		     friendly_name, asn1_strerror (result));
+-      grub_errno = GRUB_ERR_BAD_FILE_TYPE;
++      grub_error (GRUB_ERR_BAD_FILE_TYPE, "reading size of %s did not return expected status: %s",
++                  friendly_name, asn1_strerror (result)) ;
+       return NULL;
+     }
+ 
+   tmpstr = grub_malloc (tmpstr_size);
+   if (tmpstr == NULL)
+     {
+-      grub_snprintf (grub_errmsg, sizeof (grub_errmsg),
+-		     "Could not allocate memory to store %s", friendly_name);
+-      grub_errno = GRUB_ERR_OUT_OF_MEMORY;
++      grub_error (GRUB_ERR_OUT_OF_MEMORY, "could not allocate memory to store %s",
++                  friendly_name) ;
+       return NULL;
+     }
+ 
+@@ -76,10 +74,8 @@ grub_asn1_allocate_and_read (asn1_node node, const char *name,
+   if (result != ASN1_SUCCESS)
+     {
+       grub_free (tmpstr);
+-      grub_snprintf (grub_errmsg, sizeof (grub_errmsg),
+-		     "Error reading %s: %s",
+-		     friendly_name, asn1_strerror (result));
+-      grub_errno = GRUB_ERR_BAD_FILE_TYPE;
++      grub_error (GRUB_ERR_BAD_FILE_TYPE, "error reading %s: %s", friendly_name,
++                  asn1_strerror (result)) ;
+       return NULL;
+     }
+ 
+@@ -89,14 +85,15 @@ grub_asn1_allocate_and_read (asn1_node node, const char *name,
+ }
+ 
+ int
+-asn1_init (void)
++grub_asn1_init (void)
+ {
+   int res;
+-  res = asn1_array2tree (gnutls_asn1_tab, &_gnutls_gnutls_asn, NULL);
++
++  res = asn1_array2tree (grub_gnutls_asn1_tab, &grub_gnutls_gnutls_asn, NULL);
+   if (res != ASN1_SUCCESS)
+-    {
+-      return res;
+-    }
+-  res = asn1_array2tree (pkix_asn1_tab, &_gnutls_pkix_asn, NULL);
++    return res;
++
++  res = asn1_array2tree (grub_pkix_asn1_tab, &grub_gnutls_pkix_asn, NULL);
++
+   return res;
+ }

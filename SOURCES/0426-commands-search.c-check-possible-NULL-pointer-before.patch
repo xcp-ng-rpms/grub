@@ -1,0 +1,24 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Leo Sandoval <lsandova@redhat.com>
+Date: Wed, 11 Feb 2026 15:12:10 -0600
+Subject: [PATCH] commands/search.c: check possible NULL pointer before
+ dereference
+
+Signed-off-by: Leo Sandoval <lsandova@redhat.com>
+---
+ grub-core/commands/search.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/grub-core/commands/search.c b/grub-core/commands/search.c
+index 9dd937e6df..4677f009cd 100644
+--- a/grub-core/commands/search.c
++++ b/grub-core/commands/search.c
+@@ -213,7 +213,7 @@ iterate_device (const char *name, void *data)
+                     int ret = 0;
+ 
+                     get_device_uuid(name, &quid_name);
+-                    if (!grub_strcmp(quid_name, ctx->key))
++                    if (quid_name && !grub_strcmp(quid_name, ctx->key))
+                       {
+                         uuid_ctx.name = name;
+                         uuid_ctx.uuid = quid_name;

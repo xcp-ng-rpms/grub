@@ -1,0 +1,90 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Vladimir Serbinenko <phcoder@gmail.com>
+Date: Mon, 7 Jul 2025 14:52:15 +0000
+Subject: [PATCH] libgcrypt: Ignore sign-compare warnings
+
+libgcrypt itself is compiled with -Wno-sign-compare. Do the same for consistency.
+
+Signed-off-by: Vladimir Serbinenko <phcoder@gmail.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ conf/Makefile.common        |  2 +-
+ grub-core/Makefile.core.def | 10 +++++-----
+ util/import_gcry.py         |  2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/conf/Makefile.common b/conf/Makefile.common
+index 5344a08..f25abeb 100644
+--- a/conf/Makefile.common
++++ b/conf/Makefile.common
+@@ -84,7 +84,7 @@ CPPFLAGS_GNULIB = -I$(top_builddir)/grub-core/lib/gnulib -I$(top_srcdir)/grub-co
+ CFLAGS_POSIX = -fno-builtin
+ CPPFLAGS_POSIX = -I$(top_srcdir)/grub-core/lib/posix_wrap
+ 
+-CFLAGS_GCRY = -Wno-error=sign-compare -Wno-missing-field-initializers -Wno-redundant-decls -Wno-undef $(CFLAGS_POSIX)
++CFLAGS_GCRY = -Wno-sign-compare -Wno-missing-field-initializers -Wno-redundant-decls -Wno-undef $(CFLAGS_POSIX)
+ CPPFLAGS_GCRY = -I$(top_srcdir)/grub-core/lib/libgcrypt_wrap $(CPPFLAGS_POSIX) -D_GCRYPT_IN_LIBGCRYPT=1 -D_GCRYPT_CONFIG_H_INCLUDED=1 -I$(top_srcdir)/include/grub/gcrypt
+ 
+ CPPFLAGS_EFIEMU = -I$(top_srcdir)/grub-core/efiemu/runtime
+diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
+index 0b6b996..ba4ed96 100644
+--- a/grub-core/Makefile.core.def
++++ b/grub-core/Makefile.core.def
+@@ -1012,7 +1012,7 @@ module = {
+ module = {
+   name = pgp;
+   common = commands/pgp.c;
+-  cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls -Wno-sign-compare';
++  cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls';
+   cppflags = '$(CPPFLAGS_GCRY)';
+ };
+ 
+@@ -2219,7 +2219,7 @@ module = {
+   name = dsa_sexp_test;
+   common = tests/dsa_sexp_test.c;
+ 
+-  cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls -Wno-sign-compare';
++  cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls';
+   cppflags = '$(CPPFLAGS_GCRY)';
+ };
+ 
+@@ -2227,7 +2227,7 @@ module = {
+   name = rsa_sexp_test;
+   common = tests/rsa_sexp_test.c;
+ 
+-  cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls -Wno-sign-compare';
++  cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls';
+   cppflags = '$(CPPFLAGS_GCRY)';
+ };
+ 
+@@ -2607,7 +2607,7 @@ module = {
+   common = lib/libgcrypt_wrap/mem.c;
+   common = lib/libgcrypt-grub/cipher/md.c;
+ 
+-  cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls -Wno-sign-compare -Wno-unused-but-set-variable';
++  cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls -Wno-unused-but-set-variable';
+   cppflags = '$(CPPFLAGS_GCRY)';
+ };
+ 
+@@ -2619,7 +2619,7 @@ module = {
+   common = lib/libgcrypt-grub/src/sexp.c;
+   common = lib/b64dec.c;
+ 
+-  cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls -Wno-sign-compare';
++  cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls';
+   cppflags = '$(CPPFLAGS_GCRY)';
+ };
+ 
+diff --git a/util/import_gcry.py b/util/import_gcry.py
+index 1be18cf..a4411ec 100644
+--- a/util/import_gcry.py
++++ b/util/import_gcry.py
+@@ -551,7 +551,7 @@ for cipher_file in cipher_files:
+                     confutil.write ("  common = grub-core/lib/libgcrypt-grub/cipher/%s;\n" % src)
+             if modname == "gcry_ecc":
+                 conf.write ("  common = lib/libgcrypt-grub/mpi/ec.c;\n")
+-                conf.write ("  cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls -Wno-sign-compare';\n")
++                conf.write ("  cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls';\n")
+             elif modname == "gcry_rijndael" or modname == "gcry_md4" or modname == "gcry_md5" or modname == "gcry_rmd160" or modname == "gcry_sha1" or modname == "gcry_sha256" or modname == "gcry_sha512" or modname == "gcry_tiger":
+                 # Alignment checked by hand
+                 conf.write ("  cflags = '$(CFLAGS_GCRY) -Wno-cast-align';\n");

@@ -1,0 +1,162 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Sudhakar Kuppusamy <sudhakar@linux.ibm.com>
+Date: Tue, 18 Nov 2025 16:14:23 +0100
+Subject: [PATCH] appended signatures: Import GNUTLS's ASN.1 description files
+
+In order to parse PKCS#7 messages and X.509 certificates with libtasn1, we need
+some information about how they are encoded. We get these from GNUTLS, which has
+the benefit that they support the features we need and are well tested.
+
+The GNUTLS files are from:
+
+- https://github.com/gnutls/gnutls/blob/master/lib/gnutls.asn
+- https://github.com/gnutls/gnutls/blob/master/lib/pkix.asn
+
+The GNUTLS license is LGPLv2.1+, which is GPLv3 compatible, allowing us to import
+it without issue.
+
+Signed-off-by: Daniel Axtens <dja@axtens.net>
+Signed-off-by: Sudhakar Kuppusamy <sudhakar@linux.ibm.com>
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+Reviewed-by: Avnish Chouhan <avnish@linux.ibm.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/commands/appendedsig/gnutls_asn1_tab.c | 33 +++++++++++++++++++++---
+ grub-core/commands/appendedsig/pkix_asn1_tab.c   | 27 +++++++++----------
+ 2 files changed, 44 insertions(+), 16 deletions(-)
+
+diff --git a/grub-core/commands/appendedsig/gnutls_asn1_tab.c b/grub-core/commands/appendedsig/gnutls_asn1_tab.c
+index ddd1314..efc0c14 100644
+--- a/grub-core/commands/appendedsig/gnutls_asn1_tab.c
++++ b/grub-core/commands/appendedsig/gnutls_asn1_tab.c
+@@ -1,7 +1,11 @@
+ #include <grub/mm.h>
+-#include <grub/libtasn1.h>
++#include <libtasn1.h>
+ 
+-const asn1_static_node gnutls_asn1_tab[] = {
++/*
++ * Imported from gnutls.asn.
++ * https://github.com/gnutls/gnutls/blob/master/lib/gnutls.asn
++ */
++const asn1_static_node grub_gnutls_asn1_tab[] = {
+   { "GNUTLS", 536872976, NULL },
+   { NULL, 1073741836, NULL },
+   { "RSAPublicKey", 1610612741, NULL },
+@@ -55,6 +59,9 @@ const asn1_static_node gnutls_asn1_tab[] = {
+   { "prime", 1073741827, NULL },
+   { "base", 1073741827, NULL },
+   { "privateValueLength", 16387, NULL },
++  { "pkcs-11-ec-Parameters", 1610612754, NULL },
++  { "oId", 1073741836, NULL },
++  { "curveName", 31, NULL },
+   { "ECParameters", 1610612754, NULL },
+   { "namedCurve", 12, NULL },
+   { "ECPrivateKey", 1610612741, NULL },
+@@ -86,6 +93,13 @@ const asn1_static_node gnutls_asn1_tab[] = {
+   { "trailerField", 536911875, NULL },
+   { NULL, 1073741833, "1"},
+   { NULL, 2056, "3"},
++  { "RSAOAEPParameters", 1610612741, NULL },
++  { "hashAlgorithm", 1610637314, "AlgorithmIdentifier"},
++  { NULL, 2056, "0"},
++  { "maskGenAlgorithm", 1610637314, "AlgorithmIdentifier"},
++  { NULL, 2056, "1"},
++  { "pSourceFunc", 536895490, "AlgorithmIdentifier"},
++  { NULL, 2056, "2"},
+   { "GOSTParameters", 1610612741, NULL },
+   { "publicKeyParamSet", 1073741836, NULL },
+   { "digestParamSet", 16396, NULL },
+@@ -113,9 +127,22 @@ const asn1_static_node gnutls_asn1_tab[] = {
+   { "ephemeralPublicKey", 1610637314, "SubjectPublicKeyInfo"},
+   { NULL, 4104, "0"},
+   { "ukm", 7, NULL },
+-  { "GostR3410-KeyTransport", 536870917, NULL },
++  { "GostR3410-KeyTransport", 1610612741, NULL },
+   { "sessionEncryptedKey", 1073741826, "Gost28147-89-EncryptedKey"},
+   { "transportParameters", 536895490, "GostR3410-TransportParameters"},
+   { NULL, 4104, "0"},
++  { "TPMKey", 1610612741, NULL },
++  { "type", 1073741836, NULL },
++  { "emptyAuth", 1610637316, NULL },
++  { NULL, 2056, "0"},
++  { "parent", 1073741827, NULL },
++  { "pubkey", 1073741831, NULL },
++  { "privkey", 7, NULL },
++  { "MLDSAPrivateKey", 536870917, NULL },
++  { "version", 1073741827, NULL },
++  { "privateKeyAlgorithm", 1073741826, "AlgorithmIdentifier"},
++  { "privateKey", 1073741831, NULL },
++  { "publicKey", 536895495, NULL },
++  { NULL, 2056, "1"},
+   { NULL, 0, NULL }
+ };
+diff --git a/grub-core/commands/appendedsig/pkix_asn1_tab.c b/grub-core/commands/appendedsig/pkix_asn1_tab.c
+index adef69d..ec5f87b 100644
+--- a/grub-core/commands/appendedsig/pkix_asn1_tab.c
++++ b/grub-core/commands/appendedsig/pkix_asn1_tab.c
+@@ -1,7 +1,11 @@
+ #include <grub/mm.h>
+-#include <grub/libtasn1.h>
++#include <libtasn1.h>
+ 
+-const asn1_static_node pkix_asn1_tab[] = {
++/*
++ * Imported from pkix.asn.
++ * https://github.com/gnutls/gnutls/blob/master/lib/pkix.asn
++ */
++const asn1_static_node grub_pkix_asn1_tab[] = {
+   { "PKIX1", 536875024, NULL },
+   { NULL, 1073741836, NULL },
+   { "PrivateKeyUsagePeriod", 1610612741, NULL },
+@@ -27,9 +31,7 @@ const asn1_static_node pkix_asn1_tab[] = {
+   { "MAX", 524298, "1"},
+   { "utf8String", 1612709922, NULL },
+   { "MAX", 524298, "1"},
+-  { "bmpString", 1612709921, NULL },
+-  { "MAX", 524298, "1"},
+-  { "ia5String", 538968093, NULL },
++  { "bmpString", 538968097, NULL },
+   { "MAX", 524298, "1"},
+   { "SubjectAltName", 1073741826, "GeneralNames"},
+   { "GeneralNames", 1612709899, NULL },
+@@ -64,8 +66,7 @@ const asn1_static_node pkix_asn1_tab[] = {
+   { "BasicConstraints", 1610612741, NULL },
+   { "cA", 1610645508, NULL },
+   { NULL, 131081, NULL },
+-  { "pathLenConstraint", 537411587, NULL },
+-  { "0", 10, "MAX"},
++  { "pathLenConstraint", 16387, NULL },
+   { "CRLDistributionPoints", 1612709899, NULL },
+   { "MAX", 1074266122, "1"},
+   { NULL, 2, "DistributionPoint"},
+@@ -277,14 +278,15 @@ const asn1_static_node pkix_asn1_tab[] = {
+   { "pkcs-5-PBES2-params", 1610612741, NULL },
+   { "keyDerivationFunc", 1073741826, "AlgorithmIdentifier"},
+   { "encryptionScheme", 2, "AlgorithmIdentifier"},
++  { "pkcs-5-PBMAC1-params", 1610612741, NULL },
++  { "keyDerivationFunc", 1073741826, "AlgorithmIdentifier"},
++  { "messageAuthScheme", 2, "AlgorithmIdentifier"},
+   { "pkcs-5-PBKDF2-params", 1610612741, NULL },
+   { "salt", 1610612754, NULL },
+   { "specified", 1073741831, NULL },
+   { "otherSource", 2, "AlgorithmIdentifier"},
+-  { "iterationCount", 1611137027, NULL },
+-  { "1", 10, "MAX"},
+-  { "keyLength", 1611153411, NULL },
+-  { "1", 10, "MAX"},
++  { "iterationCount", 1073741827, NULL },
++  { "keyLength", 1073758211, NULL },
+   { "prf", 16386, "AlgorithmIdentifier"},
+   { "pkcs-12-PFX", 1610612741, NULL },
+   { "version", 1610874883, NULL },
+@@ -341,8 +343,7 @@ const asn1_static_node pkix_asn1_tab[] = {
+   { "MAX", 1074266122, "1"},
+   { NULL, 2, "Attribute"},
+   { "ProxyCertInfo", 1610612741, NULL },
+-  { "pCPathLenConstraint", 1611153411, NULL },
+-  { "0", 10, "MAX"},
++  { "pCPathLenConstraint", 1073758211, NULL },
+   { "proxyPolicy", 2, "ProxyPolicy"},
+   { "ProxyPolicy", 1610612741, NULL },
+   { "policyLanguage", 1073741836, NULL },

@@ -1,0 +1,81 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Sudhakar Kuppusamy <sudhakar@linux.ibm.com>
+Date: Fri, 2 Jan 2026 16:13:13 +0530
+Subject: [PATCH] util/grub-mkimagexx: Stop generating unaligned appended
+ signatures
+
+When creating the core image with an unaligned appended signature size,
+e.g. 479, for PowerPC, the grub-mkimage aligns the appended signature
+size to a multiple of 4 bytes, but it does not add a padding needed to
+align to multiple of 4 bytes appended signature size in the appended
+signature ELF note. Therefore, after signing and installing this core
+image, the firmware tries to read the magic string "~Module signature
+appended~" from the appended signature ELF note but gets the partial
+magic string like "Module signature appended~". It leads to the appended
+signature magic string match failure.
+
+Example:
+  grub-mkimage -O powerpc-ieee1275 -o core.elf -p /grub -x \
+    kernel.der --appended-signature-size 479 ...
+
+  sign-file SHA256 ./grub.key ./grub.pem ./core.elf ./core.elf.signed
+
+Without padding: hexdump -C ./core.elf.signed
+  ...
+  00383550  00 00 00 13 00 00 01 e0  41 53 69 67 41 70 70 65  |........ASigAppe|
+  00383560  6e 64 65 64 2d 53 69 67  6e 61 74 75 72 65 00 00  |nded-Signature..|
+  ...
+  003836f0  dd 47 cd ed 02 8e 15 af  5b 09 2e 44 6f da 67 88  |.G......[..Do.g.|
+  00383700  4d 94 17 31 26 9d 47 95  d8 7c ad 36 00 d2 9c 53  |M..1&.G..|.6...S|
+  00383710  20 e0 af 60 78 cd 22 e6  ed 45 1e b1 e7 7e cf b5  | ..`x."..E...~..|
+  00383720  fc 58 ec df 1b ab 7a 00  00 02 00 00 00 00 00 00  |.X....z.........|
+  00383730  00 01 b7 7e 4d 6f 64 75  6c 65 20 73 69 67 6e 61  |...~Module signa|
+  00383740  74 75 72 65 20 61 70 70  65 6e 64 65 64 7e 0a     |ture appended~.|
+
+Fix this by adding a padding required to align appended signature size in the
+appended signature ELF note to multiple of 4 bytes.
+
+Example:
+  grub-mkimage -O powerpc-ieee1275 -o core.elf -p /grub -x \
+    kernel.der --appended-signature-size 479 ...
+
+  sign-file SHA256 ./grub.key ./grub.pem ./core.elf ./core.elf.signed
+
+With padding: hexdump -C ./core.elf.signed
+  ...
+  00137460  62 00 00 00 00 00 00 13  00 00 01 ec 41 53 69 67  |b...........ASig|
+  00137470  41 70 70 65 6e 64 65 64  2d 53 69 67 6e 61 74 75  |Appended-Signatu|
+  ...
+  00137610  b7 07 cd b6 c8 ca 9a 5b  7c 13 8c 75 1d 1c 54 81  |.......[|..u..T.|
+  00137620  7f c4 9a 8b bd d7 73 8d  2f 7d d2 e6 d1 3c 52 a9  |......s./}...<R.|
+  00137630  4e 0b e5 24 ba 0a 82 aa  8e c5 86 fa e1 19 50 ec  |N..$..........P.|
+  00137640  9f a7 9a ed e5 ed 13 35  00 00 02 00 00 00 00 00  |.......5........|
+  00137650  00 00 01 c2 7e 4d 6f 64  75 6c 65 20 73 69 67 6e  |....~Module sign|
+  00137660  61 74 75 72 65 20 61 70  70 65 6e 64 65 64 7e 0a  |ature appended~.|
+
+Signed-off-by: Sudhakar Kuppusamy <sudhakar@linux.ibm.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ util/grub-mkimagexx.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/util/grub-mkimagexx.c b/util/grub-mkimagexx.c
+index c99c7f99c787..debd984ad51d 100644
+--- a/util/grub-mkimagexx.c
++++ b/util/grub-mkimagexx.c
+@@ -248,13 +248,8 @@ SUFFIX (grub_mkimage_generate_elf) (const struct grub_install_image_target_desc
+   if (appsig_size)
+     {
+       phnum++;
+-      /*
+-       * Rounds a appended signature size + appended signature note size up to
+-       * the nearest multiple of a 4-byte alignment.
+-       */
+-      footer_size += ALIGN_UP (sizeof (struct grub_appended_signature_note) + appsig_size, 4);
+-      /* Truncating to appended signature size. */
+-      footer_size -= appsig_size;
++      footer_size += ALIGN_UP (sizeof (struct grub_appended_signature_note), 4);
++      footer_size += ALIGN_UP_OVERHEAD (appsig_size, 4);
+     }
+ 
+   if (image_target->id != IMAGE_LOONGSON_ELF)
