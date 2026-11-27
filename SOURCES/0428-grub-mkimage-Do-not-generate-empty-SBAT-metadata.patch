@@ -1,0 +1,61 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Sudhakar Kuppusamy <sudhakar@linux.ibm.com>
+Date: Wed, 24 Dec 2025 17:58:59 +0530
+Subject: [PATCH] grub-mkimage: Do not generate empty SBAT metadata
+
+When creating core.elf with SBAT the grub-mkimage does not check if
+an SBAT metadata file contains at least an SBAT header or not. It leads to
+adding an empty SBAT ELF note for PowerPC and the .sbat section for EFI.
+Fix this by checking the SBAT metadata file size against the SBAT header
+size before adding SBAT contents to the ELF note or .sbat section.
+
+Signed-off-by: Sudhakar Kuppusamy <sudhakar@linux.ibm.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ util/mkimage.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/util/mkimage.c b/util/mkimage.c
+index 5124cdbf4d01..b2c2b93ef932 100644
+--- a/util/mkimage.c
++++ b/util/mkimage.c
+@@ -56,6 +56,9 @@
+ 
+ #pragma GCC diagnostic ignored "-Wcast-align"
+ 
++#define SBAT_HEADER      "sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md"
++#define SBAT_HEADER_SIZE (sizeof (SBAT_HEADER))
++
+ #define TARGET_NO_FIELD 0xffffffff
+ 
+ /* use 2015-01-01T00:00:00+0000 as a stock timestamp */
+@@ -963,6 +966,12 @@ grub_install_generate_image (const char *dir, const char *prefix,
+ 
+   if (sbat_path != NULL && (image_target->id != IMAGE_EFI && image_target->id != IMAGE_PPC))
+     grub_util_error (_("SBAT data can be added only to EFI or powerpc-ieee1275 images"));
++  else if (sbat_path != NULL)
++    {
++      sbat_size = grub_util_get_image_size (sbat_path);
++      if (sbat_size < SBAT_HEADER_SIZE)
++        grub_util_error (_("%s file should contain at least an SBAT header"), sbat_path);
++    }
+ 
+   if (appsig_size != 0 && image_target->id != IMAGE_PPC)
+     grub_util_error (_("appended signature can be support only to powerpc-ieee1275 images"));
+@@ -1396,7 +1405,7 @@ grub_install_generate_image (const char *dir, const char *prefix,
+ 
+ 	if (sbat_path != NULL)
+ 	  {
+-	    sbat_size = ALIGN_ADDR (grub_util_get_image_size (sbat_path));
++	    sbat_size = ALIGN_ADDR (sbat_size);
+ 	    sbat_size = ALIGN_UP (sbat_size, GRUB_PE32_FILE_ALIGNMENT);
+ 	  }
+ 
+@@ -1857,7 +1866,6 @@ grub_install_generate_image (const char *dir, const char *prefix,
+ 	char *sbat = NULL;
+ 	if (sbat_path != NULL)
+ 	  {
+-	    sbat_size = grub_util_get_image_size (sbat_path);
+ 	    sbat = xmalloc (sbat_size);
+ 	    grub_util_load_image (sbat_path, sbat);
+ 	    layout.sbat_size = sbat_size;

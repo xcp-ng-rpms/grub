@@ -1,0 +1,34 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Vladimir Serbinenko <phcoder@gmail.com>
+Date: Mon, 7 Jul 2025 14:52:19 +0000
+Subject: [PATCH] libgcrypt: Don't use 64-bit division on platforms where it's
+ slow
+
+Signed-off-by: Vladimir Serbinenko <phcoder@gmail.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/lib/libgcrypt-patches/07_disable_64div.patch | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+ create mode 100644 grub-core/lib/libgcrypt-patches/07_disable_64div.patch
+
+diff --git a/grub-core/lib/libgcrypt-patches/07_disable_64div.patch b/grub-core/lib/libgcrypt-patches/07_disable_64div.patch
+new file mode 100644
+index 0000000..bb47bdf
+--- /dev/null
++++ b/grub-core/lib/libgcrypt-patches/07_disable_64div.patch
+@@ -0,0 +1,15 @@
++Don't use 64-bit division on platforms where it's slow
++
++diff --git a/grub-core/lib/libgcrypt/mpi/longlong.h b/grub-core/lib/libgcrypt/mpi/longlong.h
++index 21bd1a7ef..672448724 100644
++--- a/grub-core/lib/libgcrypt-grub/mpi/longlong.h
+++++ b/grub-core/lib/libgcrypt-grub/mpi/longlong.h
++@@ -1711,7 +1711,7 @@ typedef unsigned int UTItype __attribute__ ((mode (TI)));
++   } while (0)
++ 
++ /* Use double word type if available. */
++-#if !defined (udiv_qrnnd) && defined (UDWtype)
+++#if !defined (udiv_qrnnd) && defined (UDWtype) && !defined(__arm__) && !defined(__mips__) && !defined(__powerpc__)
++ #  define udiv_qrnnd(q, r, nh, nl, d) \
++   do {									\
++     UWtype __d = (d);							\

@@ -1,0 +1,217 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Vladimir Serbinenko <phcoder@gmail.com>
+Date: Mon, 7 Jul 2025 14:52:16 +0000
+Subject: [PATCH] libgcrypt: Import blake family of hashes
+
+Signed-off-by: Vladimir Serbinenko <phcoder@gmail.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ grub-core/lib/libgcrypt-patches/06_blake.patch | 80 ++++++++++++++++++++++++++
+ include/grub/crypto.h                          |  9 +++
+ util/import_gcry.py                            | 36 +++++++++---
+ 3 files changed, 118 insertions(+), 7 deletions(-)
+ create mode 100644 grub-core/lib/libgcrypt-patches/06_blake.patch
+
+diff --git a/grub-core/lib/libgcrypt-patches/06_blake.patch b/grub-core/lib/libgcrypt-patches/06_blake.patch
+new file mode 100644
+index 0000000..c3b9d6f
+--- /dev/null
++++ b/grub-core/lib/libgcrypt-patches/06_blake.patch
+@@ -0,0 +1,80 @@
++--- a/grub-core/lib/libgcrypt-grub/cipher/blake2.c
+++++ b/grub-core/lib/libgcrypt-grub/cipher/blake2.c
++@@ -841,68 +841,6 @@
++   return blake2s_init(c, key, keylen);
++ }
++ 
++-/* Selftests from "RFC 7693, Appendix E. BLAKE2b and BLAKE2s Self-Test
++- * Module C Source". */
++-static void selftest_seq(byte *out, size_t len, u32 seed)
++-{
++-  size_t i;
++-  u32 t, a, b;
++-
++-  a = 0xDEAD4BAD * seed;
++-  b = 1;
++-
++-  for (i = 0; i < len; i++)
++-    {
++-      t = a + b;
++-      a = b;
++-      b = t;
++-      out[i] = (t >> 24) & 0xFF;
++-    }
++-}
++-
++-
++-
++-
++-gcry_err_code_t _gcry_blake2_init_with_key(void *ctx, unsigned int flags,
++-					   const unsigned char *key,
++-					   size_t keylen, int algo)
++-{
++-  gcry_err_code_t rc;
++-  switch (algo)
++-    {
++-    case GCRY_MD_BLAKE2B_512:
++-      rc = blake2b_init_ctx (ctx, flags, key, keylen, 512);
++-      break;
++-    case GCRY_MD_BLAKE2B_384:
++-      rc = blake2b_init_ctx (ctx, flags, key, keylen, 384);
++-      break;
++-    case GCRY_MD_BLAKE2B_256:
++-      rc = blake2b_init_ctx (ctx, flags, key, keylen, 256);
++-      break;
++-    case GCRY_MD_BLAKE2B_160:
++-      rc = blake2b_init_ctx (ctx, flags, key, keylen, 160);
++-      break;
++-    case GCRY_MD_BLAKE2S_256:
++-      rc = blake2s_init_ctx (ctx, flags, key, keylen, 256);
++-      break;
++-    case GCRY_MD_BLAKE2S_224:
++-      rc = blake2s_init_ctx (ctx, flags, key, keylen, 224);
++-      break;
++-    case GCRY_MD_BLAKE2S_160:
++-      rc = blake2s_init_ctx (ctx, flags, key, keylen, 160);
++-      break;
++-    case GCRY_MD_BLAKE2S_128:
++-      rc = blake2s_init_ctx (ctx, flags, key, keylen, 128);
++-      break;
++-    default:
++-      rc = GPG_ERR_DIGEST_ALGO;
++-      break;
++-    }
++-
++-  return rc;
++-}
++-
++-
++ #define DEFINE_BLAKE2_VARIANT(bs, BS, dbits, oid_branch) \
++   static void blake2##bs##_##dbits##_init(void *ctx, unsigned int flags) \
++   { \
++@@ -936,7 +874,7 @@
++       dbits / 8, blake2##bs##_##dbits##_init, blake2##bs##_write, \
++       blake2##bs##_final, blake2##bs##_read, NULL, \
++       _gcry_blake2##bs##_##dbits##_hash_buffers, \
++-      sizeof (BLAKE2##BS##_CONTEXT), selftests_blake2##bs \
+++      sizeof (BLAKE2##BS##_CONTEXT) \
++     , \
++     GRUB_UTIL_MODNAME("gcry_blake2") \
++     .blocksize = GRUB_BLAKE2 ## BS ## _BLOCK_SIZE \
+diff --git a/include/grub/crypto.h b/include/grub/crypto.h
+index 25b1188..b0d7add 100644
+--- a/include/grub/crypto.h
++++ b/include/grub/crypto.h
+@@ -586,8 +586,14 @@ void grub_gcry_fini_all (void);
+ int
+ grub_get_random (void *out, grub_size_t len);
+ 
++#define GRUB_UTIL_MODNAME(x) .modname = x,
++#else
++#define GRUB_UTIL_MODNAME(x)
+ #endif
+ 
++#define GRUB_BLAKE2B_BLOCK_SIZE 128
++#define GRUB_BLAKE2S_BLOCK_SIZE 64
++
+ typedef struct _gpgrt_b64state *gpgrt_b64state_t;
+ gpgrt_b64state_t gpgrt_b64dec_start (const char *title);
+ gpg_error_t      gpgrt_b64dec_proc (gpgrt_b64state_t state,
+@@ -595,4 +601,7 @@ gpg_error_t      gpgrt_b64dec_proc (gpgrt_b64state_t state,
+                                     grub_size_t *r_nbytes);
+ gpg_error_t      gpgrt_b64dec_finish (gpgrt_b64state_t state);
+ const char *gpg_strerror (gpg_error_t err);
++
++gcry_err_code_t blake2b_vl_hash (const void *in, grub_size_t inlen,
++                                 grub_size_t outputlen, void *output);
+ #endif
+diff --git a/util/import_gcry.py b/util/import_gcry.py
+index a4411ec..ca918c7 100644
+--- a/util/import_gcry.py
++++ b/util/import_gcry.py
+@@ -120,7 +120,8 @@ mdblocksizes = {"_gcry_digest_spec_crc32" : 64,
+                 "_gcry_digest_spec_gost3411_94": 32,
+                 "_gcry_digest_spec_gost3411_cp": 32,
+                 "_gcry_digest_spec_cshake128": 64,
+-                "_gcry_digest_spec_cshake256": 64}
++                "_gcry_digest_spec_cshake256": 64,
++                "_gcry_digest_spec_blake2": "GRUB_BLAKE2 ## BS ## _BLOCK_SIZE"}
+ 
+ cryptolist = codecs.open (os.path.join (cipher_dir_out, "crypto.lst"), "w", "utf-8")
+ 
+@@ -209,6 +210,7 @@ for cipher_file in cipher_files:
+         skip = 0
+         skip2 = False
+         ismd = False
++        ismddefine = False
+         mdarg = 0
+         ispk = False
+         iscipher = False
+@@ -245,19 +247,19 @@ for cipher_file in cipher_files:
+                 mdarg = mdarg + len (spl) - 1
+             if ismd or iscipher or ispk:
+                 if not re.search (" *};", line) is None:
++                    escapenl = " \\" if ismddefine else ""
+                     if not iscomma:
+-                        fw.write ("    ,\n")
+-                    fw.write ("#ifdef GRUB_UTIL\n");
+-                    fw.write ("    .modname = \"%s\",\n" % modname);
+-                    fw.write ("#endif\n");
++                        fw.write (f"    ,{escapenl}\n")
++                    fw.write (f"    GRUB_UTIL_MODNAME(\"%s\"){escapenl}\n" % modname);
+                     if ismd:
+                         if not (mdname in mdblocksizes):
+                             print ("ERROR: Unknown digest blocksize: %s\n"
+                                    % mdname)
+                             exit (1)
+-                        fw.write ("    .blocksize = %s\n"
++                        fw.write (f"    .blocksize = %s{escapenl}\n"
+                                   % mdblocksizes [mdname])
+                     ismd = False
++                    ismddefine = False
+                     mdarg = 0
+                     iscipher = False
+                     ispk = False
+@@ -281,7 +283,7 @@ for cipher_file in cipher_files:
+                 hold = False
+                 # We're optimising for size and exclude anything needing good
+                 # randomness.
+-                if re.match ("(_gcry_hash_selftest_check_one|bulk_selftest_setkey|run_selftests|do_tripledes_set_extra_info|selftest|sm4_selftest|_gcry_[a-z0-9_]*_hash_buffers|_gcry_sha1_hash_buffer|tripledes_set2keys|_gcry_rmd160_mixblock|serpent_test|dsa_generate_ext|test_keys|gen_k|sign|gen_x931_parm_xp|generate_x931|generate_key|dsa_generate|dsa_sign|ecc_sign|generate|generate_fips186|_gcry_register_pk_dsa_progress|_gcry_register_pk_ecc_progress|progress|scanval|ec2os|ecc_generate_ext|ecc_generate|ecc_get_param|_gcry_register_pk_dsa_progress|gen_x931_parm_xp|gen_x931_parm_xi|rsa_decrypt|rsa_sign|rsa_generate_ext|rsa_generate|secret|check_exponent|rsa_blind|rsa_unblind|extract_a_from_sexp|curve_free|curve_copy|point_set|_gcry_dsa_gen_rfc6979_k|bits2octets|int2octets|_gcry_md_debug|_gcry_md_selftest|_gcry_md_is_enabled|_gcry_md_is_secure|_gcry_md_init|_gcry_md_info|md_get_algo|md_extract|_gcry_md_get |_gcry_md_get_algo |_gcry_md_extract|_gcry_md_setkey|md_setkey|prepare_macpads|_gcry_md_algo_name|search_oid|spec_from_oid|spec_from_name|spec_from_algo|map_algo|cshake_hash_buffers)", line) is not None:
++                if re.match ("(_gcry_hash_selftest_check_one|bulk_selftest_setkey|run_selftests|do_tripledes_set_extra_info|selftest|sm4_selftest|_gcry_[a-z0-9_]*_hash_buffers|_gcry_sha1_hash_buffer|tripledes_set2keys|_gcry_rmd160_mixblock|serpent_test|dsa_generate_ext|test_keys|gen_k|sign|gen_x931_parm_xp|generate_x931|generate_key|dsa_generate|dsa_sign|ecc_sign|generate|generate_fips186|_gcry_register_pk_dsa_progress|_gcry_register_pk_ecc_progress|progress|scanval|ec2os|ecc_generate_ext|ecc_generate|ecc_get_param|_gcry_register_pk_dsa_progress|gen_x931_parm_xp|gen_x931_parm_xi|rsa_decrypt|rsa_sign|rsa_generate_ext|rsa_generate|secret|check_exponent|rsa_blind|rsa_unblind|extract_a_from_sexp|curve_free|curve_copy|point_set|_gcry_dsa_gen_rfc6979_k|bits2octets|int2octets|_gcry_md_debug|_gcry_md_selftest|_gcry_md_is_enabled|_gcry_md_is_secure|_gcry_md_init|_gcry_md_info|md_get_algo|md_extract|_gcry_md_get |_gcry_md_get_algo |_gcry_md_extract|_gcry_md_setkey|md_setkey|prepare_macpads|_gcry_md_algo_name|search_oid|spec_from_oid|spec_from_name|spec_from_algo|map_algo|cshake_hash_buffers|selftest_seq)", line) is not None:
+ 
+                     skip = 1
+                     if not re.match ("selftest", line) is None and cipher_file == "idea.c":
+@@ -355,6 +357,13 @@ for cipher_file in cipher_files:
+                 ispk = True
+                 iscryptostart = True
+ 
++            m = re.match (r"DEFINE_BLAKE2_VARIANT\((.), (.), ([0-9]*)", line)
++            if isc and not m is None:
++                bs = m.groups()[0]
++                bits = m.groups()[2]
++                mdname = f"_gcry_digest_spec_blake2{bs}_{bits}"
++                mdnames.append (mdname)
++
+             m = re.match ("(const )?gcry_md_spec_t", line)
+             if isc and not m is None:
+                 assert (not ismd)
+@@ -366,6 +375,19 @@ for cipher_file in cipher_files:
+                 mdname = re.match("[a-zA-Z0-9_]*",mdname).group ()
+                 mdnames.append (mdname)
+                 ismd = True
++                ismddefine = False
++                mdarg = 0
++                iscryptostart = True
++            m = re.match ("  (const )?gcry_md_spec_t _gcry_digest_spec_blake2.*\\\\", line)
++            if isc and not m is None:
++                assert (not ismd)
++                assert (not ispk)
++                assert (not iscipher)
++                assert (not iscryptostart)
++                line = removeprefix(line, "  const ")
++                ismd = True
++                ismddefine = True
++                mdname = "_gcry_digest_spec_blake2"
+                 mdarg = 0
+                 iscryptostart = True
+             m = re.match (r"static const char \*selftest.*;$", line)

@@ -1,0 +1,36 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Sudhakar Kuppusamy <sudhakar@linux.ibm.com>
+Date: Mon, 6 Oct 2025 12:54:48 +0530
+Subject: [PATCH] pgp: Rename OBJ_TYPE_PUBKEY to OBJ_TYPE_GPG_PUBKEY
+
+Prior to the addition of the X.509 public key support for appended signature,
+current PGP signature relied on the GPG public key. Changing the enum name
+from "OBJ_TYPE_PUBKEY" to "OBJ_TYPE_GPG_PUBKEY" to differentiate between x509
+certificate based appended signature and GPG certificate based PGP signature.
+
+Signed-off-by: Alastair D'Silva <alastair@d-silva.org>
+Signed-off-by: Daniel Axtens <dja@axtens.net>
+Signed-off-by: Sudhakar Kuppusamy <sudhakar@linux.ibm.com>
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+Reviewed-by: Avnish Chouhan <avnish@linux.ibm.com>
+Reviewed-by: Daniel Kiper <daniel.kiper@oracle.com>
+---
+ include/grub/kernel.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/include/grub/kernel.h b/include/grub/kernel.h
+index f98a780..8fdbde2 100644
+--- a/include/grub/kernel.h
++++ b/include/grub/kernel.h
+@@ -28,10 +28,9 @@ enum
+   OBJ_TYPE_MEMDISK,
+   OBJ_TYPE_CONFIG,
+   OBJ_TYPE_PREFIX,
+-  OBJ_TYPE_PUBKEY,
++  OBJ_TYPE_GPG_PUBKEY,
+   OBJ_TYPE_DTB,
+   OBJ_TYPE_DISABLE_SHIM_LOCK,
+-  OBJ_TYPE_GPG_PUBKEY,
+   OBJ_TYPE_X509_PUBKEY,
+   OBJ_TYPE_DISABLE_CLI
+ };

@@ -1,0 +1,43 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Sudhakar Kuppusamy <sudhakar@linux.ibm.com>
+Date: Wed, 3 Dec 2025 13:19:57 +0530
+Subject: [PATCH] appendedsig: Fix grub-mkimage with an unaligned appended
+ signature size
+
+The grub-mkimage does not add zero padding when creating core.elf with an
+appended signature size that is not aligned to a multiple of 4 bytes.
+Firmware is unable to read the magic string "~Module signature appended~"
+from core.elf.
+
+To fix this, round an appended signature size + appended signature ELF note
+size up to the nearest multiple of a 4-byte alignment and truncate it to the
+appended signature size.
+
+Example:
+grub-mkimage -O powerpc-ieee1275 -o core.elf -d grub-core -p /grub2 -x \
+  kernel.der --appended-signature-size 490 ...
+
+Signed-off-by: Sudhakar Kuppusamy <sudhakar@linux.ibm.com>
+---
+ util/grub-mkimagexx.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/util/grub-mkimagexx.c b/util/grub-mkimagexx.c
+index d185246f1010..c99c7f99c787 100644
+--- a/util/grub-mkimagexx.c
++++ b/util/grub-mkimagexx.c
+@@ -248,7 +248,13 @@ SUFFIX (grub_mkimage_generate_elf) (const struct grub_install_image_target_desc
+   if (appsig_size)
+     {
+       phnum++;
+-      footer_size += ALIGN_UP (sizeof (struct grub_appended_signature_note), 4);
++      /*
++       * Rounds a appended signature size + appended signature note size up to
++       * the nearest multiple of a 4-byte alignment.
++       */
++      footer_size += ALIGN_UP (sizeof (struct grub_appended_signature_note) + appsig_size, 4);
++      /* Truncating to appended signature size. */
++      footer_size -= appsig_size;
+     }
+ 
+   if (image_target->id != IMAGE_LOONGSON_ELF)
