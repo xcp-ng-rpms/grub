@@ -1,0 +1,14 @@
+# This file should be overwritten by the installer.
+# If you are seeing this message in a live system, then these are
+# not correct values and are only used for development
+XS__GRUB_TEST_ONLY='yes'
+XS__MENUENTRY_DEFAULT='1'
+XS__MENU_TIMEOUT='5'
+XS__SERIAL_PORT='0'
+XS__SERIAL_BAUD='115200'
+XS__ROOTDISK_LABEL=''
+XS__XEN_CORE='dom0_mem=5920M,max:5920M'
+XS__XEN_SHARED='watchdog dom0_max_vcpus=1-16 crashkernel=512M,below=4G vga-mode=0x0311'
+XS__XEN_SAFEMODE='nosmp noreboot noirqbalance no-mce no-bootscrub no-numa no-hap no-mmcfg max_cstate=0 nmi=ignore allow_unsafe vga-mode=0x0311'
+XS__KERNEL_CORE='ro nolvm hpet=disable vga=785'
+XS__KERNEL_SAFEMODE='ro nolvm hpet=disable vga=785 earlyprintk=xen'

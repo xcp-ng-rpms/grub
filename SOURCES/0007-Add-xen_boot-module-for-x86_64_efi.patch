@@ -1,0 +1,820 @@
+From 47dea790886052f15be2c2b6e409393840308d53 Mon Sep 17 00:00:00 2001
+From: Ross Lagerwall <ross.lagerwall@citrix.com>
+Date: Mon, 21 Jul 2025 15:21:19 +0100
+Subject: [PATCH 7/7] Add xen_boot module for x86_64_efi
+
+Add new loader for booting Xen on EFI platforms (currently only x86_64).
+The loader presents the same command interface as the xen_boot loader
+for ARM64.
+
+The loader works by booting Xen as an EFI binary (similar to Linux)
+while exposing an EFI Simple Filesystem Protocol for Xen to retrieve its
+modules and associated information. Xen on EFI already has support for
+retrieving the modules and information in this way so no changes are
+needed to Xen.
+
+This loader is needed to be allow booting Xen with Secure Boot enabled
+since Multiboot does not support PE binaries.
+
+Signed-off-by: Ross Lagerwall <ross.lagerwall@citrix.com>
+diff --git a/grub-core/Makefile.core.def b/grub-core/Makefile.core.def
+index b3f71196aaf0..e67864e04010 100644
+--- a/grub-core/Makefile.core.def
++++ b/grub-core/Makefile.core.def
+@@ -1848,7 +1848,9 @@ module = {
+ module = {
+   name = xen_boot;
+   arm64 = loader/arm64/xen_boot.c;
++  x86_64_efi = loader/efi/xen_boot.c;
+   enable = arm64;
++  enable = x86_64_efi;
+ };
+ 
+ module = {
+diff --git a/grub-core/loader/efi/xen_boot.c b/grub-core/loader/efi/xen_boot.c
+new file mode 100644
+index 000000000000..776240fbd03f
+--- /dev/null
++++ b/grub-core/loader/efi/xen_boot.c
+@@ -0,0 +1,765 @@
++/*
++ *  GRUB  --  GRand Unified Bootloader
++ *  Copyright (C) 2025 Cloud Software Group
++ *
++ *  GRUB is free software: you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation, either version 3 of the License, or
++ *  (at your option) any later version.
++ *
++ *  GRUB is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include <stddef.h>
++#include <grub/command.h>
++#include <grub/efi/efi.h>
++#include <grub/err.h>
++#include <grub/file.h>
++#include <grub/lib/cmdline.h>
++#include <grub/list.h>
++#include <grub/loader.h>
++
++GRUB_MOD_LICENSE ("GPLv3+");
++
++struct xen_name
++{
++  const char *name;
++  const grub_efi_char16_t *name16;
++  grub_size_t name16_size;
++};
++static const struct xen_name xen_names[] = {
++#define XEN_NAME(name) {#name, u ## #name, sizeof (u ## #name)}
++  XEN_NAME(kernel),
++  XEN_NAME(ramdisk),
++  XEN_NAME(xsm),
++};
++
++#define XEN_MODULES_MAX 3
++static unsigned int module_nr;
++
++struct xen_file
++{
++  struct xen_file *next;
++  struct xen_file **prev;
++
++  void *buf;
++  grub_size_t size;
++
++  char *cmdline;
++  const struct xen_name *name;
++};
++
++struct open_file
++{
++  struct open_file *next;
++  struct open_file **prev;
++
++  grub_efi_file_protocol_t prot;
++
++  struct xen_file *file;
++  grub_efi_uint64_t pos;
++};
++
++#define OPEN_FILE(ptr) (\
++  {grub_efi_file_protocol_t _typ; \
++   (void) (ptr == &_typ); \
++   ((struct open_file *)((char *)ptr - offsetof (struct open_file, prot)));})
++
++struct xen_dev_path
++{
++  grub_efi_file_path_device_path_t fp;
++  grub_efi_char16_t path[1];
++  grub_efi_device_path_t end;
++};
++
++static grub_dl_t my_mod;
++
++static bool loaded;
++
++static struct xen_file *file_head;
++static struct open_file *open_file_head;
++
++static grub_guid_t fs_guid = GRUB_EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_GUID;
++static grub_guid_t file_info_guid = GRUB_EFI_FILE_INFO_GUID;
++static grub_guid_t filesystem_info_guid = GRUB_EFI_FILESYSTEM_INFO_GUID;
++static grub_efi_handle_t fs_handle;
++
++static grub_addr_t xen_hypervisor_start;
++static grub_size_t xen_hypervisor_size;
++static grub_size_t xen_hypervisor_align;
++static char *xen_hypervisor_cmdline;
++
++static __inline grub_addr_t
++xen_boot_address_align (grub_addr_t start, grub_size_t align)
++{
++  return (align ? (ALIGN_UP (start, align)) : start);
++}
++
++static grub_efi_status_t __grub_efi_api
++open_volume (grub_efi_simple_filesystem_protocol_t *this,
++             grub_efi_file_protocol_t **root);
++
++static grub_efi_status_t
++fill_file_info (struct xen_file *f, grub_efi_uintn_t *buffer_size,
++                void *buffer)
++{
++  grub_efi_file_info_t info = (grub_efi_file_info_t){
++    .size = sizeof (grub_efi_file_info_t) + f->name->name16_size,
++    .file_size = f->size,
++    .physical_size = f->size,
++    .attribute = GRUB_EFI_FILE_READ_ONLY,
++  };
++
++  if (*buffer_size < info.size)
++    {
++      *buffer_size = info.size;
++      return GRUB_EFI_BUFFER_TOO_SMALL;
++    }
++  *buffer_size = info.size;
++
++  grub_memcpy (buffer, &info, sizeof (info));
++  grub_memcpy (((unsigned char *)buffer) + sizeof (info),
++               f->name->name16, f->name->name16_size);
++
++  return GRUB_EFI_SUCCESS;
++}
++
++static grub_efi_status_t __grub_efi_api
++dir_read (grub_efi_file_protocol_t *this,
++          grub_efi_uintn_t *buffer_size,
++          void *buffer)
++{
++  struct open_file *dir = OPEN_FILE (this);
++  struct xen_file *f;
++  grub_efi_status_t ret;
++  grub_efi_uint64_t pos = 0;
++
++  FOR_LIST_ELEMENTS (f, file_head)
++    {
++      if (pos == dir->pos)
++        break;
++      pos++;
++    }
++
++  if (pos != dir->pos)
++    {
++      *buffer_size = 0;
++      return GRUB_EFI_SUCCESS;
++    }
++
++  ret = fill_file_info(f, buffer_size, buffer);
++  if (ret == GRUB_EFI_SUCCESS)
++      dir->pos++;
++
++  return ret;
++}
++
++static grub_efi_status_t __grub_efi_api
++file_close (grub_efi_file_protocol_t *this)
++{
++  struct open_file *f = OPEN_FILE (this);
++
++  grub_list_remove (GRUB_AS_LIST (f));
++  grub_free (f);
++
++  return GRUB_EFI_SUCCESS;
++}
++
++static grub_efi_status_t __grub_efi_api
++file_delete (grub_efi_file_protocol_t *this)
++{
++    file_close (this);
++    return GRUB_EFI_WARN_DELETE_FAILURE;
++}
++
++static grub_efi_status_t __grub_efi_api
++file_read (grub_efi_file_protocol_t *this,
++           grub_efi_uintn_t *buffer_size,
++           void *buffer)
++{
++  struct open_file *f = OPEN_FILE (this);
++
++  if (f->pos > f->file->size)
++    return GRUB_EFI_DEVICE_ERROR;
++
++  if (*buffer_size > (f->file->size - f->pos))
++    *buffer_size = f->file->size - f->pos;
++
++  grub_memcpy (buffer, ((unsigned char *)f->file->buf) + f->pos,
++               *buffer_size);
++  f->pos += *buffer_size;
++
++  return GRUB_EFI_SUCCESS;
++}
++
++static grub_efi_status_t __grub_efi_api
++file_write (grub_efi_file_protocol_t *this __attribute__((unused)),
++            grub_efi_uintn_t *buffer_size __attribute__((unused)),
++            void *buffer __attribute__((unused)))
++{
++  return GRUB_EFI_ACCESS_DENIED;
++}
++
++static grub_efi_status_t __grub_efi_api
++file_set_position (grub_efi_file_protocol_t *this,
++                   grub_efi_uint64_t position)
++{
++  struct open_file *f = OPEN_FILE (this);
++
++  if (position == (grub_efi_uint64_t)-1)
++    f->pos = f->file->size;
++  else
++    f->pos = position;
++
++  return GRUB_EFI_SUCCESS;
++}
++
++static grub_efi_status_t __grub_efi_api
++file_get_position(grub_efi_file_protocol_t *this,
++                  grub_efi_uint64_t *position)
++{
++  struct open_file *f = OPEN_FILE (this);
++
++  *position = f->pos;
++  return GRUB_EFI_SUCCESS;
++}
++
++static grub_efi_status_t __grub_efi_api
++file_get_info (grub_efi_file_protocol_t *this,
++               grub_guid_t *information_type,
++               grub_efi_uintn_t *buffer_size,
++               void *buffer)
++{
++  struct open_file *f = OPEN_FILE (this);
++
++  if (grub_memcmp (information_type, &file_info_guid, sizeof (file_info_guid)))
++    return GRUB_EFI_UNSUPPORTED;
++
++  return fill_file_info (f->file, buffer_size, buffer);
++}
++
++static grub_efi_status_t __grub_efi_api
++file_set_info (grub_efi_file_protocol_t *this __attribute__((unused)),
++               grub_guid_t *information_type __attribute__((unused)),
++               grub_efi_uintn_t buffer_size __attribute__((unused)),
++               void *buffer __attribute__((unused)))
++{
++  return GRUB_EFI_ACCESS_DENIED;
++}
++
++static grub_efi_status_t __grub_efi_api
++file_flush (grub_efi_file_protocol_t *this __attribute__((unused)))
++{
++  return GRUB_EFI_ACCESS_DENIED;
++}
++
++static grub_efi_status_t __grub_efi_api
++dir_open (grub_efi_file_protocol_t *this __attribute__((unused)),
++          grub_efi_file_protocol_t **new_handle,
++          grub_efi_char16_t *file_name,
++          grub_efi_uint64_t open_mode,
++          grub_efi_uint64_t attributes __attribute__((unused)))
++{
++  struct xen_file *xen_file;
++  struct open_file *f;
++  bool found = false;
++
++  if (open_mode != GRUB_EFI_FILE_MODE_READ)
++    return GRUB_EFI_WRITE_PROTECTED;
++
++  if (file_name[0] == u'.' && file_name[1] == u'\0')
++    return open_volume(NULL, new_handle);
++
++  while (*file_name == u'\\')
++    file_name++;
++
++  FOR_LIST_ELEMENTS (xen_file, file_head)
++    {
++      if (!grub_efi_strcmp (file_name, xen_file->name->name16))
++        {
++          found = true;
++          break;
++        }
++    }
++
++  if (!found)
++    return GRUB_EFI_NOT_FOUND;
++
++  f = grub_zalloc (sizeof (struct open_file));
++  if (!f)
++    return GRUB_EFI_OUT_OF_RESOURCES;
++  f->prot = (grub_efi_file_protocol_t){
++    .revision = GRUB_EFI_FILE_PROTOCOL_REVISION,
++    .open = dir_open,
++    .close = file_close,
++    .delete = file_delete,
++    .read = file_read,
++    .write = file_write,
++    .get_position = file_get_position,
++    .set_position = file_set_position,
++    .get_info = file_get_info,
++    .set_info = file_set_info,
++    .flush = file_flush,
++  };
++  f->file = xen_file;
++  grub_list_push (GRUB_AS_LIST_P (&open_file_head), GRUB_AS_LIST (f));
++  *new_handle = &f->prot;
++
++  return GRUB_EFI_SUCCESS;
++}
++
++static grub_efi_status_t __grub_efi_api
++volume_get_info (grub_efi_file_protocol_t *this __attribute__((unused)),
++                 grub_guid_t *information_type,
++                 grub_efi_uintn_t *buffer_size,
++                 void *buffer)
++{
++  if (!grub_memcmp (information_type, &file_info_guid,
++                    sizeof (file_info_guid)))
++    {
++      struct
++      {
++        grub_efi_file_info_t info;
++        grub_efi_char16_t filename;
++      } GRUB_PACKED file_info = {
++        .info = {
++          .file_size = 0,
++          .physical_size = 0,
++          .attribute = GRUB_EFI_FILE_DIRECTORY | GRUB_EFI_FILE_READ_ONLY,
++        },
++        /* From the spec, the root directory filename is the empty string */
++        .filename = 0,
++      };
++
++      file_info.info.size = sizeof (file_info);
++      if (*buffer_size < file_info.info.size)
++        {
++          *buffer_size = file_info.info.size;
++          return GRUB_EFI_BUFFER_TOO_SMALL;
++        }
++      *buffer_size = file_info.info.size;
++
++      grub_memcpy (buffer, &file_info, sizeof (file_info));
++    }
++  else if (!grub_memcmp (information_type, &filesystem_info_guid,
++                         sizeof (filesystem_info_guid)))
++    {
++      struct xen_file *f;
++      struct
++      {
++        grub_efi_filesystem_info_t info;
++        grub_efi_char16_t label;
++      } GRUB_PACKED fs_info = {
++        .info = {
++          .read_only = true,
++          .block_size = 1,
++        },
++        .label = 0, /* empty volume label */
++      };
++
++      fs_info.info.size = sizeof (fs_info);
++      if (*buffer_size < fs_info.info.size)
++        {
++          *buffer_size = fs_info.info.size;
++          return GRUB_EFI_BUFFER_TOO_SMALL;
++        }
++      *buffer_size = fs_info.info.size;
++
++      FOR_LIST_ELEMENTS (f, file_head)
++        fs_info.info.volume_size += f->size;
++
++      grub_memcpy (buffer, &fs_info, sizeof (fs_info));
++    }
++
++  return GRUB_EFI_UNSUPPORTED;
++}
++
++static grub_efi_status_t __grub_efi_api
++open_volume (grub_efi_simple_filesystem_protocol_t *this __attribute__((unused)),
++             grub_efi_file_protocol_t **root)
++{
++  struct open_file *d;
++
++  d = grub_zalloc (sizeof(struct open_file));
++  if (!d)
++    return GRUB_EFI_OUT_OF_RESOURCES;
++  d->prot = (grub_efi_file_protocol_t){
++    .revision = GRUB_EFI_FILE_PROTOCOL_REVISION,
++    .open = dir_open,
++    .close = file_close,
++    .delete = file_delete,
++    .read = dir_read,
++    .write = file_write,
++    .get_position = file_get_position,
++    .set_position = file_set_position,
++    .get_info = volume_get_info,
++    .set_info = file_set_info,
++    .flush = file_flush,
++  };
++  *root = &d->prot;
++  grub_list_push (GRUB_AS_LIST_P (&open_file_head), GRUB_AS_LIST (d));
++
++  return GRUB_EFI_SUCCESS;
++}
++
++grub_efi_simple_filesystem_protocol_t fs = {
++  .revision = GRUB_EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_REVISION,
++  .open_volume = open_volume,
++};
++
++static grub_err_t
++create_config_file (void)
++{
++  char *lines[XEN_MODULES_MAX + 1];
++  char *p;
++  unsigned int n = 0;
++  unsigned int i;
++  struct xen_file *xen_file, *f;
++  static const struct xen_name config_name = XEN_NAME(xen.cfg);
++
++  xen_file = grub_zalloc (sizeof (struct xen_file));
++  if (!xen_file)
++    return grub_errno;
++
++  if (xen_hypervisor_cmdline)
++    {
++      lines[n] = grub_xasprintf ("options=%s\n", xen_hypervisor_cmdline);
++      if (!lines[n])
++        goto fail;
++      xen_file->size += grub_strlen(lines[n]);
++      n++;
++    }
++
++  FOR_LIST_ELEMENTS (f, file_head)
++    {
++      if (f->cmdline)
++        lines[n] = grub_xasprintf ("%s=%s %s\n",
++                                   f->name->name, f->name->name, f->cmdline);
++      else
++        lines[n] = grub_xasprintf ("%s=%s\n", f->name->name, f->name->name);
++
++      if (!lines[n])
++        goto fail;
++      xen_file->size += grub_strlen(lines[n]);
++      n++;
++    }
++
++  xen_file->size++; /* NUL */
++
++  xen_file->buf = grub_malloc(xen_file->size);
++  if (!xen_file->buf)
++    goto fail;
++
++  p = xen_file->buf;
++  for (i = 0; i < n; i++)
++    {
++      p = grub_stpcpy (p, lines[i]);
++      grub_free (lines[i]);
++    }
++
++  xen_file->name = &config_name;
++  grub_list_push (GRUB_AS_LIST_P (&file_head), GRUB_AS_LIST (xen_file));
++
++  return 0;
++
++ fail:
++  grub_free(xen_file->buf);
++  grub_free(xen_file);
++
++  for (i = 0; i < n; i++)
++    grub_free (lines[i]);
++
++  return grub_errno;
++}
++
++static grub_err_t
++xen_boot (void)
++{
++  grub_err_t err;
++  grub_efi_status_t status;
++  struct xen_dev_path dp = {0};
++  grub_efi_boot_services_t *b = grub_efi_system_table->boot_services;
++
++  dp.fp.header.type = GRUB_EFI_MEDIA_DEVICE_PATH_TYPE;
++  dp.fp.header.subtype = GRUB_EFI_FILE_PATH_DEVICE_PATH_SUBTYPE;
++  dp.fp.header.length = sizeof(grub_efi_file_path_device_path_t) + sizeof(grub_efi_char16_t);
++  dp.end.type = GRUB_EFI_END_DEVICE_PATH_TYPE;
++  dp.end.subtype = GRUB_EFI_END_ENTIRE_DEVICE_PATH_SUBTYPE;
++  dp.end.length = sizeof(grub_efi_device_path_t);
++
++  status = b->install_multiple_protocol_interfaces (&fs_handle,
++                                                    &fs_guid,
++                                                    &fs,
++                                                    NULL);
++  if (status != GRUB_EFI_SUCCESS)
++    return grub_error (GRUB_ERR_BAD_ARGUMENT, N_("failed to install protocols"));
++
++  err = create_config_file();
++  if (err)
++    {
++      b->uninstall_multiple_protocol_interfaces (&fs_handle, &fs_guid, &fs,
++                                                 NULL);
++      fs_handle = NULL;
++      return err;
++    }
++
++  return grub_arch_efi_linux_boot_image_dp (xen_boot_address_align (xen_hypervisor_start,
++							            xen_hypervisor_align),
++					 xen_hypervisor_size,
++					 "dummy -cfg=xen.cfg",
++                                         fs_handle,
++                                         (grub_efi_device_path_t *) &dp);
++}
++
++static void
++free_file (struct xen_file *f)
++{
++  grub_free(f->buf);
++  grub_free(f->cmdline);
++
++  grub_list_remove(GRUB_AS_LIST (f));
++  grub_free(f);
++}
++
++static void
++free_hypervisor (void)
++{
++  if (xen_hypervisor_start && xen_hypervisor_size)
++    {
++      grub_efi_free_pages ((grub_efi_physical_address_t) xen_hypervisor_start,
++			   GRUB_EFI_BYTES_TO_PAGES (xen_hypervisor_size + xen_hypervisor_align));
++    }
++  xen_hypervisor_start = 0;
++  xen_hypervisor_size = 0;
++  if (xen_hypervisor_cmdline)
++    grub_free (xen_hypervisor_cmdline);
++  xen_hypervisor_cmdline = NULL;
++  xen_hypervisor_align = 0;
++
++  grub_dl_unref (my_mod);
++}
++
++static grub_err_t
++xen_unload (void)
++{
++  struct open_file *f, *next_f;
++  struct xen_file *xen_f, *next_xen_f;
++  grub_efi_boot_services_t *b = grub_efi_system_table->boot_services;
++
++  loaded = false;
++  module_nr = 0;
++
++  FOR_LIST_ELEMENTS_SAFE(f, next_f, open_file_head)
++    {
++      grub_list_remove(GRUB_AS_LIST (f));
++      grub_free(f);
++    }
++
++  FOR_LIST_ELEMENTS_SAFE(xen_f, next_xen_f, file_head)
++      free_file(xen_f);
++
++  if (fs_handle)
++    b->uninstall_multiple_protocol_interfaces (&fs_handle, &fs_guid, &fs, NULL);
++  fs_handle = NULL;
++
++  free_hypervisor();
++
++  return GRUB_ERR_NONE;
++}
++
++static grub_err_t
++grub_cmd_xen_module (grub_command_t cmd __attribute__((unused)),
++		     int argc, char *argv[])
++{
++  struct xen_file *xen_file;
++  grub_file_t file = NULL;
++
++  if (!loaded)
++    return grub_error (GRUB_ERR_BAD_ARGUMENT,
++		       N_("you need to load the Xen Hypervisor first"));
++
++  if (module_nr >= XEN_MODULES_MAX)
++    return grub_error (GRUB_ERR_BAD_ARGUMENT,
++		       N_("too many xen modules"));
++
++  if (!argc)
++    return grub_error (GRUB_ERR_BAD_ARGUMENT, N_("filename expected"));
++
++  xen_file = grub_zalloc (sizeof (struct xen_file));
++  if (!xen_file)
++    return grub_errno;
++
++  xen_file->name = &xen_names[module_nr];
++
++  grub_dprintf ("xen_loader", "Load module %s %s\n", xen_file->name->name, argv[0]);
++
++  file = grub_file_open (argv[0], GRUB_FILE_TYPE_XEN_MODULE
++			 | GRUB_FILE_TYPE_NO_DECOMPRESS);
++  if (!file)
++    goto fail;
++
++  xen_file->size = grub_file_size (file);
++  grub_dprintf ("xen_loader", "Module file size: 0x%lx\n", xen_file->size);
++
++  xen_file->buf = grub_malloc (xen_file->size);
++  if (!xen_file->buf)
++    goto fail;
++
++  if (grub_file_read (file, xen_file->buf, xen_file->size) !=
++          (grub_ssize_t) xen_file->size)
++    {
++      grub_error (GRUB_ERR_BAD_OS, N_("premature end of file %s"), argv[2]);
++      goto fail;
++    }
++
++  grub_file_close (file);
++  file = NULL;
++
++  argc--;
++  argv++;
++  if (argc)
++    {
++      unsigned int size = grub_loader_cmdline_size (argc, argv);
++
++      grub_dprintf ("xen_loader", "Module cmdline size: %d\n", size);
++      xen_file->cmdline = grub_zalloc (size);
++      if (!xen_file->cmdline)
++        goto fail;
++      grub_create_loader_cmdline (argc, argv, xen_file->cmdline,
++				  size,
++				  GRUB_VERIFY_KERNEL_CMDLINE);
++    }
++
++  module_nr++;
++  grub_list_push (GRUB_AS_LIST_P (&file_head), GRUB_AS_LIST (xen_file));
++
++  return 0;
++
++ fail:
++  grub_error_push ();
++  if (file)
++    grub_file_close (file);
++  free_file (xen_file);
++  grub_error_pop ();
++
++  return grub_errno;
++}
++
++static grub_err_t
++grub_cmd_xen_hypervisor (grub_command_t cmd __attribute__ ((unused)),
++			 int argc, char *argv[])
++{
++  struct linux_arch_kernel_header lh;
++  grub_file_t file = NULL;
++
++  /* if another module has called grub_loader_set,
++     we need to make sure that another module is unloaded properly */
++  grub_loader_unset ();
++
++  grub_dl_ref (my_mod);
++
++  if (!argc)
++    {
++      grub_error (GRUB_ERR_BAD_ARGUMENT, N_("filename expected"));
++      goto fail;
++    }
++
++  file = grub_file_open (argv[0], GRUB_FILE_TYPE_XEN_HYPERVISOR
++			 | GRUB_FILE_TYPE_NO_DECOMPRESS);
++  if (!file)
++    goto fail;
++
++  if (grub_arch_efi_linux_load_image_header (file, &lh) != GRUB_ERR_NONE)
++    goto fail;
++  grub_file_seek (file, 0);
++
++  xen_hypervisor_align
++    = (grub_size_t) lh.pe_image_header.optional_header.section_alignment;
++
++  xen_hypervisor_size = grub_file_size (file);
++  grub_dprintf ("xen_loader", "Xen_boot file size: 0x%lx\n", xen_hypervisor_size);
++
++  xen_hypervisor_start
++    = (grub_addr_t) grub_efi_allocate_any_pages (GRUB_EFI_BYTES_TO_PAGES
++						 (xen_hypervisor_size +
++						  xen_hypervisor_align));
++  if (!xen_hypervisor_start)
++    goto fail;
++
++  grub_dprintf ("xen_loader", "hypervisor pages: 0x%lx\n",
++	        GRUB_EFI_BYTES_TO_PAGES (xen_hypervisor_size + xen_hypervisor_align));
++
++  if (grub_file_read (file, (void *) xen_boot_address_align (xen_hypervisor_start,
++							     xen_hypervisor_align),
++		      xen_hypervisor_size) != (grub_ssize_t) xen_hypervisor_size)
++    {
++      grub_error (GRUB_ERR_BAD_OS, N_("premature end of file %s"), argv[0]);
++      goto fail;
++    }
++
++  grub_file_close (file);
++  file = NULL;
++
++  argc--;
++  argv++;
++  if (argc)
++    {
++      unsigned int size = grub_loader_cmdline_size (argc, argv);
++
++      grub_dprintf ("xen_loader", "Module cmdline size: %d\n", size);
++      xen_hypervisor_cmdline = grub_zalloc (size);
++      if (!xen_hypervisor_cmdline)
++        goto fail;
++      grub_create_loader_cmdline (argc, argv, xen_hypervisor_cmdline,
++				  size,
++				  GRUB_VERIFY_KERNEL_CMDLINE);
++      grub_dprintf ("xen_loader",
++		    "Xen_boot cmdline @ %p %s, size: %d\n",
++		    xen_hypervisor_cmdline, xen_hypervisor_cmdline, size);
++    }
++
++  if (grub_errno == GRUB_ERR_NONE)
++    {
++      grub_loader_set (xen_boot, xen_unload, 0);
++      loaded = true;
++      return 0;
++    }
++
++fail:
++  grub_error_push ();
++
++  if (file)
++    grub_file_close (file);
++
++  free_hypervisor ();
++
++  grub_error_pop ();
++
++  return grub_errno;
++}
++
++static grub_command_t cmd_xen_hypervisor;
++static grub_command_t cmd_xen_module;
++
++GRUB_MOD_INIT (xen_boot)
++{
++  cmd_xen_hypervisor =
++    grub_register_command ("xen_hypervisor", grub_cmd_xen_hypervisor, 0,
++			   N_("Load a xen hypervisor."));
++  cmd_xen_module =
++    grub_register_command ("xen_module", grub_cmd_xen_module, 0,
++			   N_("Load a xen module."));
++  my_mod = mod;
++}
++
++GRUB_MOD_FINI (xen_boot)
++{
++  grub_unregister_command (cmd_xen_hypervisor);
++  grub_unregister_command (cmd_xen_module);
++}
+diff --git a/include/grub/file.h b/include/grub/file.h
+index a5bf3a792d6f..b2d69daf5dfa 100644
+--- a/include/grub/file.h
++++ b/include/grub/file.h
+@@ -42,9 +42,9 @@ enum grub_file_type
+     /* Multiboot module.  */
+     GRUB_FILE_TYPE_MULTIBOOT_MODULE,
+ 
+-    /* Xen hypervisor - used on ARM only. */
++    /* Xen hypervisor */
+     GRUB_FILE_TYPE_XEN_HYPERVISOR,
+-    /* Xen module - used on ARM only. */
++    /* Xen module */
+     GRUB_FILE_TYPE_XEN_MODULE,
+ 
+     GRUB_FILE_TYPE_BSD_KERNEL,

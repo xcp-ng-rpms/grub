@@ -1,0 +1,102 @@
+From e6195b25b508a81551c550140d0900cb44353578 Mon Sep 17 00:00:00 2001
+From: Ross Lagerwall <ross.lagerwall@citrix.com>
+Date: Mon, 21 Jul 2025 15:07:03 +0100
+Subject: [PATCH 3/7] loader/efi/linux: Make device handle and path settable
+
+Add a new boot_image function that takes a device handle and path and
+reimplement the existing function to use the new one.
+
+Signed-off-by: Ross Lagerwall <ross.lagerwall@citrix.com>
+---
+ grub-core/loader/efi/linux.c | 31 ++++++++++++++++++++++---------
+ include/grub/efi/efi.h       |  5 ++++-
+ 2 files changed, 26 insertions(+), 10 deletions(-)
+
+diff --git a/grub-core/loader/efi/linux.c b/grub-core/loader/efi/linux.c
+index 2c7c874f2291..32312d870554 100644
+--- a/grub-core/loader/efi/linux.c
++++ b/grub-core/loader/efi/linux.c
+@@ -183,14 +183,9 @@ failure:
+ #endif
+ 
+ grub_err_t
+-grub_arch_efi_linux_boot_image (grub_addr_t addr, grub_size_t size, char *args)
++grub_arch_efi_linux_boot_image (grub_addr_t addr, grub_size_t size, const char *args)
+ {
+   grub_efi_memory_mapped_device_path_t *mempath;
+-  grub_efi_handle_t image_handle;
+-  grub_efi_status_t status;
+-  grub_efi_loaded_image_t *loaded_image;
+-  grub_size_t len;
+-  grub_size_t args_len;
+ 
+   mempath = grub_malloc (2 * sizeof (grub_efi_memory_mapped_device_path_t));
+   if (!mempath)
+@@ -207,20 +202,35 @@ grub_arch_efi_linux_boot_image (grub_addr_t addr, grub_size_t size, char *args)
+   mempath[1].header.subtype = GRUB_EFI_END_ENTIRE_DEVICE_PATH_SUBTYPE;
+   mempath[1].header.length = sizeof (grub_efi_device_path_t);
+ 
++  return grub_arch_efi_linux_boot_image_dp(addr, size, args, 0,
++                                           (grub_efi_device_path_t *) mempath);
++}
++
++grub_err_t
++grub_arch_efi_linux_boot_image_dp (grub_addr_t addr, grub_size_t size, const char *args,
++                                   grub_efi_handle_t device_handle,
++                                   grub_efi_device_path_t *dp)
++{
++  grub_efi_handle_t image_handle;
++  grub_efi_status_t status;
++  grub_efi_loaded_image_t *loaded_image;
++  grub_size_t len;
++  grub_size_t args_len;
++
+   image_handle = grub_efi_get_last_verified_image_handle ();
+   if (image_handle == NULL)
+     {
+       status = grub_efi_load_image (0, grub_efi_image_handle,
+-				    (grub_efi_device_path_t *) mempath,
++				    dp,
+ 				    (void *) addr, size, &image_handle);
+       if (status != GRUB_EFI_SUCCESS)
+ 	{
+-	  grub_free (mempath);
++	  grub_free (dp);
+ 	  return grub_error (GRUB_ERR_BAD_OS, "cannot load image");
+ 	}
+     }
+ 
+-  grub_free (mempath);
++  grub_free (dp);
+ 
+   grub_dprintf ("linux", "linux command line: '%s'\n", args);
+ 
+@@ -244,6 +254,9 @@ grub_arch_efi_linux_boot_image (grub_addr_t addr, grub_size_t size, char *args)
+   ((grub_efi_char16_t *) loaded_image->load_options)[len++] = 0;
+   loaded_image->load_options_size = len * sizeof (grub_efi_char16_t);
+ 
++  if (device_handle)
++      loaded_image->device_handle = device_handle;
++
+   grub_dprintf ("linux", "starting image %p\n", image_handle);
+   status = grub_efi_start_image (image_handle, 0, NULL);
+ 
+diff --git a/include/grub/efi/efi.h b/include/grub/efi/efi.h
+index fcc9fef8a3bb..8eab6f7768b0 100644
+--- a/include/grub/efi/efi.h
++++ b/include/grub/efi/efi.h
+@@ -130,7 +130,10 @@ grub_err_t EXPORT_FUNC(grub_efi_get_ram_base)(grub_addr_t *);
+ grub_err_t grub_arch_efi_linux_load_image_header(grub_file_t file,
+                                                 struct linux_arch_kernel_header *lh);
+ grub_err_t grub_arch_efi_linux_boot_image(grub_addr_t addr, grub_size_t size,
+-                                           char *args);
++                                           const char *args);
++grub_err_t grub_arch_efi_linux_boot_image_dp(grub_addr_t addr, grub_size_t size,
++                                             const char *args, grub_efi_handle_t device_handle,
++                                             grub_efi_device_path_t *dp);
+ 
+ grub_efi_status_t
+ EXPORT_FUNC (grub_efi_load_image) (grub_efi_boolean_t boot_policy,
+-- 
+2.50.1
+
