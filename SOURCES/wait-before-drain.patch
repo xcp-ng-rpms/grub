@@ -21,20 +21,20 @@ Fix the issue by waiting a short period of time before draining the
 input buffer. This is a nasty hack but it is not clear if there is a
 better solution.
 diff --git a/grub-core/term/ns8250.c b/grub-core/term/ns8250.c
-index 39809d042..c34e6ba13 100644
+index 23e8e0904..178a9331a 100644
 --- a/grub-core/term/ns8250.c
 +++ b/grub-core/term/ns8250.c
-@@ -127,6 +127,13 @@ do_real_config (struct grub_serial_port *port)
+@@ -187,6 +187,13 @@ do_real_config (struct grub_serial_port *port)
      }
  
    /* Drain the input buffer.  */
 +
-+  /*
++  /* 
 +   * Wait a few milliseconds before draining the input buffer since on some
 +   * machines spurious characters show up a short time after GRUB starts.
 +   */
 +  grub_millisleep(10);
 +
    endtime = grub_get_time_ms () + 1000;
-   while (grub_inb (port->port + UART_LSR) & UART_DATA_READY)
+   while (ns8250_reg_read (port, UART_LSR) & UART_DATA_READY)
      {
