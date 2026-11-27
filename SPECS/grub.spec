@@ -1,6 +1,6 @@
-%global package_speccommit 7454b1ba4249f5614c98bb82cc1b1d70c6100b2f
+%global package_speccommit 099f44b67140c645056b776077f9255cd9de32a4
 %global usver 2.12
-%global xsver 16
+%global xsver 17
 %global xsrel %{xsver}%{?xscount}%{?xshash}
 # This package calls binutils components directly and would need to pass
 # in flags to enable the LTO plugins
@@ -258,6 +258,9 @@ install -D -m 755 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/grub.d/02_memtest86
 %{_sbindir}/update-grub || :
 
 %changelog
+* Tue Sep 29 2026 Tim Smith <tim.smith@citrix.com> - 2.12-17
+- CA-432037 Use the corrrect filename for the debug hypervisor
+
 * Thu Aug 27 2026 Tim Smith <tim.smith@citrix.com> - 2.12-16
 - CP-313557 RPU Support
 

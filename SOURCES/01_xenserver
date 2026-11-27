@@ -211,8 +211,9 @@ do
         # We made a submenu, bump MENUCOUNT
         MENUCOUNT=$(( ${MENUCOUNT} + 1 ))
 
-        # Menu for the debug version
-        XEN_VERSION="${XEN_FOUND_VERSION}-debug"
+        # Menu for the debug version. The installed file just uses "-d" rather than
+        # "-debug"
+        XEN_VERSION="${XEN_FOUND_VERSION}-d"
         XEN_IMG="/boot/xen-${XEN_VERSION}"
         echo "submenu \"[MENU] Xen ${XEN_FOUND_VERSION}-debug,  Linux ${LINUX_VERSION}\" {"
         echo
