@@ -1,0 +1,42 @@
+commit e120ae3fb74faf2c4c683f9e8727bde947c1aebf
+Author: Kevin Lampis <kevin.lampis@citrix.com>
+Date:   Mon Nov 17 20:04:46 2025 +0000
+
+        Fix out-of-bounds write in chainloader
+    
+        Space for 3 grub_efi_device_path_t's are needed here for dirname,
+        basename and a terminator
+    
+          +-----------------------------------+
+          |      type: MEDIA_DEVICE_PATH      |
+          |   subtype: FILE_PATH_DEVICE_PATH  |
+          |    length: 33                     |
+          | path_name: L"/EFI/vendor"         |
+          +-----------------------------------+
+          |      type: MEDIA_DEVICE_PATH      |
+          |   subtype: FILE_PATH_DEVICE_PATH  |
+          |    length: 28                     |
+          | path_name: L"shimx64.efi"         |
+          +-----------------------------------+
+          |      type: END_DEVICE_PATH        |
+          |   subtype: END_ENTIRE_DEVICE_PATH |
+          |    length: 4                      |
+          +-----------------------------------+
+    
+        The old code was writing 0x0004 beyond the end of the buffer.
+    
+        Signed-off-by: Kevin Lampis <kevin.lampis@citrix.com>
+
+diff --git a/grub-core/loader/efi/chainloader.c b/grub-core/loader/efi/chainloader.c
+index e77bd863c..3309b1a84 100644
+--- a/grub-core/loader/efi/chainloader.c
++++ b/grub-core/loader/efi/chainloader.c
+@@ -175,7 +175,7 @@ make_file_path (grub_efi_device_path_t *dp, const char *filename)
+ 			   + ((grub_strlen (dir_start) + 2)
+ 			      * GRUB_MAX_UTF16_PER_UTF8
+ 			      * sizeof (grub_efi_char16_t))
+-			   + sizeof (grub_efi_file_path_device_path_t) * 2);
++			   + sizeof (grub_efi_file_path_device_path_t) * 3);
+   if (! file_path)
+     return 0;
+ 

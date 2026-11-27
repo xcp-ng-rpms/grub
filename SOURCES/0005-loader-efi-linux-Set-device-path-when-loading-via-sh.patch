@@ -1,0 +1,172 @@
+From c1368da75ae53c481b51043d5bb1635453d20b96 Mon Sep 17 00:00:00 2001
+From: Ross Lagerwall <ross.lagerwall@citrix.com>
+Date: Thu, 24 Jul 2025 11:32:56 +0100
+Subject: [PATCH 5/7] loader/efi/linux: Set device path when loading via shim
+
+When loading via Shim, the loaded image handle is separately acquired
+with a NULL device path. Therefore, set the correct device path later.
+
+This requires duplicating the device path in memory from AllocatePool
+so that is is freed correctly when unloading the image.
+
+Signed-off-by: Ross Lagerwall <ross.lagerwall@citrix.com>
+---
+ grub-core/kern/efi/efi.c     | 47 ++++++++++++++++++++++++++++++------
+ grub-core/loader/efi/linux.c | 32 ++++++++++++++++++------
+ include/grub/efi/efi.h       |  4 +++
+ 3 files changed, 69 insertions(+), 14 deletions(-)
+
+diff --git a/grub-core/kern/efi/efi.c b/grub-core/kern/efi/efi.c
+index 77456835e4b9..a0d232eeb79a 100644
+--- a/grub-core/kern/efi/efi.c
++++ b/grub-core/kern/efi/efi.c
+@@ -511,9 +511,8 @@ grub_efi_find_last_device_path (const grub_efi_device_path_t *dp)
+   return p;
+ }
+ 
+-/* Duplicate a device path.  */
+-grub_efi_device_path_t *
+-grub_efi_duplicate_device_path (const grub_efi_device_path_t *dp)
++grub_ssize_t
++grub_efi_device_path_len (const grub_efi_device_path_t *dp)
+ {
+   grub_efi_device_path_t *p;
+   grub_size_t total_size = 0;
+@@ -535,17 +534,27 @@ grub_efi_duplicate_device_path (const grub_efi_device_path_t *dp)
+        * This keeps us from passing junk down back to our caller.
+        */
+       if (len < 4)
+-	{
+-	  grub_error (GRUB_ERR_OUT_OF_RANGE,
++        return -grub_error (GRUB_ERR_OUT_OF_RANGE,
+ 		      "malformed EFI Device Path node has length=%" PRIuGRUB_SIZE, len);
+-	  return NULL;
+-	}
+ 
+       total_size += len;
+       if (GRUB_EFI_END_ENTIRE_DEVICE_PATH (p))
+ 	break;
+     }
+ 
++  return total_size;
++}
++
++/* Duplicate a device path.  */
++grub_efi_device_path_t *
++grub_efi_duplicate_device_path (const grub_efi_device_path_t *dp)
++{
++  grub_efi_device_path_t *p;
++  grub_ssize_t total_size = grub_efi_device_path_len (dp);
++
++  if (total_size < 0)
++    return NULL;
++
+   p = grub_malloc (total_size);
+   if (! p)
+     return 0;
+@@ -554,6 +563,30 @@ grub_efi_duplicate_device_path (const grub_efi_device_path_t *dp)
+   return p;
+ }
+ 
++/*
++ * Duplicate a device path.
++ * Like grub_efi_duplicate_device_path () but allocates it using EFI's
++ * AllocatePool () function .
++ */
++grub_efi_device_path_t *
++grub_efi_duplicate_device_path_pool (const grub_efi_device_path_t *dp)
++{
++  grub_efi_status_t status;
++  grub_efi_device_path_t *p;
++  grub_ssize_t total_size = grub_efi_device_path_len (dp);
++
++  if (total_size < 0)
++    return NULL;
++
++  status = grub_efi_system_table->boot_services->allocate_pool (
++      GRUB_EFI_LOADER_DATA, total_size, (void **) &p);
++  if (status != GRUB_EFI_SUCCESS)
++    return NULL;
++
++  grub_memcpy (p, dp, total_size);
++  return p;
++}
++
+ static void
+ dump_vendor_path (const char *type, grub_efi_vendor_device_path_t *vendor)
+ {
+diff --git a/grub-core/loader/efi/linux.c b/grub-core/loader/efi/linux.c
+index b5bf9551fc76..b024650310da 100644
+--- a/grub-core/loader/efi/linux.c
++++ b/grub-core/loader/efi/linux.c
+@@ -214,7 +214,24 @@ grub_arch_efi_linux_boot_image_dp (grub_addr_t addr, grub_size_t size, const cha
+   grub_size_t args_len;
+ 
+   image_handle = grub_efi_get_last_verified_image_handle ();
+-  if (image_handle == NULL)
++  if (image_handle)
++    {
++      grub_efi_device_path_t *new_dp;
++
++      loaded_image = grub_efi_get_loaded_image (image_handle);
++      if (loaded_image == NULL)
++        {
++          grub_error (GRUB_ERR_BAD_FIRMWARE, "missing loaded_image proto");
++          goto unload;
++        }
++
++      new_dp = grub_efi_duplicate_device_path_pool(dp);
++      if (!new_dp)
++        goto unload;
++
++      loaded_image->file_path = new_dp;
++    }
++  else
+     {
+       status = grub_efi_load_image (0, grub_efi_image_handle,
+ 				    dp,
+@@ -223,17 +240,18 @@ grub_arch_efi_linux_boot_image_dp (grub_addr_t addr, grub_size_t size, const cha
+ 	{
+ 	  return grub_error (GRUB_ERR_BAD_OS, "cannot load image");
+ 	}
++
++      loaded_image = grub_efi_get_loaded_image (image_handle);
++      if (loaded_image == NULL)
++        {
++          grub_error (GRUB_ERR_BAD_FIRMWARE, "missing loaded_image proto");
++          goto unload;
++        }
+     }
+ 
+   grub_dprintf ("linux", "linux command line: '%s'\n", args);
+ 
+   /* Convert command line to UTF-16. */
+-  loaded_image = grub_efi_get_loaded_image (image_handle);
+-  if (loaded_image == NULL)
+-    {
+-      grub_error (GRUB_ERR_BAD_FIRMWARE, "missing loaded_image proto");
+-      goto unload;
+-    }
+   args_len = grub_strlen (args);
+   len = (args_len + 1) * sizeof (grub_efi_char16_t);
+   loaded_image->load_options =
+diff --git a/include/grub/efi/efi.h b/include/grub/efi/efi.h
+index 8eab6f7768b0..16e19232bcb9 100644
+--- a/include/grub/efi/efi.h
++++ b/include/grub/efi/efi.h
+@@ -78,8 +78,12 @@ grub_efi_device_path_t *
+ EXPORT_FUNC(grub_efi_get_device_path) (grub_efi_handle_t handle);
+ grub_efi_device_path_t *
+ EXPORT_FUNC(grub_efi_find_last_device_path) (const grub_efi_device_path_t *dp);
++grub_ssize_t
++EXPORT_FUNC(grub_efi_device_path_len) (const grub_efi_device_path_t *dp);
+ grub_efi_device_path_t *
+ EXPORT_FUNC(grub_efi_duplicate_device_path) (const grub_efi_device_path_t *dp);
++grub_efi_device_path_t *
++EXPORT_FUNC(grub_efi_duplicate_device_path_pool) (const grub_efi_device_path_t *dp);
+ grub_err_t EXPORT_FUNC (grub_efi_finish_boot_services) (grub_efi_uintn_t *outbuf_size, void *outbuf,
+ 							grub_efi_uintn_t *map_key,
+ 							grub_efi_uintn_t *efi_desc_size,
+-- 
+2.50.1
+

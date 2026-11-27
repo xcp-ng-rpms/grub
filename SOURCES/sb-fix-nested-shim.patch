@@ -1,0 +1,38 @@
+commit b536f12919f01de76f4984cad55873b3d39baa53
+Author: Kevin Lampis <kevin.lampis@citrix.com>
+Date:   Mon Nov 17 20:21:44 2025 +0000
+
+    Fix chainload nested shim in secure boot mode
+    
+    In Secure Boot mode the shim_lock_verifier_write() function verifies the
+    shim signature by running a half hearted load_image (which omits the
+    FilePath argument) and then caching the handle.
+    
+    The grub_cmd_chainloader() function tries to reuse this incomplete image
+    leading a crash later when the shim tries to use the NULL FilePath.
+    
+    This commit checks if the image about to be chainloaded has a
+    NULL FilePath and fixes it up.
+    
+    Signed-off-by: Kevin Lampis <kevin.lampis@citrix.com>
+
+diff --git a/grub-core/loader/efi/chainloader.c b/grub-core/loader/efi/chainloader.c
+index 3309b1a84..2e771979c 100644
+--- a/grub-core/loader/efi/chainloader.c
++++ b/grub-core/loader/efi/chainloader.c
+@@ -363,6 +363,15 @@ grub_cmd_chainloader (grub_command_t cmd __attribute__ ((unused)),
+       grub_error (GRUB_ERR_BAD_OS, "no loaded image available");
+       goto fail;
+     }
++
++  /* If we are reusing the image loaded earlier by the shim lock verifier
++   * then FilePath may be NULL. We need to fix that before booting. */
++  if (! loaded_image->file_path)
++    {
++      grub_efi_device_path_t *fp = make_file_path (NULL, filename);
++      loaded_image->file_path = fp;
++    }
++
+   loaded_image->device_handle = dev_handle;
+ 
+   /* Build load options with arguments from chainloader command line. */
